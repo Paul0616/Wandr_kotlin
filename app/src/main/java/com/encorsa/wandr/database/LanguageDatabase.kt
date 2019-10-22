@@ -19,7 +19,6 @@ package com.encorsa.wandr.database
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.encorsa.wandr.mainEntities.Language
 import com.squareup.moshi.Json
 
 @Entity(tableName = "languages_table")

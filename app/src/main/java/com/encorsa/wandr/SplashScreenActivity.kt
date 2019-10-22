@@ -1,4 +1,4 @@
-package com.encorsa.wandr.splashScreen
+package com.encorsa.wandr
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -8,13 +8,13 @@ import android.view.View
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.encorsa.wandr.LogInActivity
 import com.encorsa.wandr.network.WandrApiStatus
-import com.encorsa.wandr.R
 import com.encorsa.wandr.database.LanguageDatabase
 import com.encorsa.wandr.database.WandrDatabase
 import com.encorsa.wandr.databinding.ActivitySplashScreenBinding
 import com.encorsa.wandr.network.models.LabelModel
+import com.encorsa.wandr.splashScreen.SplashScreenViewModel
+import com.encorsa.wandr.splashScreen.SplashScreenViewModelFactory
 
 class SplashScreenActivity : AppCompatActivity() {
 
@@ -29,8 +29,10 @@ class SplashScreenActivity : AppCompatActivity() {
         binding.setLifecycleOwner(this)
 
         val dataSource = WandrDatabase.getInstance(application).wandrDatabaseDao
-        val viewModelFactory = SplashScreenViewModelFactory(dataSource)
-        val viewModel: SplashScreenViewModel = ViewModelProviders.of(this, viewModelFactory).get(SplashScreenViewModel::class.java)
+        val viewModelFactory =
+            SplashScreenViewModelFactory(dataSource)
+        val viewModel: SplashScreenViewModel = ViewModelProviders.of(this, viewModelFactory).get(
+            SplashScreenViewModel::class.java)
 
         viewModel.status.observe(this, Observer {
 
