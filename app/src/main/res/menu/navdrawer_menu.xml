@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/module_ar_item"
+        android:icon="@android:drawable/btn_star_big_on"
+        android:title="Modul AR" />
+    <item
+        android:id="@+id/favorite_item"
+        android:icon="?attr/actionModeShareDrawable"
+        android:title="Favorite" />
+</menu>
