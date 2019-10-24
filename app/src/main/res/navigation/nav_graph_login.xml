@@ -7,5 +7,27 @@
     <fragment
         android:id="@+id/logInFragment"
         android:name="com.encorsa.wandr.logInFragments.logIn.LogInFragment"
-        android:label="LogInFragment" />
+        android:label="LogInFragment" >
+        <action
+            android:id="@+id/action_logInFragment_to_viewUrlFragment"
+            app:destination="@id/viewUrlFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.encorsa.wandr.logInFragments.register.RegisterFragment"
+        android:label="register_fragment"
+        tools:layout="@layout/register_fragment" >
+        <action
+            android:id="@+id/action_registerFragment_to_logInFragment"
+            app:destination="@id/logInFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/viewUrlFragment"
+        android:name="com.encorsa.wandr.logInFragments.viewPrivacy.ViewUrlFragment"
+        android:label="view_url_fragment"
+        tools:layout="@layout/view_url_fragment" >
+        <action
+            android:id="@+id/action_viewUrlFragment_to_registerFragment"
+            app:destination="@id/registerFragment" />
+    </fragment>
 </navigation>

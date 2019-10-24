@@ -27,6 +27,10 @@ class SplashScreenViewModel(val database: WandrDatabaseDao) : ViewModel() {
 
 
     //API status of the most recent request
+    private val _isLogged = MutableLiveData<Boolean>()
+    val isLogged: LiveData<Boolean>
+        get() = _isLogged
+
     private val _status = MutableLiveData<WandrApiStatus>()
     val status: LiveData<WandrApiStatus>
         get() = _status
@@ -45,13 +49,11 @@ class SplashScreenViewModel(val database: WandrDatabaseDao) : ViewModel() {
     val labels: LiveData<List<LabelModel>>
         get() = _labels
 
-    private val _leaveSplashScreen = MutableLiveData<Boolean>()
-    val leaveSplashScreen: LiveData<Boolean>
-        get() = _leaveSplashScreen
 
     init {
         Log.i("SplashScrrenViewModel", "CREATED")
         getLanguages()
+        getLabels()
     }
 
     override fun onCleared() {
@@ -209,6 +211,7 @@ class SplashScreenViewModel(val database: WandrDatabaseDao) : ViewModel() {
             withContext(Dispatchers.Main) {
                 _error.value =
                     "%s Inserted, %s Updated, %s Deleted".format(inserted, updated, deleted)
+
             }
         }
     }
