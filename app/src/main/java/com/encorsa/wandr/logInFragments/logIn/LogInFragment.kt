@@ -2,6 +2,7 @@ package com.encorsa.wandr.logInFragments.logIn
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
 import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,29 +11,41 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.Navigation
 import com.encorsa.wandr.MainActivity
 import com.encorsa.wandr.network.models.LoginRequestModel
 import com.encorsa.wandr.network.WandrApiStatus
 import com.encorsa.wandr.databinding.FragmentLogInBinding
+import com.encorsa.wandr.utils.Prefs
 import java.util.*
 
 class LogInFragment : Fragment() {
 
-    private var credentials: LoginRequestModel = LoginRequestModel("", "", false)
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        val prefs = Prefs(requireNotNull(activity).applicationContext)
+        val application = requireNotNull(activity).application
         val binding = FragmentLogInBinding.inflate(inflater)
         // val credentials: LoginRequestModel = LoginRequestModel("", "", false)
-        val viewModelFactory = LogInViewModelFactory(credentials)
+        val viewModelFactory = LogInViewModelFactory(application)
         val viewModel =
             ViewModelProviders.of(this, viewModelFactory).get(LogInViewModel::class.java)
         binding.setLifecycleOwner(this)
         binding.loginViewModel = viewModel
         //binding.loginRequest = credentials
         binding.infoText.text = "Welcome to Log In Fragment"
+
+
+
+        binding.signUpButton.setOnClickListener {
+            Navigation.createNavigateOnClickListener(LogInFragmentDirections.actionLogInFragmentToViewUrlFragment())
+        }
+
         binding.loginButton.setOnClickListener {
             //viewModel.lo
             val cred: LoginRequestModel = LoginRequestModel(
@@ -42,6 +55,8 @@ class LogInFragment : Fragment() {
             )
             viewModel.login(cred)
         }
+
+
         viewModel.status.observe(this, Observer {
             when (it) {
                 WandrApiStatus.LOADING -> binding.progressBarLogIn.visibility = View.VISIBLE
@@ -55,8 +70,12 @@ class LogInFragment : Fragment() {
                 else -> binding.progressBarLogIn.visibility = View.INVISIBLE
             }
         })
+
         viewModel.tokenModel.observe(this, Observer {
             binding.infoText.text = it?.token?.length.toString()
+            prefs.userEmail = it?.email
+            prefs.userId = it?.userId
+            prefs.userName = it?.userName
             startActivity(Intent(activity, MainActivity::class.java))
         })
         viewModel.error.observe(this, Observer {
@@ -85,4 +104,5 @@ class LogInFragment : Fragment() {
         })
         return binding.root
     }
+
 }

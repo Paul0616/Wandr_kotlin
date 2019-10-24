@@ -15,9 +15,9 @@ import com.encorsa.wandr.databinding.ActivitySplashScreenBinding
 import com.encorsa.wandr.network.models.LabelModel
 import com.encorsa.wandr.splashScreen.SplashScreenViewModel
 import com.encorsa.wandr.splashScreen.SplashScreenViewModelFactory
+import com.encorsa.wandr.utils.Prefs
 
 class SplashScreenActivity : AppCompatActivity() {
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,10 +29,12 @@ class SplashScreenActivity : AppCompatActivity() {
         binding.setLifecycleOwner(this)
 
         val dataSource = WandrDatabase.getInstance(application).wandrDatabaseDao
+        val prefs = Prefs(application.applicationContext)
         val viewModelFactory =
             SplashScreenViewModelFactory(dataSource)
         val viewModel: SplashScreenViewModel = ViewModelProviders.of(this, viewModelFactory).get(
-            SplashScreenViewModel::class.java)
+            SplashScreenViewModel::class.java
+        )
 
         viewModel.status.observe(this, Observer {
 
@@ -40,20 +42,29 @@ class SplashScreenActivity : AppCompatActivity() {
                 WandrApiStatus.LOADING -> binding.progressBar.visibility = View.VISIBLE
                 WandrApiStatus.DONE -> {
                     binding.progressBar.visibility = View.INVISIBLE
-
                 }
                 WandrApiStatus.ERROR -> {
                     binding.progressBar.visibility = View.INVISIBLE
                     Log.i("SplashScreenActivity", "ERROR")
                 }
-                else ->  binding.progressBar.visibility = View.INVISIBLE
+                else -> binding.progressBar.visibility = View.INVISIBLE
             }
         })
 
         viewModel.languages.observe(this, Observer
         {
             for (languageDatabase: LanguageDatabase in it) {
-                Log.i("SplashScreenActivity", languageDatabase.name + " - " + languageDatabase.rowId)
+                Log.i(
+                    "SplashScreenActivity",
+                    languageDatabase.name + " - " + languageDatabase.rowId
+                )
+            }
+        })
+
+        viewModel.error.observe(this, Observer {
+            if (null != it) {
+                Log.i("SplashScreenActivity", it)
+                viewModel.errorWasDisplayed()
             }
         })
 
@@ -62,14 +73,13 @@ class SplashScreenActivity : AppCompatActivity() {
             for (label: LabelModel in it) {
                 Log.i("SplashScreenActivity", label.tag + " - " + label.labelNames.size)
             }
-            startActivity(Intent(this, LogInActivity::class.java))
+            Log.i("SplashScreenActivity", prefs.userName ?: "USER NAME NULL")
+            if (prefs.userName == null)
+                startActivity(Intent(this, LogInActivity::class.java))
+            else
+                startActivity(Intent(this, MainActivity::class.java))
         })
 
-        viewModel.error.observe(this, Observer {
-            if(null != it){
-                Log.i("SplashScreenActivity", it)
-                viewModel.errorWasDisplayed()
-            }
-        })
+
     }
 }

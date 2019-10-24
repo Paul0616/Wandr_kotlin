@@ -1,6 +1,8 @@
 package com.encorsa.wandr.logInFragments.logIn
 
+import android.app.Application
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,13 +10,14 @@ import com.encorsa.wandr.network.models.LoginRequestModel
 import com.encorsa.wandr.network.models.LoginResponseModel
 import com.encorsa.wandr.network.WandrApi
 import com.encorsa.wandr.network.WandrApiStatus
+import com.encorsa.wandr.utils.Prefs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
-class LogInViewModel(credentials: LoginRequestModel) : ViewModel() {
+class LogInViewModel(app: Application) : AndroidViewModel(app) {
 
     // Create a Coroutine scope using a job to be able to cancel when needed
     private var viewModelJob = Job()
@@ -22,6 +25,7 @@ class LogInViewModel(credentials: LoginRequestModel) : ViewModel() {
     // the Coroutine runs using the Main (UI) dispatcher
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
+    private val prefs = Prefs(app.applicationContext)
     //API status of the most recent request
     private val _status = MutableLiveData<WandrApiStatus>()
     val status: LiveData<WandrApiStatus>
@@ -46,8 +50,12 @@ class LogInViewModel(credentials: LoginRequestModel) : ViewModel() {
         Log.i("LogInViewModel", "CREATED")
         //login(credentials)
         _status.value = null
-        email.value = ""
+        if (prefs.userEmail != null)
+            email.value = prefs.userEmail
+        else
+            email.value = ""
         password.value = ""
+
     }
 
     fun onClickLogIn() {
@@ -72,6 +80,7 @@ class LogInViewModel(credentials: LoginRequestModel) : ViewModel() {
             }
         }
     }
+
 
     override fun onCleared() {
         super.onCleared()

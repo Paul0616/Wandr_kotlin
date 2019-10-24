@@ -1,6 +1,8 @@
 package com.encorsa.wandr.splashScreen
 
+import android.app.Application
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,6 +13,7 @@ import com.encorsa.wandr.database.WandrDatabaseDao
 import com.encorsa.wandr.network.WandrApi
 import com.encorsa.wandr.network.WandrApiStatus
 import com.encorsa.wandr.network.models.LabelModel
+import com.encorsa.wandr.utils.Prefs
 import kotlinx.coroutines.*
 import retrofit2.HttpException
 
@@ -23,7 +26,7 @@ class SplashScreenViewModel(val database: WandrDatabaseDao) : ViewModel() {
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
     private val ioScope = CoroutineScope(Dispatchers.IO + viewModelJob)
-
+   // private lateinit var prefs: Prefs
 
 
     //API status of the most recent request
@@ -54,6 +57,7 @@ class SplashScreenViewModel(val database: WandrDatabaseDao) : ViewModel() {
         Log.i("SplashScrrenViewModel", "CREATED")
         getLanguages()
         getLabels()
+      //  prefs = Prefs(app.applicationContext)
     }
 
     override fun onCleared() {
@@ -78,7 +82,7 @@ class SplashScreenViewModel(val database: WandrDatabaseDao) : ViewModel() {
                 _status.value = WandrApiStatus.DONE
                 _languages.value = listResult
                 synchronizeLanguages(database, listResult)
-                getLabels()
+                //getLabels()
             }
             catch (e: Exception) {
                 _status.value = WandrApiStatus.ERROR
