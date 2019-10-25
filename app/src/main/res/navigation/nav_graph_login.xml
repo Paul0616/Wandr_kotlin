@@ -33,10 +33,14 @@
     <fragment
         android:id="@+id/viewUrlFragment"
         android:name="com.encorsa.wandr.logInFragments.viewPrivacy.ViewUrlFragment"
-        android:label="Privacy Policy"
+        android:label="{title}"
         tools:layout="@layout/fragment_view_url">
         <action
             android:id="@+id/action_viewUrlFragment_to_registerFragment"
             app:destination="@id/registerFragment" />
+        <argument
+            android:name="title"
+            android:defaultValue="Privacy Policy"
+            app:argType="string" />
     </fragment>
 </navigation>

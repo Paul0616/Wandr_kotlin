@@ -14,13 +14,9 @@ class LogInActivity : AppCompatActivity() {
 
         val navcon = this.findNavController(R.id.nav_host_fragment)
         NavigationUI.setupActionBarWithNavController(this, navcon)
-        //supportActionBar?.hide()
+        getSupportActionBar()?.setTitle("Hello");
     }
 
-    //    override fun onNavigateUp(): Boolean {
-//        val navcon = this.findNavController(R.id.nav_host_fragment)
-//        return navcon.navigateUp()
-//    }
     override fun onSupportNavigateUp(): Boolean {
         val navcon = this.findNavController(R.id.nav_host_fragment)
         return navcon.navigateUp()

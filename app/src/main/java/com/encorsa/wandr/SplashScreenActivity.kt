@@ -8,6 +8,7 @@ import android.view.View
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.findNavController
 import com.encorsa.wandr.network.WandrApiStatus
 import com.encorsa.wandr.database.LanguageDatabase
 import com.encorsa.wandr.database.WandrDatabase
@@ -24,8 +25,6 @@ class SplashScreenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val binding: ActivitySplashScreenBinding =
             DataBindingUtil.setContentView(this, R.layout.activity_splash_screen)
-        //val dataSource = WandrDatabase.getInstance(application).wandrDatabaseDao
-        // Allows Data Binding to Observe LiveData with the lifecycle of this Fragment
         binding.setLifecycleOwner(this)
 
         val dataSource = WandrDatabase.getInstance(application).wandrDatabaseDao
@@ -74,8 +73,12 @@ class SplashScreenActivity : AppCompatActivity() {
                 Log.i("SplashScreenActivity", label.tag + " - " + label.labelNames.size)
             }
             Log.i("SplashScreenActivity", prefs.userName ?: "USER NAME NULL")
-            if (prefs.userName == null)
-                startActivity(Intent(this, LogInActivity::class.java))
+            if (prefs.userName == null) {
+                val i = Intent(this, LogInActivity::class.java)
+                //i.putExtra("title","XXX")
+                startActivity(i)
+                //this.findNavController()
+            }
             else
                 startActivity(Intent(this, MainActivity::class.java))
         })

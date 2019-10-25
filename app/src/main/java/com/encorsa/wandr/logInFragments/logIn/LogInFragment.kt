@@ -36,15 +36,12 @@ class LogInFragment : Fragment() {
             ViewModelProviders.of(this, viewModelFactory).get(LogInViewModel::class.java)
         binding.setLifecycleOwner(this)
         binding.loginViewModel = viewModel
-        //binding.loginRequest = credentials
-
-        activity?.actionBar?.title = "LogIn"
         binding.infoText.text = "Welcome to Log In Fragment"
 
 
 
         binding.signUpButton.setOnClickListener (
-            Navigation.createNavigateOnClickListener(LogInFragmentDirections.actionLogInFragmentToViewUrlFragment())
+            Navigation.createNavigateOnClickListener(LogInFragmentDirections.actionLogInFragmentToViewUrlFragment().setTitle("XXX"))
         )
 
         binding.loginButton.setOnClickListener {
@@ -107,4 +104,8 @@ class LogInFragment : Fragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Navigation.findNavController(view).getCurrentDestination()?.setLabel("Hello");
+    }
 }
