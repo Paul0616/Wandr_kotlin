@@ -7,16 +7,25 @@
     <fragment
         android:id="@+id/logInFragment"
         android:name="com.encorsa.wandr.logInFragments.logIn.LogInFragment"
-        android:label="LogInFragment" >
+        android:label="{title}">
         <action
             android:id="@+id/action_logInFragment_to_viewUrlFragment"
-            app:destination="@id/viewUrlFragment" />
+            app:destination="@id/viewUrlFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@+id/logInFragment" />
+        <argument
+            android:name="title"
+            app:argType="string"
+            android:defaultValue="LogIn" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
         android:name="com.encorsa.wandr.logInFragments.register.RegisterFragment"
-        android:label="register_fragment"
-        tools:layout="@layout/register_fragment" >
+        android:label="Register"
+        tools:layout="@layout/fragment_register">
         <action
             android:id="@+id/action_registerFragment_to_logInFragment"
             app:destination="@id/logInFragment" />
@@ -24,8 +33,8 @@
     <fragment
         android:id="@+id/viewUrlFragment"
         android:name="com.encorsa.wandr.logInFragments.viewPrivacy.ViewUrlFragment"
-        android:label="view_url_fragment"
-        tools:layout="@layout/view_url_fragment" >
+        android:label="Privacy Policy"
+        tools:layout="@layout/fragment_view_url">
         <action
             android:id="@+id/action_viewUrlFragment_to_registerFragment"
             app:destination="@id/registerFragment" />

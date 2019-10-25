@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
@@ -35,8 +37,15 @@ class MainFragment : Fragment() {
         val binding = FragmentMainBinding.inflate(inflater)
         val viewModel = ViewModelProviders.of(this).get(MainFragmentModel::class.java)
         setHasOptionsMenu(true)
+
+        binding.testButton.setOnClickListener (
+            Navigation.createNavigateOnClickListener(MainFragmentDirections.actionMainFragmentToDetailFragment())
+        )
+
         return binding.root
     }
+
+
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)

@@ -1,4 +1,4 @@
-package com.encorsa.wandr.logInFragments.viewPrivacy
+package com.encorsa.wandr.mainFragments.details
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -8,34 +8,25 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.encorsa.wandr.R
-import com.encorsa.wandr.databinding.FragmentViewUrlBinding
 
-
-class ViewUrlFragment : Fragment() {
+class DetailFragment : Fragment() {
 
     companion object {
-        fun newInstance() = ViewUrlFragment()
+        fun newInstance() = DetailFragment()
     }
 
-    private lateinit var viewModel: ViewUrlViewModel
+    private lateinit var viewModel: DetailViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-
-        val binding = FragmentViewUrlBinding.inflate(inflater)
-        val viewModel =
-            ViewModelProviders.of(this).get(ViewUrlViewModel::class.java)
-        binding.setLifecycleOwner(this)
-
-        return binding.root
+        return inflater.inflate(R.layout.fragment_detail, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(ViewUrlViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(DetailViewModel::class.java)
         // TODO: Use the ViewModel
     }
 

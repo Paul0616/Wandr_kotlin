@@ -2,7 +2,6 @@ package com.encorsa.wandr.logInFragments.logIn
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
 import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
@@ -38,13 +37,15 @@ class LogInFragment : Fragment() {
         binding.setLifecycleOwner(this)
         binding.loginViewModel = viewModel
         //binding.loginRequest = credentials
+
+        activity?.actionBar?.title = "LogIn"
         binding.infoText.text = "Welcome to Log In Fragment"
 
 
 
-        binding.signUpButton.setOnClickListener {
+        binding.signUpButton.setOnClickListener (
             Navigation.createNavigateOnClickListener(LogInFragmentDirections.actionLogInFragmentToViewUrlFragment())
-        }
+        )
 
         binding.loginButton.setOnClickListener {
             //viewModel.lo
@@ -76,6 +77,7 @@ class LogInFragment : Fragment() {
             prefs.userEmail = it?.email
             prefs.userId = it?.userId
             prefs.userName = it?.userName
+
             startActivity(Intent(activity, MainActivity::class.java))
         })
         viewModel.error.observe(this, Observer {
