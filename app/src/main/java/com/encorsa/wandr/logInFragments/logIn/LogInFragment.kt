@@ -7,11 +7,16 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
 import com.encorsa.wandr.MainActivity
+import com.encorsa.wandr.R
 import com.encorsa.wandr.network.models.LoginRequestModel
 import com.encorsa.wandr.network.WandrApiStatus
 import com.encorsa.wandr.databinding.FragmentLogInBinding
@@ -38,6 +43,7 @@ class LogInFragment : Fragment() {
         binding.loginViewModel = viewModel
         binding.infoText.text = "Welcome to Log In Fragment"
 
+        (activity as AppCompatActivity).supportActionBar?.hide()
 
 
         binding.signUpButton.setOnClickListener (
@@ -108,4 +114,6 @@ class LogInFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Navigation.findNavController(view).getCurrentDestination()?.setLabel("Hello");
     }
+
+
 }

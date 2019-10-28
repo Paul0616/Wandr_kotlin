@@ -28,6 +28,7 @@ class RegisterFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(RegisterViewModel::class.java)
         // TODO: Use the ViewModel
+
     }
 
 }

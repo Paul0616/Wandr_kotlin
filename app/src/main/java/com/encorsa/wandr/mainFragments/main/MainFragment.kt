@@ -54,9 +54,11 @@ class MainFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val prefs = Prefs(requireNotNull(activity).applicationContext)
-        prefs.logOut()
-        startActivity(Intent(activity, LogInActivity::class.java))
+        if (item.itemId == R.id.logOut) {
+            val prefs = Prefs(requireNotNull(activity).applicationContext)
+            prefs.logOut()
+            startActivity(Intent(activity, LogInActivity::class.java))
+        }
         return super.onOptionsItemSelected(item)
     }
 }

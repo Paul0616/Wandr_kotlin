@@ -1,10 +1,8 @@
 package com.encorsa.wandr.network
 
 import com.encorsa.wandr.database.LanguageDatabase
-import com.encorsa.wandr.network.models.LabelModel
+import com.encorsa.wandr.network.models.*
 
-import com.encorsa.wandr.network.models.LoginRequestModel
-import com.encorsa.wandr.network.models.LoginResponseModel
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -31,13 +29,16 @@ private val retrofit = Retrofit.Builder()
 interface WandrApiService {
     @GET("LanguageAPI")
     fun getLanguages():
-            Deferred<List<LanguageDatabase>>
+            Deferred<LanguagesList>
     @GET("LabelApi")
     fun getLabels():
-            Deferred<List<LabelModel>>
+            Deferred<LabelsList>
     @POST("Account/login")
     fun login(@Body body: LoginRequestModel):
             Deferred<LoginResponseModel>
+    @GET("HtmlPagesAPI/GetHtmlPagesFiltered")
+    fun getHtmlPages(@QueryMap options: HashMap<String, String>):
+            Deferred<HtmlPagesList>
 }
 
 object WandrApi {

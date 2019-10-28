@@ -2,10 +2,7 @@ package com.encorsa.wandr.splashScreen
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.encorsa.wandr.database.LabelDatabase
 import com.encorsa.wandr.database.LanguageDatabase
 import com.encorsa.wandr.database.WandrDatabaseDao
@@ -23,7 +20,7 @@ class SplashScreenViewModel(val database: WandrDatabaseDao) : ViewModel() {
     private var viewModelJob = Job()
 
     // the Coroutine runs using the Main (UI) dispatcher
-    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
+//    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
     private val ioScope = CoroutineScope(Dispatchers.IO + viewModelJob)
    // private lateinit var prefs: Prefs
@@ -71,7 +68,7 @@ class SplashScreenViewModel(val database: WandrDatabaseDao) : ViewModel() {
     }
 
     private fun getLanguages() {
-        coroutineScope.launch {
+        viewModelScope.launch {
             // Get the Deferred object for our Retrofit request
             var getLanguagesDeferred = WandrApi.RETROFIT_SERVICE.getLanguages()
 
@@ -80,8 +77,8 @@ class SplashScreenViewModel(val database: WandrDatabaseDao) : ViewModel() {
                 _status.value = WandrApiStatus.LOADING
                 val listResult = getLanguagesDeferred.await()
                 _status.value = WandrApiStatus.DONE
-                _languages.value = listResult
-                synchronizeLanguages(database, listResult)
+                _languages.value = listResult.items
+                synchronizeLanguages(database, listResult.items)
                 //getLabels()
             }
             catch (e: Exception) {
@@ -96,7 +93,7 @@ class SplashScreenViewModel(val database: WandrDatabaseDao) : ViewModel() {
     }
 
     private fun getLabels() {
-        coroutineScope.launch {
+        viewModelScope.launch {
             // Get the Deferred object for our Retrofit request
             var getLabelsDeferred = WandrApi.RETROFIT_SERVICE.getLabels()
 
@@ -105,8 +102,8 @@ class SplashScreenViewModel(val database: WandrDatabaseDao) : ViewModel() {
                 _status.value = WandrApiStatus.LOADING
                 val listResult = getLabelsDeferred.await()
                 _status.value = WandrApiStatus.DONE
-                _labels.value = listResult
-                synchronizeLabels(database, listResult)
+                _labels.value = listResult.items
+                synchronizeLabels(database, listResult.items)
             }
             catch (e: Exception) {
                 _status.value = WandrApiStatus.ERROR
