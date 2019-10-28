@@ -5,7 +5,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.encorsa.wandr.network.models.LoginRequestModel
 import com.encorsa.wandr.network.models.LoginResponseModel
 import com.encorsa.wandr.network.WandrApi
@@ -19,11 +19,11 @@ import retrofit2.HttpException
 
 class LogInViewModel(app: Application) : AndroidViewModel(app) {
 
-    // Create a Coroutine scope using a job to be able to cancel when needed
-    private var viewModelJob = Job()
-
-    // the Coroutine runs using the Main (UI) dispatcher
-    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
+//    // Create a Coroutine scope using a job to be able to cancel when needed
+//    private var viewModelJob = Job()
+//
+//    // the Coroutine runs using the Main (UI) dispatcher
+//    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
     private val prefs = Prefs(app.applicationContext)
     //API status of the most recent request
@@ -42,9 +42,9 @@ class LogInViewModel(app: Application) : AndroidViewModel(app) {
     var email = MutableLiveData<String>()
     var password = MutableLiveData<String>()
 
-    private val _userRequest = MutableLiveData<LoginRequestModel>()
-    val userRequest: LiveData<LoginRequestModel>
-        get() = _userRequest
+    private val _userValidation = MutableLiveData<LoginRequestModel>()
+    val userValidation: LiveData<LoginRequestModel>
+        get() = _userValidation
 
     init {
         Log.i("LogInViewModel", "CREATED")
@@ -60,11 +60,11 @@ class LogInViewModel(app: Application) : AndroidViewModel(app) {
 
     fun onClickLogIn() {
         val loginUser = LoginRequestModel(email.value!!, password.value!!, false)
-        _userRequest.value = loginUser
+        _userValidation.value = loginUser
     }
 
     fun login(credentials: LoginRequestModel) {
-        coroutineScope.launch {
+        viewModelScope.launch {
             // Get the Deferred object for our Retrofit request
             var getTokenModel = WandrApi.RETROFIT_SERVICE.login(credentials)
 

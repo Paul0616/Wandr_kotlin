@@ -34,11 +34,16 @@ class SplashScreenActivity : AppCompatActivity() {
         val viewModel: SplashScreenViewModel = ViewModelProviders.of(this, viewModelFactory).get(
             SplashScreenViewModel::class.java
         )
+        binding.imageView2.animate()
+            .alpha(1f)
+            .duration = 500
 
         viewModel.status.observe(this, Observer {
 
             when (it) {
-                WandrApiStatus.LOADING -> binding.progressBar.visibility = View.VISIBLE
+                WandrApiStatus.LOADING -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                }
                 WandrApiStatus.DONE -> {
                     binding.progressBar.visibility = View.INVISIBLE
                 }

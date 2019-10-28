@@ -23,9 +23,11 @@ class ViewUrlViewModel : ViewModel() {
     // the Coroutine runs using the Main (UI) dispatcher
   //  private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
+
     private val _status = MutableLiveData<WandrApiStatus>()
     val status: LiveData<WandrApiStatus>
         get() = _status
+
 
     private val _htmlPage = MutableLiveData<HtmlPageModel>()
     val htmlPage: LiveData<HtmlPageModel>
@@ -71,6 +73,9 @@ class ViewUrlViewModel : ViewModel() {
         }
     }
 
+//    fun onClickCheckBox() {
+//
+//    }
 
     override fun onCleared() {
         super.onCleared()

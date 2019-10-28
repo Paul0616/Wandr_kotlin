@@ -7,16 +7,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.NavigationUI
 import com.encorsa.wandr.MainActivity
-import com.encorsa.wandr.R
 import com.encorsa.wandr.network.models.LoginRequestModel
 import com.encorsa.wandr.network.WandrApiStatus
 import com.encorsa.wandr.databinding.FragmentLogInBinding
@@ -41,7 +38,7 @@ class LogInFragment : Fragment() {
             ViewModelProviders.of(this, viewModelFactory).get(LogInViewModel::class.java)
         binding.setLifecycleOwner(this)
         binding.loginViewModel = viewModel
-        binding.infoText.text = "Welcome to Log In Fragment"
+       // binding.infoText.text = "Welcome to Log In Fragment"
 
         (activity as AppCompatActivity).supportActionBar?.hide()
 
@@ -50,15 +47,6 @@ class LogInFragment : Fragment() {
             Navigation.createNavigateOnClickListener(LogInFragmentDirections.actionLogInFragmentToViewUrlFragment().setTitle("XXX"))
         )
 
-        binding.loginButton.setOnClickListener {
-            //viewModel.lo
-            val cred: LoginRequestModel = LoginRequestModel(
-                binding.emailEdit.text.toString(),
-                binding.passwordEdit.text.toString(),
-                false
-            )
-            viewModel.login(cred)
-        }
 
 
         viewModel.status.observe(this, Observer {
@@ -76,21 +64,25 @@ class LogInFragment : Fragment() {
         })
 
         viewModel.tokenModel.observe(this, Observer {
-            binding.infoText.text = it?.token?.length.toString()
+            Toast.makeText(application.applicationContext, it?.token, Toast.LENGTH_SHORT).show()
+//            binding.infoText.text = it?.token?.length.toString()
             prefs.userEmail = it?.email
             prefs.userId = it?.userId
             prefs.userName = it?.userName
 
             startActivity(Intent(activity, MainActivity::class.java))
         })
+
         viewModel.error.observe(this, Observer {
-            binding.infoText.text = when (it) {
-                (null) -> ""
-                else -> it
-            }
+            Toast.makeText(application.applicationContext,
+                when (it) {
+                    (null) -> ""
+                    else -> it
+                },
+                Toast.LENGTH_LONG).show()
         })
 
-        viewModel.userRequest.observe(this, Observer {
+        viewModel.userValidation.observe(this, Observer {
             if (TextUtils.isEmpty(Objects.requireNonNull<LoginRequestModel>(it).email)) {
                 binding.emailEdit.error = "Enter an E-Mail Address"
                 binding.emailEdit.requestFocus()
