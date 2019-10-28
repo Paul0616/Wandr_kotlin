@@ -56,8 +56,8 @@ class ViewUrlViewModel : ViewModel() {
                 val listResult = getHtmlPagessDeferred.await()
 
                 _status.value = WandrApiStatus.DONE
-                if (!listResult.items1.isEmpty())
-                    _htmlPage.value = listResult.items1.get(0)
+                if (!listResult.items.isEmpty())
+                    _htmlPage.value = listResult.items.get(0)
 
             }
             catch (e: Exception) {
