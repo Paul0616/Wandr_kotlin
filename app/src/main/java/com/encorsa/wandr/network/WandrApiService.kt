@@ -2,6 +2,7 @@ package com.encorsa.wandr.network
 
 import com.encorsa.wandr.database.LanguageDatabase
 import com.encorsa.wandr.network.models.*
+import com.encorsa.wandr.utils.BASE_URL
 
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.squareup.moshi.Moshi
@@ -11,9 +12,16 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.*
 
-private const val BASE_URL = "https://harta-ar-interactiva.azurewebsites.net/api/"
+
 
 enum class WandrApiStatus { LOADING, ERROR, DONE }
+enum class WandrApiRequestId { GET_LANGUAGES, GET_LABELS, LOGIN, REGISTER, GET_HTML_PAGES }
+
+data class CallAndStatus(
+    val status: WandrApiStatus,
+    val requestId: WandrApiRequestId
+)
+
 
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
@@ -41,7 +49,7 @@ interface WandrApiService {
             Deferred<HtmlPagesList>
     @POST("Account/register")
     fun register(@Body body: RegistrationRequestModel):
-            Deferred<Void>
+            Deferred<Unit>
 }
 
 object WandrApi {

@@ -75,5 +75,8 @@ interface WandrDatabaseDao {
 
     @Query("DELETE FROM labels_table WHERE rowId = :rowId")
     fun deleteLabelByRow(rowId: Long)
+
+    @Query("Select * FROM labels_table WHERE tag = :tag AND languageTag = :languageTag LIMIT 1")
+    fun findlabelByTag(tag: String, languageTag: String): LabelDatabase?
 }
 

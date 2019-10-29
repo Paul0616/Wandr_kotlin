@@ -18,6 +18,7 @@ import androidx.navigation.fragment.findNavController
 
 import com.encorsa.wandr.databinding.FragmentViewUrlBinding
 import com.encorsa.wandr.network.WandrApiStatus
+import com.encorsa.wandr.utils.DEBUG_MODE
 
 
 class ViewUrlFragment : Fragment() {
@@ -78,12 +79,15 @@ class ViewUrlFragment : Fragment() {
 
 
         viewModel.error.observe(this, Observer {
-            Toast.makeText(application.applicationContext,
-                when (it) {
-                    (null) -> ""
-                    else -> it
-                },
-                Toast.LENGTH_LONG).show()
+            if (DEBUG_MODE)
+                Toast.makeText(
+                    application.applicationContext,
+                    when (it) {
+                        (null) -> ""
+                        else -> it
+                    },
+                    Toast.LENGTH_LONG
+                ).show()
         })
 
         viewModel.htmlPage.observe(this, Observer {
@@ -97,7 +101,6 @@ class ViewUrlFragment : Fragment() {
         })
 
     }
-
 
 
 }

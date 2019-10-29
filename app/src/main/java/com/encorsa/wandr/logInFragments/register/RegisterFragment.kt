@@ -1,6 +1,7 @@
 package com.encorsa.wandr.logInFragments.register
 
 
+import android.content.Intent
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.text.TextUtils
@@ -11,15 +12,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import com.encorsa.wandr.MainActivity
 import com.encorsa.wandr.databinding.FragmentRegisterBinding
+import com.encorsa.wandr.network.WandrApiRequestId
 import com.encorsa.wandr.network.WandrApiStatus
+import com.encorsa.wandr.network.models.LoginRequestModel
 import com.encorsa.wandr.network.models.RegistrationRequestModel
+import com.encorsa.wandr.utils.DEBUG_MODE
+import com.encorsa.wandr.utils.Prefs
+import com.encorsa.wandr.utils.Utilities
 import java.util.*
 
 
@@ -45,28 +51,12 @@ class RegisterFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val application = requireNotNull(activity).application
+        val prefs = Prefs(requireNotNull(activity).applicationContext)
         viewModel = ViewModelProviders.of(this).get(RegisterViewModel::class.java)
         binding.registerViewModel = viewModel
         // TODO: Use the ViewModel
-//        val editTextList = ArrayList<EditText>()
-//        editTextList.add(binding.emailEdit)
-//        editTextList.add(binding.firstNameEdit)
-//        editTextList.add(binding.lastNameEdit)
-//        editTextList.add(binding.passwordEdit)
-//        editTextList.add(binding.repasswordEdit)
+
         binding.passwordInfo.setVisibility(View.GONE)
-//        for (view in editTextList) {
-//            view.setOnFocusChangeListener(View.OnFocusChangeListener { v, hasFocus ->
-//                if (hasFocus) {
-//                    val focusedView = v as EditText
-//                    if (focusedView === binding.passwordEdit || focusedView === binding.repasswordEdit) {
-//                        binding.passwordInfo.setVisibility(View.VISIBLE)
-//                    }
-//                } else {
-//                    binding.passwordInfo.setVisibility(View.GONE)
-//                }
-//            })
-//        }
 
         binding.repasswordEdit.setOnEditorActionListener(TextView.OnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -84,30 +74,82 @@ class RegisterFragment : Fragment() {
         })
 
         viewModel.status.observe(this, Observer {
-            when (it) {
-                WandrApiStatus.LOADING -> binding.progressBarRegister.visibility = View.VISIBLE
+            when (it?.status) {
+                WandrApiStatus.LOADING -> {
+                    binding.progressBarRegister.visibility = View.VISIBLE
+                    when (it.requestId) {
+                        WandrApiRequestId.REGISTER -> {
+                            Log.i("RegisterFragment", "LOADING REGISTER")
+                        }
+                        WandrApiRequestId.LOGIN -> {
+                            Log.i("RegisterFragment", "LOADING LOGIN")
+                        }
+                        else -> Log.i("RegisterFragment", "UNKNOWN")
+                    }
+                }
+
                 WandrApiStatus.DONE -> {
                     binding.progressBarRegister.visibility = View.INVISIBLE
+                    when (it.requestId) {
+                        WandrApiRequestId.REGISTER -> {
+                            Log.i("RegisterFragment", "DONE REGISTER")
+                            val tokenRequestModel = LoginRequestModel(
+                                binding.emailEdit.text.toString(),
+                                binding.passwordEdit.text.toString()
+                            )
+                            viewModel.login(tokenRequestModel)
+                        }
+                        WandrApiRequestId.LOGIN -> {
+                            Log.i("RegisterFragment", "DONE LOGIN")
+                        }
+                        else -> Log.i("RegisterFragment", "UNKNOWN")
+                    }
                 }
                 WandrApiStatus.ERROR -> {
                     binding.progressBarRegister.visibility = View.INVISIBLE
-                    Log.i("RegisterFragment", "ERROR")
+                    when (it.requestId) {
+                        WandrApiRequestId.REGISTER -> {
+                            Log.i("RegisterFragment", "ERROR REGISTER")
+                        }
+                        WandrApiRequestId.LOGIN -> {
+                            Log.i("RegisterFragment", "ERROR LOGIN")
+                        }
+                        else -> Log.i("RegisterFragment", "UNKNOWN")
+                    }
                 }
                 else -> binding.progressBarRegister.visibility = View.INVISIBLE
             }
         })
 
+        viewModel.tokenModel.observe(this, Observer {
+            if (DEBUG_MODE)
+                Toast.makeText(application.applicationContext, it?.token, Toast.LENGTH_SHORT).show()
+//            binding.infoText.text = it?.token?.length.toString()
+            prefs.userEmail = it?.email
+            prefs.userId = it?.userId
+            prefs.userName = it?.userName
+            prefs.token = it?.token
+            prefs.firstName = it?.firstName
+            prefs.password = binding.passwordEdit.text.toString()
+
+            val tokenExpireAt = Utilities.getLongDate(it?.tokenExpirationDate)
+            if (null != tokenExpireAt)
+                prefs.tokenExpireAtInMillis = tokenExpireAt
+            startActivity(Intent(activity, MainActivity::class.java))
+        })
+
 
 
         viewModel.error.observe(this, Observer {
-            Toast.makeText(
-                application.applicationContext,
-                when (it) {
-                    (null) -> ""
-                    else -> it
-                },
-                Toast.LENGTH_LONG
-            ).show()
+            if (DEBUG_MODE)
+                Toast.makeText(
+                    application.applicationContext,
+                    when (it) {
+                        (null) -> ""
+                        else -> it
+                    },
+                    Toast.LENGTH_LONG
+                ).show()
         })
 
         viewModel.userValidation.observe(this, Observer {

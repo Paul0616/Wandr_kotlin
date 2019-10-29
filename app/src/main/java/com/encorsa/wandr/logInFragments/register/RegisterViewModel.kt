@@ -19,18 +19,26 @@ import android.view.View
 import android.widget.TextView
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.view.KeyEvent
+import com.encorsa.wandr.network.CallAndStatus
+import com.encorsa.wandr.network.WandrApiRequestId
+import com.encorsa.wandr.network.models.LoginRequestModel
+import com.encorsa.wandr.network.models.LoginResponseModel
 
 
 class RegisterViewModel : ViewModel() {
     // TODO: Implement the ViewModel
-    private val _status = MutableLiveData<WandrApiStatus>()
-    val status: LiveData<WandrApiStatus>
+    private val _status = MutableLiveData<CallAndStatus>()
+    val status: LiveData<CallAndStatus>
         get() = _status
 
 
     private val _error = MutableLiveData<String>()
     val error: LiveData<String>
         get() = _error
+
+    private val _tokenModel = MutableLiveData<LoginResponseModel>()
+    val tokenModel: LiveData<LoginResponseModel>
+        get() = _tokenModel
 
     var email = MutableLiveData<String>()
     var firstName = MutableLiveData<String>()
@@ -79,11 +87,29 @@ class RegisterViewModel : ViewModel() {
 
             // Await the completion of our Retrofit request
             try {
-                _status.value = WandrApiStatus.LOADING
+                _status.value = CallAndStatus(WandrApiStatus.LOADING, WandrApiRequestId.REGISTER)
                 deferredRegistration.await()
-                _status.value = WandrApiStatus.DONE
+                _status.value = CallAndStatus(WandrApiStatus.DONE, WandrApiRequestId.REGISTER)
             } catch (ex: HttpException) {
-                _status.value = WandrApiStatus.ERROR
+                _status.value = CallAndStatus(WandrApiStatus.ERROR, WandrApiRequestId.REGISTER)
+                _error.value =
+                    " " + ex.response().code() + " " + ex.response().errorBody()?.string()
+            }
+        }
+    }
+
+    fun login(credentials: LoginRequestModel) {
+        viewModelScope.launch {
+            // Get the Deferred object for our Retrofit request
+            var getTokenModel = WandrApi.RETROFIT_SERVICE.login(credentials)
+
+            // Await the completion of our Retrofit request
+            try {
+                _status.value = CallAndStatus(WandrApiStatus.LOADING, WandrApiRequestId.LOGIN)
+                _tokenModel.value = getTokenModel.await()
+                _status.value = CallAndStatus(WandrApiStatus.DONE, WandrApiRequestId.LOGIN)
+            } catch (ex: HttpException) {
+                _status.value = CallAndStatus(WandrApiStatus.ERROR, WandrApiRequestId.LOGIN)
                 _error.value =
                     " " + ex.response().code() + " " + ex.response().errorBody()?.string()
             }

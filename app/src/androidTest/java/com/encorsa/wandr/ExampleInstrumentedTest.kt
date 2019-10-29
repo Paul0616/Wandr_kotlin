@@ -11,6 +11,9 @@ import org.junit.runner.RunWith
 import org.junit.Assert.*
 import org.junit.Before
 import java.io.IOException
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -25,7 +28,7 @@ class ExampleInstrumentedTest {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         assertEquals("com.encorsa.wandr", appContext.packageName)
     }
-    @Test
+    //@Test
     fun formatIntegers(){
         val inserted: Int = 46
         val updated: Int = 45
@@ -33,5 +36,19 @@ class ExampleInstrumentedTest {
 
         assertEquals("46 Inserted, 45 Updated, 44 Deleted", "%s Inserted, %s Updated, %s Deleted".format(inserted, updated, deleted))
     }
+
+    @Test
+    fun testDateParse(){
+        val test = try {
+            val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
+            formatter.timeZone = TimeZone.getTimeZone("UTC")
+            formatter.parse("ABC").time
+
+        } catch (e: ParseException) {
+           null
+        }
+        assertEquals(null, test)
+    }
+
 }
 

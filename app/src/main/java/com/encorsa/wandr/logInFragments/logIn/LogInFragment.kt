@@ -3,6 +3,7 @@ package com.encorsa.wandr.logInFragments.logIn
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
+
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,10 +15,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
 import com.encorsa.wandr.MainActivity
+import com.encorsa.wandr.database.WandrDatabase
 import com.encorsa.wandr.network.models.LoginRequestModel
 import com.encorsa.wandr.network.WandrApiStatus
 import com.encorsa.wandr.databinding.FragmentLogInBinding
+import com.encorsa.wandr.utils.DEBUG_MODE
 import com.encorsa.wandr.utils.Prefs
+import com.encorsa.wandr.utils.Utilities
+
 import java.util.*
 
 class LogInFragment : Fragment() {
@@ -32,22 +37,30 @@ class LogInFragment : Fragment() {
         val prefs = Prefs(requireNotNull(activity).applicationContext)
         val application = requireNotNull(activity).application
         val binding = FragmentLogInBinding.inflate(inflater)
-        // val credentials: LoginRequestModel = LoginRequestModel("", "", false)
-        val viewModelFactory = LogInViewModelFactory(application)
+        val dataSource = WandrDatabase.getInstance(application).wandrDatabaseDao
+        val viewModelFactory = LogInViewModelFactory(application, dataSource)
         val viewModel =
             ViewModelProviders.of(this, viewModelFactory).get(LogInViewModel::class.java)
         binding.setLifecycleOwner(this)
         binding.loginViewModel = viewModel
-       // binding.infoText.text = "Welcome to Log In Fragment"
+        // binding.infoText.text = "Welcome to Log In Fragment"
 
         (activity as AppCompatActivity).supportActionBar?.hide()
 
 
-        binding.signUpButton.setOnClickListener (
-            Navigation.createNavigateOnClickListener(LogInFragmentDirections.actionLogInFragmentToViewUrlFragment().setTitle("XXX"))
+        binding.signUpButton.setOnClickListener(
+            Navigation.createNavigateOnClickListener(
+                LogInFragmentDirections.actionLogInFragmentToViewUrlFragment().setTitle(
+                    "XXX"
+                )
+            )
         )
 
+        viewModel.currentlanguage.observe(this, Observer {
 
+            binding.emailEdit.hint = viewModel.getLabelByTagAndLanguage("email", it) ?:
+            Log.i("LogInFragment", binding.emailEdit.hint)
+        })
 
         viewModel.status.observe(this, Observer {
             when (it) {
@@ -64,23 +77,35 @@ class LogInFragment : Fragment() {
         })
 
         viewModel.tokenModel.observe(this, Observer {
-            Toast.makeText(application.applicationContext, it?.token, Toast.LENGTH_SHORT).show()
+            if (DEBUG_MODE)
+                Toast.makeText(application.applicationContext, it?.token, Toast.LENGTH_SHORT).show()
 //            binding.infoText.text = it?.token?.length.toString()
             prefs.userEmail = it?.email
             prefs.userId = it?.userId
             prefs.userName = it?.userName
+            prefs.token = it?.token
+            prefs.firstName = it?.firstName
+            prefs.password = binding.passwordEdit.text.toString()
 
+            val tokenExpireAt = Utilities.getLongDate(it?.tokenExpirationDate)
+            if (null != tokenExpireAt)
+                prefs.tokenExpireAtInMillis = tokenExpireAt
             startActivity(Intent(activity, MainActivity::class.java))
         })
 
         viewModel.error.observe(this, Observer {
-            Toast.makeText(application.applicationContext,
-                when (it) {
-                    (null) -> ""
-                    else -> it
-                },
-                Toast.LENGTH_LONG).show()
+            if (DEBUG_MODE)
+                Toast.makeText(
+                    application.applicationContext,
+                    when (it) {
+                        (null) -> ""
+                        else -> it
+                    },
+                    Toast.LENGTH_LONG
+                ).show()
         })
+
+
 
         viewModel.userValidation.observe(this, Observer {
             if (TextUtils.isEmpty(Objects.requireNonNull<LoginRequestModel>(it).email)) {
@@ -97,6 +122,7 @@ class LogInFragment : Fragment() {
                 binding.passwordEdit.requestFocus()
             } else {
                 viewModel.login(it)
+
             }
         })
         return binding.root

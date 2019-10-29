@@ -32,6 +32,8 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * This is not meant to be a full set of tests. For simplicity, most of your samples do not
@@ -130,7 +132,7 @@ class WandrDatabaseTest {
         allDatabaseLanguages = wandrDao.getAllLanguages()
     }
 
-    @Test
+    //@Test
     @Throws(Exception::class)
     fun synchronizeLabels() {
         wandrDao.insertLabel(LabelDatabase(0, "gchach", "jhx bjhx", "x b", "agsvxhg"))
@@ -190,6 +192,7 @@ class WandrDatabaseTest {
         }
         allLabels = wandrDao.getAllLabels()
     }
+
 
 }
 
