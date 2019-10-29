@@ -13,11 +13,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
-import androidx.navigation.Navigation
+
 import androidx.navigation.fragment.findNavController
 
-import com.encorsa.wandr.R
 import com.encorsa.wandr.databinding.FragmentViewUrlBinding
 import com.encorsa.wandr.network.WandrApiStatus
 
@@ -38,8 +36,6 @@ class ViewUrlFragment : Fragment() {
 
 
         binding = FragmentViewUrlBinding.inflate(inflater)
-        val viewModel =
-            ViewModelProviders.of(this).get(ViewUrlViewModel::class.java)
         binding.setLifecycleOwner(this)
         (activity as AppCompatActivity).supportActionBar?.show()
 

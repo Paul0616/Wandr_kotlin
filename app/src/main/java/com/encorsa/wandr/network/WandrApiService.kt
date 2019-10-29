@@ -39,6 +39,9 @@ interface WandrApiService {
     @GET("HtmlPagesAPI/GetHtmlPagesFiltered")
     fun getHtmlPages(@QueryMap options: HashMap<String, String>):
             Deferred<HtmlPagesList>
+    @POST("Account/register")
+    fun register(@Body body: RegistrationRequestModel):
+            Deferred<Void>
 }
 
 object WandrApi {

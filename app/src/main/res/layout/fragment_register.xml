@@ -58,6 +58,7 @@
                 android:hint="email"
                 android:imeOptions="actionNext"
                 android:inputType="textEmailAddress"
+                android:text="@={registerViewModel.email}"
                 app:layout_constraintBottom_toTopOf="@+id/first_name_edit"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -78,6 +79,7 @@
                 android:hint="first name"
                 android:imeOptions="actionNext"
                 android:inputType="textEmailAddress"
+                android:text="@={registerViewModel.firstName}"
                 app:layout_constraintBottom_toTopOf="@+id/last_name_edit"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -98,6 +100,7 @@
                 android:hint="last name"
                 android:imeOptions="actionNext"
                 android:inputType="textEmailAddress"
+                android:text="@={registerViewModel.lastname}"
                 app:layout_constraintBottom_toTopOf="@+id/password_edit"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -118,11 +121,13 @@
                 android:hint="password"
                 android:imeOptions="actionNext"
                 android:inputType="textPassword"
+                android:text="@={registerViewModel.password}"
                 app:layout_constraintBottom_toTopOf="@+id/repassword_edit"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/last_name_edit" />
+                app:layout_constraintTop_toBottomOf="@+id/last_name_edit"
+                app:onFocusChangeListener="@{registerViewModel.onFocusChangeListener}"/>
 
             <EditText
                 android:id="@+id/repassword_edit"
@@ -137,11 +142,15 @@
                 android:hint="confirm password"
                 android:imeOptions="actionDone"
                 android:inputType="textPassword"
+                android:text="@={registerViewModel.repassword}"
+
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/password_edit" />
+                app:layout_constraintTop_toBottomOf="@+id/password_edit"
+                app:onFocusChangeListener="@{registerViewModel.onFocusChangeListener}"
+               />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.Guideline
@@ -157,6 +166,7 @@
             android:layout_height="40dp"
             android:background="@drawable/round_button"
             android:elevation="2dp"
+            android:onClick="@{() -> registerViewModel.onClickRegister()}"
             app:layout_constraintBottom_toTopOf="@+id/guideline2"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="@+id/guideline"
@@ -182,6 +192,92 @@
             app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
             app:layout_constraintEnd_toEndOf="@+id/imageView4"
             app:layout_constraintStart_toStartOf="@+id/imageView4" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/password_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="32dp"
+            android:background="@color/colorAccentLight"
+            android:elevation="2dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline2"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:visibility="gone">
+
+            <TextView
+                android:id="@+id/passwordInfo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="sans-serif-condensed-light"
+                android:text="Password must have at least:"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/passwordInfo2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="sans-serif-condensed-medium"
+                android:text="- 1 number"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/passwordInfo" />
+
+            <TextView
+                android:id="@+id/passwordInfo3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="sans-serif-condensed-medium"
+                android:text="- 1 uppercase &amp; 1 lowercase character"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/passwordInfo2" />
+
+            <TextView
+                android:id="@+id/passwordInfo4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="sans-serif-condensed-medium"
+                android:text="- 5 characters long"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/passwordInfo3" />
+
+            <TextView
+                android:id="@+id/passwordInfo5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="sans-serif-condensed-medium"
+                android:text="- 1 special character from list [ ! @ # $ % ^ &amp; * _ + ? ]"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/passwordInfo4" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
