@@ -1,20 +1,25 @@
 package com.encorsa.wandr.logInFragments.logIn
 
+import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
+import android.text.method.PasswordTransformationMethod
 
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
 import com.encorsa.wandr.MainActivity
+import com.encorsa.wandr.R
 import com.encorsa.wandr.database.WandrDatabase
 import com.encorsa.wandr.network.models.LoginRequestModel
 import com.encorsa.wandr.network.WandrApiStatus
@@ -22,12 +27,13 @@ import com.encorsa.wandr.databinding.FragmentLogInBinding
 import com.encorsa.wandr.utils.DEBUG_MODE
 import com.encorsa.wandr.utils.Prefs
 import com.encorsa.wandr.utils.Utilities
+import com.google.android.material.snackbar.Snackbar
 
 import java.util.*
 
 class LogInFragment : Fragment() {
 
-
+    var invalidCredentialsMessage: String? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -56,10 +62,40 @@ class LogInFragment : Fragment() {
             )
         )
 
-        viewModel.currentlanguage.observe(this, Observer {
+        viewModel.showPassword.observe(this, Observer {
+            binding.showPassword.isSelected = it!!
+            if (!it)
+                binding.passwordEdit.setTransformationMethod(PasswordTransformationMethod())
+            else
+                binding.passwordEdit.setTransformationMethod(null)
+            Log.i("LogInFragment", it.toString())
+        })
 
-            binding.emailEdit.hint = viewModel.getLabelByTagAndLanguage("email", it) ?:
-            Log.i("LogInFragment", binding.emailEdit.hint)
+        viewModel.currentlanguage.observe(this, Observer {
+            viewModel.getLabelByTagAndLanguage("email", it)
+            viewModel.getLabelByTagAndLanguage("password", it)
+            //viewModel.getLabelByTagAndLanguage("action_sign_in_short", it)
+            viewModel.getLabelByTagAndLanguage("action_sign_up_short", it)
+            viewModel.getLabelByTagAndLanguage("invalid_credentials", it)
+        })
+
+        viewModel.emailHint.observe(this, Observer {
+            if (it != null)
+                binding.emailEdit.hint = it
+        })
+
+        viewModel.passwordHint.observe(this, Observer {
+            if (it != null)
+                binding.passwordEdit.hint = it
+        })
+
+        viewModel.registerButtonText.observe(this, Observer {
+            if (it != null)
+                binding.signUpButton.text = it
+        })
+
+        viewModel.invalidCredentials.observe(this, Observer {
+                invalidCredentialsMessage = it
         })
 
         viewModel.status.observe(this, Observer {
@@ -94,15 +130,23 @@ class LogInFragment : Fragment() {
         })
 
         viewModel.error.observe(this, Observer {
-            if (DEBUG_MODE)
-                Toast.makeText(
-                    application.applicationContext,
-                    when (it) {
-                        (null) -> ""
-                        else -> it
-                    },
-                    Toast.LENGTH_LONG
-                ).show()
+
+            if (invalidCredentialsMessage != null)
+                errorAlert(activity as AppCompatActivity, invalidCredentialsMessage!!)
+            else
+                errorAlert(activity as AppCompatActivity, getString(R.string.invalid_credentials))
+            //    errorAlert(activity as AppCompatActivity, it)
+//            Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG)
+//                .show()
+//            if (DEBUG_MODE)
+//                Toast.makeText(
+//                    application.applicationContext,
+//                    when (it) {
+//                        (null) -> ""
+//                        else -> it
+//                    },
+//                    Toast.LENGTH_LONG
+//                ).show()
         })
 
 
@@ -134,4 +178,19 @@ class LogInFragment : Fragment() {
     }
 
 
+    fun errorAlert(context: Context, message: String) {
+        val positiveButtonClick = { dialog: DialogInterface, which: Int -> }
+        val builder = AlertDialog.Builder(context)
+
+        with(builder)
+        {
+            setTitle(getString(R.string.app_name))
+            setMessage(message)
+            setCancelable(false)
+            setPositiveButton("OK", DialogInterface.OnClickListener(positiveButtonClick))
+            show()
+        }
+
+
+    }
 }

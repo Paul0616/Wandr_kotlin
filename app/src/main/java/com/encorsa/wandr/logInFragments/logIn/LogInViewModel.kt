@@ -14,20 +14,16 @@ import com.encorsa.wandr.network.WandrApiStatus
 import com.encorsa.wandr.utils.DEFAULT_LANGUAGE
 import com.encorsa.wandr.utils.Prefs
 import com.encorsa.wandr.utils.Utilities
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import retrofit2.HttpException
-import java.util.*
 
 class LogInViewModel(app: Application, val database: WandrDatabaseDao) : AndroidViewModel(app) {
 
-//    // Create a Coroutine scope using a job to be able to cancel when needed
-//    private var viewModelJob = Job()
-//
-//    // the Coroutine runs using the Main (UI) dispatcher
-//    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
+    // Create a Coroutine scope using a job to be able to cancel when needed
+    private var viewModelJob = Job()
+
+    // the Coroutine runs using the Main (UI) dispatcher
+    private val ioScope = CoroutineScope(Dispatchers.IO + viewModelJob)
 
     private val prefs = Prefs(app.applicationContext)
     //API status of the most recent request
@@ -39,6 +35,22 @@ class LogInViewModel(app: Application, val database: WandrDatabaseDao) : Android
     val currentlanguage: LiveData<String>
         get() = _currentlanguage
 
+    private val _emailHint = MutableLiveData<String?>()
+    val emailHint: LiveData<String?>
+        get() = _emailHint
+
+    private val _passwordHint = MutableLiveData<String?>()
+    val passwordHint: LiveData<String?>
+        get() = _passwordHint
+
+    private val _registerButtonText = MutableLiveData<String?>()
+    val registerButtonText: LiveData<String?>
+        get() = _registerButtonText
+
+    private val _invalidCredentials = MutableLiveData<String?>()
+    val invalidCredentials: LiveData<String?>
+        get() = _invalidCredentials
+
     private val _tokenModel = MutableLiveData<LoginResponseModel>()
     val tokenModel: LiveData<LoginResponseModel>
         get() = _tokenModel
@@ -46,6 +58,10 @@ class LogInViewModel(app: Application, val database: WandrDatabaseDao) : Android
     private val _error = MutableLiveData<String>()
     val error: LiveData<String>
         get() = _error
+
+    private val _showPassword = MutableLiveData<Boolean>()
+    val showPassword: LiveData<Boolean>
+        get() = _showPassword
 
     var email = MutableLiveData<String>()
     var password = MutableLiveData<String>()
@@ -76,6 +92,14 @@ class LogInViewModel(app: Application, val database: WandrDatabaseDao) : Android
         _userValidation.value = loginUser
     }
 
+    fun onClickShowPassword() {
+        if(_showPassword.value != null)
+            _showPassword.value = !_showPassword.value!!
+        else {
+            _showPassword.value = true
+        }
+    }
+
     fun login(credentials: LoginRequestModel) {
         viewModelScope.launch {
             // Get the Deferred object for our Retrofit request
@@ -98,10 +122,22 @@ class LogInViewModel(app: Application, val database: WandrDatabaseDao) : Android
     override fun onCleared() {
         super.onCleared()
         Log.i("LogInViewModel", "DESTROYED")
+        ioScope.cancel()
     }
 
-    fun getLabelByTagAndLanguage(labelTag: String, languageTag: String): String? {
-        val label = database.findlabelByTag(labelTag, languageTag)
-        return label?.name
+    fun getLabelByTagAndLanguage(labelTag: String, languageTag: String) {
+        ioScope.launch {
+            val label = database.findlabelByTag(labelTag, languageTag)
+            withContext(Dispatchers.Main) {
+                when(labelTag){
+                    "email" -> _emailHint.value = label?.name
+                    "password" -> _passwordHint.value = label?.name
+                    "action_sign_up_short" -> _registerButtonText.value = label?.name
+                    "invalid_credentials" -> _invalidCredentials.value = label?.name
+                }
+            }
+        }
+
+
     }
 }
