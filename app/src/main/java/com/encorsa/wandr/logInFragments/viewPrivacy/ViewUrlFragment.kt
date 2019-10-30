@@ -79,19 +79,24 @@ class ViewUrlFragment : Fragment() {
 
 
         viewModel.error.observe(this, Observer {
-            if (DEBUG_MODE)
-                Toast.makeText(
-                    application.applicationContext,
-                    when (it) {
-                        (null) -> ""
-                        else -> it
-                    },
-                    Toast.LENGTH_LONG
-                ).show()
+            if (DEBUG_MODE) {
+                if (it.contains("message")){
+                    val errorMess = it.get("message") as String?
+                    Toast.makeText(
+                        application.applicationContext,
+                        when (errorMess) {
+                            (null) -> ""
+                            else -> errorMess
+                        },
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
         })
 
         viewModel.htmlPage.observe(this, Observer {
             if (!it.htmlPagesDescriptions.isEmpty()) {
+                (activity as? AppCompatActivity)?.supportActionBar?.title  = it.htmlPagesDescriptions.get(0).title
                 binding.privacyText.text = HtmlCompat.fromHtml(
                     it.htmlPagesDescriptions.get(0).html!!,
                     HtmlCompat.FROM_HTML_MODE_COMPACT

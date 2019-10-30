@@ -11,6 +11,6 @@ data class LoginRequestModel (
         get() = Patterns.EMAIL_ADDRESS.matcher(email).matches()
 
 
-    val isPasswordLengthGreaterThan4: Boolean
-        get() = password.length > 4
+//    val isPasswordLengthGreaterThan4: Boolean
+//        get() = password.length > 4
 }

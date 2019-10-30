@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -16,6 +17,7 @@ import com.encorsa.wandr.databinding.ActivitySplashScreenBinding
 import com.encorsa.wandr.network.models.LabelModel
 import com.encorsa.wandr.splashScreen.SplashScreenViewModel
 import com.encorsa.wandr.splashScreen.SplashScreenViewModelFactory
+import com.encorsa.wandr.utils.DEBUG_MODE
 import com.encorsa.wandr.utils.Prefs
 
 class SplashScreenActivity : AppCompatActivity() {

@@ -28,7 +28,7 @@ import androidx.room.RoomDatabase
  * This pattern is pretty much the same for any database,
  * so you can reuse it.
  */
-@Database(entities = arrayOf(LanguageDatabase::class, LabelDatabase::class), version = 2, exportSchema = false)
+@Database(entities = arrayOf(LanguageDatabase::class, LabelDatabase::class), version = 3, exportSchema = false)
 abstract class WandrDatabase : RoomDatabase() {
 
     /**
