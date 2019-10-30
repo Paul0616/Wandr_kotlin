@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.encorsa.wandr.network.WandrApi
 import com.encorsa.wandr.network.WandrApiStatus
 import com.encorsa.wandr.network.models.HtmlPageModel
+import com.encorsa.wandr.utils.DEFAULT_LANGUAGE
+import com.encorsa.wandr.utils.URL_PRIVACY
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -33,15 +35,15 @@ class ViewUrlViewModel : ViewModel() {
     val htmlPage: LiveData<HtmlPageModel>
         get() = _htmlPage
 
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String>
+    private val _error = MutableLiveData<HashMap<String, Any?>>()
+    val error: LiveData<HashMap<String, Any?>>
         get() = _error
 
     init {
         Log.i("ViewUrlViewModel", "CREATED")
         //login(credentials)
         _status.value = null
-        getPrivacy("RO", "PRIVACY")
+        getPrivacy(DEFAULT_LANGUAGE, URL_PRIVACY)
     }
 
     private fun getPrivacy(languageTag: String, flag: String?) {
@@ -64,11 +66,16 @@ class ViewUrlViewModel : ViewModel() {
             }
             catch (e: Exception) {
                 _status.value = WandrApiStatus.ERROR
-                _error.value = e.message
+                val errorMap = HashMap<String, Any?>()
+                errorMap.put("message", e.message)
+                _error.value = errorMap
                 //_status.value = "Failure: ${e.message}"
             }
             catch (ex: HttpException){
-                _error.value = ex.response().message() + ex.response().errorBody()?.string()
+                val errorMap = HashMap<String, Any?>()
+                errorMap.put("code", ex.response().code())
+                errorMap.put("message", ex.response().errorBody()?.string())
+                _error.value = errorMap
             }
         }
     }

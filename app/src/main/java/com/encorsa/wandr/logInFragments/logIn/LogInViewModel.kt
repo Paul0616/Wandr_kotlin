@@ -51,12 +51,20 @@ class LogInViewModel(app: Application, val database: WandrDatabaseDao) : Android
     val invalidCredentials: LiveData<String?>
         get() = _invalidCredentials
 
+    private val _validationErrorFieldRequired = MutableLiveData<String?>()
+    val validationErrorFieldRequired: LiveData<String?>
+        get() = _validationErrorFieldRequired
+
+    private val _validationErrorInvalidEmail = MutableLiveData<String?>()
+    val validationErrorInvalidEmail: LiveData<String?>
+        get() = _validationErrorInvalidEmail
+
     private val _tokenModel = MutableLiveData<LoginResponseModel>()
     val tokenModel: LiveData<LoginResponseModel>
         get() = _tokenModel
 
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String>
+    private val _error = MutableLiveData<HashMap<String, Any?>>()
+    val error: LiveData<HashMap<String, Any?>>
         get() = _error
 
     private val _showPassword = MutableLiveData<Boolean>()
@@ -112,8 +120,11 @@ class LogInViewModel(app: Application, val database: WandrDatabaseDao) : Android
                 _status.value = WandrApiStatus.DONE
             } catch (ex: HttpException) {
                 _status.value = WandrApiStatus.ERROR
-                _error.value =
-                    " " + ex.response().code() + " " + ex.response().errorBody()?.string()
+                val errorMap = HashMap<String, Any?>()
+                errorMap.put("code", ex.response().code())
+                errorMap.put("message", ex.response().errorBody()?.string())
+                _error.value = errorMap
+
             }
         }
     }
@@ -134,10 +145,10 @@ class LogInViewModel(app: Application, val database: WandrDatabaseDao) : Android
                     "password" -> _passwordHint.value = label?.name
                     "action_sign_up_short" -> _registerButtonText.value = label?.name
                     "invalid_credentials" -> _invalidCredentials.value = label?.name
+                    "error_field_required" -> _validationErrorFieldRequired.value = label?.name
+                    "error_invalid_email" -> _validationErrorInvalidEmail.value = label?.name
                 }
             }
         }
-
-
     }
 }

@@ -27,13 +27,14 @@ import com.encorsa.wandr.databinding.FragmentLogInBinding
 import com.encorsa.wandr.utils.DEBUG_MODE
 import com.encorsa.wandr.utils.Prefs
 import com.encorsa.wandr.utils.Utilities
-import com.google.android.material.snackbar.Snackbar
 
 import java.util.*
 
 class LogInFragment : Fragment() {
 
     var invalidCredentialsMessage: String? = null
+    var validationErrorFieldRequired: String? = null
+    var validationErrorInvalidEmail: String? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -56,9 +57,7 @@ class LogInFragment : Fragment() {
 
         binding.signUpButton.setOnClickListener(
             Navigation.createNavigateOnClickListener(
-                LogInFragmentDirections.actionLogInFragmentToViewUrlFragment().setTitle(
-                    "XXX"
-                )
+                LogInFragmentDirections.actionLogInFragmentToViewUrlFragment()
             )
         )
 
@@ -77,6 +76,9 @@ class LogInFragment : Fragment() {
             //viewModel.getLabelByTagAndLanguage("action_sign_in_short", it)
             viewModel.getLabelByTagAndLanguage("action_sign_up_short", it)
             viewModel.getLabelByTagAndLanguage("invalid_credentials", it)
+            viewModel.getLabelByTagAndLanguage("error_field_required", it)
+            viewModel.getLabelByTagAndLanguage("error_invalid_email", it)
+
         })
 
         viewModel.emailHint.observe(this, Observer {
@@ -95,7 +97,15 @@ class LogInFragment : Fragment() {
         })
 
         viewModel.invalidCredentials.observe(this, Observer {
-                invalidCredentialsMessage = it
+            invalidCredentialsMessage = it
+        })
+
+        viewModel.validationErrorFieldRequired.observe(this, Observer {
+            this.validationErrorFieldRequired = it
+        })
+
+        viewModel.validationErrorInvalidEmail.observe(this, Observer {
+            this.validationErrorInvalidEmail = it
         })
 
         viewModel.status.observe(this, Observer {
@@ -130,12 +140,19 @@ class LogInFragment : Fragment() {
         })
 
         viewModel.error.observe(this, Observer {
+            if (it.contains("code")) {
+                if (it.get("code") == 403) {
+                    if (invalidCredentialsMessage != null)
+                        errorAlert(activity as AppCompatActivity, invalidCredentialsMessage!!)
+                    else
+                        errorAlert(
+                            activity as AppCompatActivity,
+                            getString(R.string.invalid_credentials)
+                        )
+                }
+            }
 
-            if (invalidCredentialsMessage != null)
-                errorAlert(activity as AppCompatActivity, invalidCredentialsMessage!!)
-            else
-                errorAlert(activity as AppCompatActivity, getString(R.string.invalid_credentials))
-            //    errorAlert(activity as AppCompatActivity, it)
+
 //            Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG)
 //                .show()
 //            if (DEBUG_MODE)
@@ -152,29 +169,44 @@ class LogInFragment : Fragment() {
 
 
         viewModel.userValidation.observe(this, Observer {
+
             if (TextUtils.isEmpty(Objects.requireNonNull<LoginRequestModel>(it).email)) {
-                binding.emailEdit.error = "Enter an E-Mail Address"
+                if (validationErrorFieldRequired != null)
+                    binding.emailEdit.error = validationErrorFieldRequired
+                else
+                    binding.emailEdit.error = getString(R.string.error_field_required)
                 binding.emailEdit.requestFocus()
-            } else if (!it.isEmailValid) {
-                binding.emailEdit.error = "Enter a Valid E-mail Address"
+            }
+
+            else if (!it.isEmailValid) {
+                if (validationErrorInvalidEmail != null)
+                    binding.emailEdit.error = validationErrorInvalidEmail
+                else
+                    binding.emailEdit.error = getString(R.string.error_invalid_email)
                 binding.emailEdit.requestFocus()
-            } else if (TextUtils.isEmpty(Objects.requireNonNull(it).password)) {
-                binding.passwordEdit.error = "Enter a Password"
+            }
+
+            else if (TextUtils.isEmpty(Objects.requireNonNull(it).password)) {
+                if (validationErrorFieldRequired != null)
+                    binding.passwordEdit.error = validationErrorFieldRequired
+                else
+                    binding.passwordEdit.error = getString(R.string.error_field_required)
                 binding.passwordEdit.requestFocus()
-            } else if (!it.isPasswordLengthGreaterThan4) {
-                binding.passwordEdit.error = "Enter at least 6 Digit password"
-                binding.passwordEdit.requestFocus()
-            } else {
+            }
+
+            else {
                 viewModel.login(it)
 
             }
         })
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Navigation.findNavController(view).getCurrentDestination()?.setLabel("Hello");
+        Navigation.findNavController(view).getCurrentDestination()
+            ?.setLabel(getString(R.string.app_name));
     }
 
 

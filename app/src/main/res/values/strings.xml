@@ -1,11 +1,28 @@
 <resources>
     <string name="app_name">Wandr</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello main fragment</string>
+
     <string name="accept_privacy">Trebuie să accepți Termenii și Condițiile pentru a continua înregistrarea.</string>
-    <string name="emailHint">email</string>
-    <string name="passwordHint">password</string>
-    <string name="registerButonText">Register</string>
+
+    <!-- string used in login screen (RO) -->
+    <string name="emailHint">Email</string>
+    <string name="passwordHint">Parolă</string>
+    <string name="registerButonText">Înregistrare</string>
     <string name="invalid_credentials">Date conectare invalide</string>
+    <string name="error_field_required">Câmpul e obligatoriu</string>
+    <string name="error_invalid_email">Email invalid</string>
+
+
+    <!-- string used in registration screen (RO -->
+    <string name="error_invalid_password">Parola invalida</string>
+    <string name="error_password_match">Parolele nu se potrivesc</string>
+    <string name="firstNameHint">Prenume</string>
+    <string name="lastNameHint">Nume</string>
+    <string name="confirmPasswordHint">Confirmă parola</string>
+    <string name="password_info_title">Parola trebuie să conțină cel puțin:</string>
+    <string name="password_info_number">- 1 caracter numeric</string>
+    <string name="password_info_case"><![CDATA[- 1 literă mare &amp; 1 literă mică]]></string>
+    <string name="password_info_lenght">- 5 caractere minim</string>
+    <string name="password_info_special_char"><![CDATA[- 1 un caracter special din listă [ ! @ # $ % ^ &amp; * _ + ? ]]]></string>
+
 </resources>

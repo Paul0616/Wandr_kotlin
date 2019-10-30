@@ -55,7 +55,7 @@
                 android:drawableStart="@drawable/ic_email_24px"
                 android:drawablePadding="5dp"
                 android:ems="10"
-                android:hint="email"
+                android:hint="@string/emailHint"
                 android:imeOptions="actionNext"
                 android:inputType="textEmailAddress"
                 android:text="@={registerViewModel.email}"
@@ -76,7 +76,7 @@
                 android:drawableStart="@drawable/ic_perm_identity_black_24dp"
                 android:drawablePadding="5dp"
                 android:ems="10"
-                android:hint="first name"
+                android:hint="@string/firstNameHint"
                 android:imeOptions="actionNext"
                 android:inputType="textEmailAddress"
                 android:text="@={registerViewModel.firstName}"
@@ -97,7 +97,7 @@
                 android:drawableStart="@drawable/ic_perm_identity_black_24dp"
                 android:drawablePadding="5dp"
                 android:ems="10"
-                android:hint="last name"
+                android:hint="@string/lastNameHint"
                 android:imeOptions="actionNext"
                 android:inputType="textEmailAddress"
                 android:text="@={registerViewModel.lastname}"
@@ -118,7 +118,7 @@
                 android:drawableStart="@drawable/ic_lock_24px"
                 android:drawablePadding="5dp"
                 android:ems="10"
-                android:hint="password"
+                android:hint="@string/passwordHint"
                 android:imeOptions="actionNext"
                 android:inputType="textPassword"
                 android:text="@={registerViewModel.password}"
@@ -127,7 +127,17 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/last_name_edit"
-                app:onFocusChangeListener="@{registerViewModel.onFocusChangeListener}"/>
+                app:onFocusChangeListener="@{registerViewModel.onFocusChangeListener}" />
+
+            <ImageView
+                android:id="@+id/show_password1"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                app:layout_constraintBottom_toBottomOf="@+id/password_edit"
+                app:layout_constraintEnd_toEndOf="@+id/email_edit"
+                app:layout_constraintTop_toTopOf="@+id/password_edit"
+                app:srcCompat="@drawable/show_password_selector"
+                android:onClick="@{() -> registerViewModel.onClickShowPassword(1)}"/>
 
             <EditText
                 android:id="@+id/repassword_edit"
@@ -139,7 +149,7 @@
                 android:drawableStart="@drawable/ic_lock_24px"
                 android:drawablePadding="5dp"
                 android:ems="10"
-                android:hint="confirm password"
+                android:hint="@string/confirmPasswordHint"
                 android:imeOptions="actionDone"
                 android:inputType="textPassword"
                 android:text="@={registerViewModel.repassword}"
@@ -149,8 +159,17 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/password_edit"
-                app:onFocusChangeListener="@{registerViewModel.onFocusChangeListener}"
-               />
+                app:onFocusChangeListener="@{registerViewModel.onFocusChangeListener}" />
+
+            <ImageView
+                android:id="@+id/show_password2"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                app:layout_constraintBottom_toBottomOf="@+id/repassword_edit"
+                app:layout_constraintEnd_toEndOf="@+id/email_edit"
+                app:layout_constraintTop_toTopOf="@+id/repassword_edit"
+                app:srcCompat="@drawable/show_password_selector"
+                android:onClick="@{() -> registerViewModel.onClickShowPassword(2)}"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.Guideline
@@ -215,7 +234,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:fontFamily="sans-serif-condensed-light"
-                android:text="Password must have at least:"
+                android:text="@string/password_info_title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -228,7 +247,7 @@
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="8dp"
                 android:fontFamily="sans-serif-condensed-medium"
-                android:text="- 1 number"
+                android:text="@string/password_info_number"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -242,7 +261,7 @@
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="8dp"
                 android:fontFamily="sans-serif-condensed-medium"
-                android:text="- 1 uppercase &amp; 1 lowercase character"
+                android:text="@string/password_info_case"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -256,7 +275,7 @@
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="8dp"
                 android:fontFamily="sans-serif-condensed-medium"
-                android:text="- 5 characters long"
+                android:text="@string/password_info_lenght"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -271,7 +290,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:fontFamily="sans-serif-condensed-medium"
-                android:text="- 1 special character from list [ ! @ # $ % ^ &amp; * _ + ? ]"
+                android:text="@string/password_info_special_char"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

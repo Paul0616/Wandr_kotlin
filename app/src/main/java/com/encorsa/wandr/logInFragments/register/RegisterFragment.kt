@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.text.TextUtils
+import android.text.method.PasswordTransformationMethod
 import android.util.Log
 
 import androidx.fragment.app.Fragment
@@ -17,8 +18,13 @@ import android.widget.Toast
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.navigation.Navigation
 import com.encorsa.wandr.MainActivity
+import com.encorsa.wandr.R
+import com.encorsa.wandr.database.WandrDatabase
 import com.encorsa.wandr.databinding.FragmentRegisterBinding
+import com.encorsa.wandr.logInFragments.logIn.LogInFragmentDirections
+import com.encorsa.wandr.logInFragments.logIn.LogInViewModelFactory
 import com.encorsa.wandr.network.WandrApiRequestId
 import com.encorsa.wandr.network.WandrApiStatus
 import com.encorsa.wandr.network.models.LoginRequestModel
@@ -38,6 +44,12 @@ class RegisterFragment : Fragment() {
     private lateinit var viewModel: RegisterViewModel
     private lateinit var binding: FragmentRegisterBinding
 
+
+    var validationErrorFieldRequired: String? = null
+    var validationErrorInvalidEmail: String? = null
+    var validationErrorInvalidPassword: String? = null
+    var validationErrorPasswordMatch: String? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -52,7 +64,9 @@ class RegisterFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         val application = requireNotNull(activity).application
         val prefs = Prefs(requireNotNull(activity).applicationContext)
-        viewModel = ViewModelProviders.of(this).get(RegisterViewModel::class.java)
+        val dataSource = WandrDatabase.getInstance(application).wandrDatabaseDao
+        val viewModelFactory = RegisterViewModelFactory(application, dataSource)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(RegisterViewModel::class.java)
         binding.registerViewModel = viewModel
         // TODO: Use the ViewModel
 
@@ -93,11 +107,14 @@ class RegisterFragment : Fragment() {
                     when (it.requestId) {
                         WandrApiRequestId.REGISTER -> {
                             Log.i("RegisterFragment", "DONE REGISTER")
-                            val tokenRequestModel = LoginRequestModel(
-                                binding.emailEdit.text.toString(),
-                                binding.passwordEdit.text.toString()
+//                            val tokenRequestModel = LoginRequestModel(
+//                                binding.emailEdit.text.toString(),
+//                                binding.passwordEdit.text.toString()
+//                            )
+//                            viewModel.login(tokenRequestModel)
+                            Navigation.createNavigateOnClickListener(
+                                RegisterFragmentDirections.actionRegisterFragmentToCheckEmailFragment()
                             )
-                            viewModel.login(tokenRequestModel)
                         }
                         WandrApiRequestId.LOGIN -> {
                             Log.i("RegisterFragment", "DONE LOGIN")
@@ -121,24 +138,39 @@ class RegisterFragment : Fragment() {
             }
         })
 
-        viewModel.tokenModel.observe(this, Observer {
-            if (DEBUG_MODE)
-                Toast.makeText(application.applicationContext, it?.token, Toast.LENGTH_SHORT).show()
-//            binding.infoText.text = it?.token?.length.toString()
-            prefs.userEmail = it?.email
-            prefs.userId = it?.userId
-            prefs.userName = it?.userName
-            prefs.token = it?.token
-            prefs.firstName = it?.firstName
-            prefs.password = binding.passwordEdit.text.toString()
+//        viewModel.tokenModel.observe(this, Observer {
+//            if (DEBUG_MODE)
+//                Toast.makeText(application.applicationContext, it?.token, Toast.LENGTH_SHORT).show()
+////            binding.infoText.text = it?.token?.length.toString()
+//            prefs.userEmail = it?.email
+//            prefs.userId = it?.userId
+//            prefs.userName = it?.userName
+//            prefs.token = it?.token
+//            prefs.firstName = it?.firstName
+//            prefs.password = binding.passwordEdit.text.toString()
+//
+//            val tokenExpireAt = Utilities.getLongDate(it?.tokenExpirationDate)
+//            if (null != tokenExpireAt)
+//                prefs.tokenExpireAtInMillis = tokenExpireAt
+//            startActivity(Intent(activity, MainActivity::class.java))
+//        })
 
-            val tokenExpireAt = Utilities.getLongDate(it?.tokenExpirationDate)
-            if (null != tokenExpireAt)
-                prefs.tokenExpireAtInMillis = tokenExpireAt
-            startActivity(Intent(activity, MainActivity::class.java))
+
+        viewModel.showPassword1.observe(this, Observer {
+            binding.showPassword1.isSelected = it!!
+            if (!it)
+                binding.passwordEdit.setTransformationMethod(PasswordTransformationMethod())
+            else
+                binding.passwordEdit.setTransformationMethod(null)
         })
 
-
+        viewModel.showPassword2.observe(this, Observer {
+            binding.showPassword2.isSelected = it!!
+            if (!it)
+                binding.repasswordEdit.setTransformationMethod(PasswordTransformationMethod())
+            else
+                binding.repasswordEdit.setTransformationMethod(null)
+        })
 
         viewModel.error.observe(this, Observer {
             if (DEBUG_MODE)
@@ -152,29 +184,105 @@ class RegisterFragment : Fragment() {
                 ).show()
         })
 
+
+        viewModel.emailHint.observe(this, Observer {
+            if (it != null)
+                binding.emailEdit.hint = it
+        })
+
+        viewModel.passwordHint.observe(this, Observer {
+            if (it != null)
+                binding.passwordEdit.hint = it
+        })
+
+        viewModel.firstNameHint.observe(this, Observer {
+            if (it != null)
+                binding.firstNameEdit.hint = it
+        })
+
+        viewModel.lastNameHint.observe(this, Observer {
+            if (it != null)
+                binding.lastNameEdit.hint = it
+        })
+        viewModel.confirmPasswordHint.observe(this, Observer {
+            if (it != null)
+                binding.repasswordEdit.hint = it
+        })
+
+        viewModel.validationErrorFieldRequired.observe(this, Observer {
+            this.validationErrorFieldRequired = it
+        })
+
+        viewModel.validationErrorInvalidEmail.observe(this, Observer {
+            this.validationErrorInvalidEmail = it
+        })
+
+        viewModel.validationErrorInvalidPassword.observe(this, Observer {
+            this.validationErrorInvalidPassword = it
+        })
+
+        viewModel.validationErrorPasswordMatch.observe(this, Observer {
+            this.validationErrorPasswordMatch = it
+        })
+
         viewModel.userValidation.observe(this, Observer {
             if (TextUtils.isEmpty(Objects.requireNonNull<RegistrationRequestModel>(it).email)) {
-                binding.emailEdit.error = "Enter an E-Mail Address"
+                if (validationErrorFieldRequired != null)
+                    binding.emailEdit.error = validationErrorFieldRequired
+                else
+                    binding.emailEdit.error = getString(R.string.error_field_required)
                 binding.emailEdit.requestFocus()
-            } else if (!it.isEmailValid) {
-                binding.emailEdit.error = "Enter a Valid E-mail Address"
+            }
+
+            else if (!it.isEmailValid) {
+                if (validationErrorInvalidEmail != null)
+                    binding.emailEdit.error = validationErrorInvalidEmail
+                else
+                    binding.emailEdit.error = getString(R.string.error_invalid_email)
                 binding.emailEdit.requestFocus()
-            } else if (TextUtils.isEmpty(Objects.requireNonNull(it).firstName)) {
-                binding.firstNameEdit.error = "Enter your First Name"
+            }
+
+            else if (TextUtils.isEmpty(Objects.requireNonNull(it).firstName)) {
+                if (validationErrorFieldRequired != null)
+                    binding.firstNameEdit.error = validationErrorFieldRequired
+                else
+                    binding.firstNameEdit.error = getString(R.string.error_field_required)
                 binding.firstNameEdit.requestFocus()
-            } else if (TextUtils.isEmpty(Objects.requireNonNull(it).lastName)) {
-                binding.lastNameEdit.error = "Enter your Last Name"
+            }
+
+            else if (TextUtils.isEmpty(Objects.requireNonNull(it).lastName)) {
+                if (validationErrorFieldRequired != null)
+                    binding.lastNameEdit.error = validationErrorFieldRequired
+                else
+                    binding.lastNameEdit.error = getString(R.string.error_field_required)
                 binding.lastNameEdit.requestFocus()
-            } else if (TextUtils.isEmpty(Objects.requireNonNull(it).password)) {
-                binding.passwordEdit.error = "Enter a Password"
+            }
+
+            else if (TextUtils.isEmpty(Objects.requireNonNull(it).password)) {
+                if (validationErrorFieldRequired != null)
+                    binding.passwordEdit.error = validationErrorFieldRequired
+                else
+                    binding.passwordEdit.error = getString(R.string.error_field_required)
                 binding.passwordEdit.requestFocus()
-            } else if (!it.isPasswordValid()) {
-                binding.passwordEdit.error = "Password invalid"
+            }
+
+            else if (!it.isPasswordValid()) {
+                if (validationErrorInvalidPassword != null)
+                    binding.passwordEdit.error = validationErrorInvalidPassword
+                else
+                    binding.passwordEdit.error = getString(R.string.error_invalid_password)
                 binding.passwordEdit.requestFocus()
-            } else if (!viewModel.passwordMatch()) {
-                binding.repasswordEdit.error = "Passwords do not match"
+            }
+
+            else if (!viewModel.passwordMatch()) {
+                if (validationErrorPasswordMatch != null)
+                    binding.repasswordEdit.error = validationErrorPasswordMatch
+                else
+                    binding.repasswordEdit.error = getString(R.string.error_password_match)
                 binding.repasswordEdit.requestFocus()
-            } else {
+            }
+
+            else {
                 viewModel.register(it)
             }
         })
