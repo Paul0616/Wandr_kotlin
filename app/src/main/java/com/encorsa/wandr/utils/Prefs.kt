@@ -16,6 +16,7 @@ class Prefs(context: Context) {
     private val CURRENT_CATEGORY_ID = "current_category_id"
     private val CURRENT_LANGUAGE = "current_language"
     private val SECURITY_CODE = "security_code"
+    private val FIREBASE_TOKEN = "firebase_token"
 
     private val prefs: SharedPreferences =
         context.getSharedPreferences(PREFS_FILENAME, Context.MODE_PRIVATE)
@@ -60,7 +61,9 @@ class Prefs(context: Context) {
         get() = prefs.getInt(SECURITY_CODE, -1)
         set(value) = prefs.edit().putInt(SECURITY_CODE, value).apply()
 
-
+    var firebaseToken: String?
+        get() = prefs.getString(FIREBASE_TOKEN, null)
+        set(value) = prefs.edit().putString(FIREBASE_TOKEN, value).apply()
 
 
     fun logOut() {

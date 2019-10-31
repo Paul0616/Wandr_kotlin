@@ -49,7 +49,7 @@ interface WandrApiService {
             Deferred<HtmlPagesList>
     @POST("Account/register")
     fun register(@Body body: RegistrationRequestModel):
-            Deferred<Unit>
+            Deferred<SecurityCode>
 }
 
 object WandrApi {

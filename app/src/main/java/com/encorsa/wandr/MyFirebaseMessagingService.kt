@@ -24,7 +24,14 @@ import org.json.JSONException
 class MyFirebaseMessagingService: FirebaseMessagingService() {
     val TAG = "FirebaseMessagingService"
     private val CHANNEL_ID = "WandrChannel"
-    val prefs = Prefs(applicationContext)
+
+    @SuppressLint("LongLogTag")
+    override fun onNewToken(p0: String) {
+        Log.i(TAG, "firebase: ${p0}")
+        val prefs = Prefs(applicationContext)
+        prefs.firebaseToken = p0
+        //super.onNewToken(p0)
+    }
 
     @SuppressLint("LongLogTag")
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
@@ -35,25 +42,26 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
     }
 
     private fun showNotification(remoteMessage: RemoteMessage) {
+        val prefs = Prefs(applicationContext)
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             createNotificationChannel()
         }
 
-//        var title = ""
+        var title = ""
 //        var msg = ""
-//        val data = remoteMessage.data
-//        msg = if (data["message"] != null) data["message"] else ""
+        val data = remoteMessage.data
+        val msg = data["securityCode"] ?: ""
 //        val id = data["id"]
 //
 //
-//        var curLanguage = prefs.currentLanguage.toUpperCase()
+        var curLanguage = prefs.currentLanguage ?: "RO"
 //        if (curLanguage == "")
 //            curLanguage = "RO"
-//        when (curLanguage) {
-//            "RO" -> title = "Eveniment nou"
-//            "EN" -> title = "New event"
+        when (curLanguage) {
+            "RO" -> title = "Codul de securitate"
+            "EN" -> title = "Security code"
 //            "BG" -> title = "Ново събитие"
-//        }
+        }
 //
 //        try {
 //            val descriptions = JSONArray(data["descriptions"])
@@ -71,29 +79,29 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
 //            e.printStackTrace()
 //        }
 //
-//        if (msg != "" && id != null) {
+        if (msg != "") {
 //
-//            val intentMain = Intent(this, DetailActivity::class.java)
+            val intentMain = Intent(this, LogInActivity::class.java)
 //            intentMain.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 //            intentMain.putExtra("objectiveId", id)
-//            val intents = arrayOf(intentMain)//, intentView};
+            val intents = arrayOf(intentMain)//, intentView};
 //
 //
-//            val pendingIntent =
-//                PendingIntent.getActivities(this, 0, intents, PendingIntent.FLAG_ONE_SHOT)
-//            val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+            val pendingIntent =
+                PendingIntent.getActivities(this, 0, intents, PendingIntent.FLAG_ONE_SHOT)
+            val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 //
 //
-//            val notificationManager = NotificationManagerCompat.from(applicationContext)
-//            val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
-//            notification.setDefaults(Notification.DEFAULT_LIGHTS or Notification.DEFAULT_VIBRATE)
-//            notification.setContentTitle(title)
-//            notification.setSound(defaultSoundUri)
-//            notification.setContentText(msg)
-//            notification.setSmallIcon(R.drawable.ic_launcher_foreground)
-//            notification.setContentIntent(pendingIntent)
-//            notification.setAutoCancel(true)
-//            notificationManager.notify(1078, notification.build())
+            val notificationManager = NotificationManagerCompat.from(applicationContext)
+            val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
+            notification.setDefaults(Notification.DEFAULT_LIGHTS or Notification.DEFAULT_VIBRATE)
+            notification.setContentTitle(title)
+            notification.setSound(defaultSoundUri)
+            notification.setContentText(msg)
+            notification.setSmallIcon(R.drawable.ic_launcher_foreground)
+            notification.setContentIntent(pendingIntent)
+            notification.setAutoCancel(true)
+            notificationManager.notify(1078, notification.build())
         }
     }
 

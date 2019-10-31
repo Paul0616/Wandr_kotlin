@@ -8,7 +8,8 @@ data class RegistrationRequestModel(
     val password: String,
     val rePassword: String,
     val firstName: String,
-    val lastName: String
+    val lastName: String,
+    val firebaseToken: String
 ) {
 
     val isEmailValid: Boolean

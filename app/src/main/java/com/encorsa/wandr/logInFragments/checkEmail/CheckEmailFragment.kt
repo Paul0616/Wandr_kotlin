@@ -45,7 +45,7 @@ class CheckEmailFragment : Fragment() {
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+        super.onActivityCreated(savedInstanceState) 
         val prefs = Prefs(activity!!.applicationContext)
         viewModel = ViewModelProviders.of(this).get(CheckEmailViewModel::class.java)
 
@@ -53,6 +53,7 @@ class CheckEmailFragment : Fragment() {
 
         binding.currentEmailEdit.setVisibility(View.GONE)
         binding.currentEmail.text = prefs.userEmail ?: ""
+        binding.progressBarCheckEmail.visibility = View.GONE
 
         viewModel.emailMustBeEdited.observe(this, Observer {
             binding.apply {
@@ -71,6 +72,7 @@ class CheckEmailFragment : Fragment() {
         })
 
         viewModel.validateSecurityCode.observe(this, Observer {
+            Log.i("CheckEmailFragment", "${prefs.securityCode}")
             if (it == prefs.securityCode){ //trebuie comparat cu pref.securityCode
                 //TODO: userul trebuie logat
                 val credentials = LoginRequestModel(prefs.userEmail ?: "", prefs.password ?: "")

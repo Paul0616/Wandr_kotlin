@@ -16,6 +16,7 @@ import com.encorsa.wandr.network.CallAndStatus
 import com.encorsa.wandr.network.WandrApiRequestId
 import com.encorsa.wandr.network.models.LoginRequestModel
 import com.encorsa.wandr.network.models.LoginResponseModel
+import com.encorsa.wandr.network.models.SecurityCode
 import com.encorsa.wandr.utils.DEFAULT_LANGUAGE
 import com.encorsa.wandr.utils.Prefs
 import kotlinx.coroutines.*
@@ -40,9 +41,9 @@ class RegisterViewModel(app: Application, val database: WandrDatabaseDao) : Andr
     val error: LiveData<String>
         get() = _error
 
-//    private val _tokenModel = MutableLiveData<LoginResponseModel>()
-//    val tokenModel: LiveData<LoginResponseModel>
-//        get() = _tokenModel
+    private val _securityCode = MutableLiveData<SecurityCode>()
+    val securityCode: LiveData<SecurityCode>
+        get() = _securityCode
 
     //---------validation form
     private val _emailHint = MutableLiveData<String?>()
@@ -145,7 +146,8 @@ class RegisterViewModel(app: Application, val database: WandrDatabaseDao) : Andr
             password.value!!,
             repassword.value!!,
             firstName.value!!,
-            lastname.value!!
+            lastname.value!!,
+            prefs.firebaseToken!!
         )
         _userValidation.value = registerUser
 
@@ -169,7 +171,7 @@ class RegisterViewModel(app: Application, val database: WandrDatabaseDao) : Andr
             // Await the completion of our Retrofit request
             try {
                 _status.value = CallAndStatus(WandrApiStatus.LOADING, WandrApiRequestId.REGISTER)
-                deferredRegistration.await()
+                _securityCode.value = deferredRegistration.await()
                 _status.value = CallAndStatus(WandrApiStatus.DONE, WandrApiRequestId.REGISTER)
             } catch (ex: HttpException) {
                 _status.value = CallAndStatus(WandrApiStatus.ERROR, WandrApiRequestId.REGISTER)

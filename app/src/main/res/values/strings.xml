@@ -28,6 +28,6 @@
     <string name="modify_email_button_text">Schimbă adresa email pe care o înregistrezi</string>
     <string name="resend_email_button">Retrimite email</string>
     <string name="continue_registration">Continua inregistrarea</string>
-    <string name="wrong_security_code">Acest cod este gresit. Poti solicita retrimiterea emailului pentru a obtine alt cod.</string>
+    <string name="wrong_security_code">Acest cod este greșit. Corectează sau poți solicita retrimiterea emailului pentru a obține alt cod.</string>
 
 </resources>

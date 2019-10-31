@@ -19,6 +19,7 @@ import com.encorsa.wandr.splashScreen.SplashScreenViewModel
 import com.encorsa.wandr.splashScreen.SplashScreenViewModelFactory
 import com.encorsa.wandr.utils.DEBUG_MODE
 import com.encorsa.wandr.utils.Prefs
+import com.google.firebase.messaging.FirebaseMessaging
 
 class SplashScreenActivity : AppCompatActivity() {
 
@@ -80,6 +81,7 @@ class SplashScreenActivity : AppCompatActivity() {
                 Log.i("SplashScreenActivity", label.tag + " - " + label.labelNames.size)
             }
             Log.i("SplashScreenActivity", prefs.userName ?: "USER NAME NULL")
+            FirebaseMessaging.getInstance().subscribeToTopic("events")
             if (prefs.userName == null) {
                 val i = Intent(this, LogInActivity::class.java)
                 //i.putExtra("title","XXX")

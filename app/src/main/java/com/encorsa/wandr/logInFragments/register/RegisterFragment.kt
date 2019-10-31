@@ -90,6 +90,11 @@ class RegisterFragment : Fragment() {
                 binding.passwordInfo.setVisibility(View.GONE)
         })
 
+        viewModel.securityCode.observe(this, Observer{
+            Log.i("RegisterFragment", "Security code: ${it.securityCode}")
+            prefs.securityCode = it.securityCode.toInt()
+        })
+
         viewModel.status.observe(this, Observer {
             when (it?.status) {
                 WandrApiStatus.LOADING -> {
@@ -110,10 +115,9 @@ class RegisterFragment : Fragment() {
                     when (it.requestId) {
                         WandrApiRequestId.REGISTER -> {
                             Log.i("RegisterFragment", "DONE REGISTER")
-                            prefs.logOut()
                             prefs.userEmail = binding.emailEdit.text.toString()
                             prefs.password = binding.passwordEdit.text.toString()
-                            prefs.securityCode =
+
                             this.findNavController().navigate(
                                 RegisterFragmentDirections.actionRegisterFragmentToCheckEmailFragment()
                             )
