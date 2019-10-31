@@ -4,6 +4,7 @@ package com.encorsa.wandr.mainFragments.main
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
@@ -58,6 +59,7 @@ class MainFragment : Fragment() {
             val prefs = Prefs(requireNotNull(activity).applicationContext)
             prefs.logOut()
             startActivity(Intent(activity, LogInActivity::class.java))
+            (activity as AppCompatActivity).finish()
         }
         return super.onOptionsItemSelected(item)
     }

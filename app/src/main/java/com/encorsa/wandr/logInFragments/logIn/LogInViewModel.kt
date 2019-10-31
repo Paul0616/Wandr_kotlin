@@ -95,6 +95,11 @@ class LogInViewModel(app: Application, val database: WandrDatabaseDao) : Android
 
     }
 
+
+    fun clearStatus(){
+        _status.value = null
+    }
+
     fun onClickLogIn() {
         val loginUser = LoginRequestModel(email.value!!, password.value!!, false)
         _userValidation.value = loginUser

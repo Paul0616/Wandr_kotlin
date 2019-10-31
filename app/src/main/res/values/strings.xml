@@ -24,5 +24,9 @@
     <string name="password_info_case"><![CDATA[- 1 literă mare &amp; 1 literă mică]]></string>
     <string name="password_info_lenght">- 5 caractere minim</string>
     <string name="password_info_special_char"><![CDATA[- 1 un caracter special din listă [ ! @ # $ % ^ &amp; * _ + ? ]]]></string>
+    <string name="label_text1">Adresa de email pe care vrei sa o inregistrezi:</string>
+    <string name="modify_email_button_text">Schimbă adresa email pe care o înregistrezi</string>
+    <string name="resend_email_button">Retrimite email</string>
+    <string name="continue_registration">Continua inregistrarea</string>
 
 </resources>

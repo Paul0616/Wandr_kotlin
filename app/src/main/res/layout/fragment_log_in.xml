@@ -55,7 +55,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_rectqngle"
-            android:elevation="2dp"
+            android:elevation="@dimen/elevation1"
             app:layout_constraintBottom_toTopOf="@+id/guideline2"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="parent"
@@ -65,11 +65,10 @@
                 android:id="@+id/email_edit"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="32dp"
+                android:layout_marginStart="@dimen/small_dim"
+                android:layout_marginTop="@dimen/medium_dim"
+                android:layout_marginEnd="@dimen/big_dim"
                 android:drawableStart="@drawable/ic_email_24px"
-                android:drawablePadding="5dp"
                 android:ems="10"
                 android:hint="@string/emailHint"
                 android:imeOptions="actionNext"
@@ -77,21 +76,22 @@
                 android:text="@={loginViewModel.email}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                style="@style/MyEditText" />
 
             <EditText
                 android:id="@+id/password_edit"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="32dp"
+                android:layout_marginStart="@dimen/small_dim"
+                android:layout_marginTop="@dimen/medium_dim"
+                android:layout_marginEnd="@dimen/big_dim"
                 android:drawableStart="@drawable/ic_lock_24px"
-                android:drawablePadding="5dp"
                 android:ems="10"
                 android:hint="@string/passwordHint"
                 android:imeOptions="actionDone"
                 android:inputType="textPassword"
+                style="@style/MyEditText"
                 android:text="@={loginViewModel.password}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -100,13 +100,13 @@
 
             <ImageView
                 android:id="@+id/show_password"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/icon_width"
+                android:layout_height="@dimen/icon_height"
+                android:onClick="@{() -> loginViewModel.onClickShowPassword()}"
                 app:layout_constraintBottom_toBottomOf="@+id/password_edit"
                 app:layout_constraintEnd_toEndOf="@+id/email_edit"
                 app:layout_constraintTop_toTopOf="@+id/password_edit"
-                app:srcCompat="@drawable/show_password_selector"
-                android:onClick="@{() -> loginViewModel.onClickShowPassword()}"/>
+                app:srcCompat="@drawable/show_password_selector" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -119,8 +119,8 @@
 
         <ImageButton
             android:id="@+id/login_button"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="@dimen/round_button"
+            android:layout_height="@dimen/round_button"
             android:background="@drawable/round_button"
             android:elevation="2dp"
             android:onClick="@{() -> loginViewModel.onClickLogIn()}"
@@ -132,8 +132,8 @@
 
         <ImageView
             android:id="@+id/imageView4"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="@dimen/half_logo_size"
+            android:layout_height="@dimen/half_logo_size"
             app:layout_constraintBottom_toTopOf="@+id/textView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -143,7 +143,7 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="@dimen/big_dim"
             android:fontFamily="sans-serif-condensed-light"
             android:text="wandr space"
             app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
@@ -154,10 +154,10 @@
             android:id="@+id/sign_up_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="64dp"
+            android:layout_marginTop="@dimen/extra_big_dim"
             android:background="@drawable/rectangle"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
+            android:paddingStart="@dimen/medium_dim"
+            android:paddingEnd="@dimen/medium_dim"
             android:text="@string/registerButonText"
             app:layout_constraintEnd_toEndOf="@+id/sign_in_button"
             app:layout_constraintStart_toStartOf="@+id/sign_in_button"

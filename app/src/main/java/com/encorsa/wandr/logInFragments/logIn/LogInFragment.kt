@@ -120,6 +120,7 @@ class LogInFragment : Fragment() {
                 }
                 else -> binding.progressBarLogIn.visibility = View.INVISIBLE
             }
+            //viewModel.clearStatus()
         })
 
         viewModel.tokenModel.observe(this, Observer {
@@ -137,6 +138,7 @@ class LogInFragment : Fragment() {
             if (null != tokenExpireAt)
                 prefs.tokenExpireAtInMillis = tokenExpireAt
             startActivity(Intent(activity, MainActivity::class.java))
+            (activity as AppCompatActivity).finish()
         })
 
         viewModel.error.observe(this, Observer {

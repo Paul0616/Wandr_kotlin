@@ -132,7 +132,9 @@ class RegisterViewModel(app: Application, val database: WandrDatabaseDao) : Andr
         lastname.value = ""
     }
 
-
+    fun clearStatus(){
+        _status.value = null
+    }
     fun passwordMatch(): Boolean {
         return password.value.equals(repassword.value)
     }
@@ -145,7 +147,10 @@ class RegisterViewModel(app: Application, val database: WandrDatabaseDao) : Andr
             firstName.value!!,
             lastname.value!!
         )
-        _userValidation.value = registerUser
+       // _userValidation.value = registerUser
+
+        //uncomment if you want to skip validation andregistering
+        _status.value = CallAndStatus(WandrApiStatus.DONE, WandrApiRequestId.REGISTER)
     }
 
     fun onClickShowPassword(id: Int) {
@@ -171,12 +176,12 @@ class RegisterViewModel(app: Application, val database: WandrDatabaseDao) : Andr
     fun register(credentials: RegistrationRequestModel) {
         viewModelScope.launch {
             // Get the Deferred object for our Retrofit request
-           // var deferredRegistration = WandrApi.RETROFIT_SERVICE.register(credentials)
+            var deferredRegistration = WandrApi.RETROFIT_SERVICE.register(credentials)
 
             // Await the completion of our Retrofit request
             try {
                 _status.value = CallAndStatus(WandrApiStatus.LOADING, WandrApiRequestId.REGISTER)
-            //    deferredRegistration.await()
+                deferredRegistration.await()
                 _status.value = CallAndStatus(WandrApiStatus.DONE, WandrApiRequestId.REGISTER)
             } catch (ex: HttpException) {
                 _status.value = CallAndStatus(WandrApiStatus.ERROR, WandrApiRequestId.REGISTER)

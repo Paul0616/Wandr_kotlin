@@ -19,6 +19,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import com.encorsa.wandr.MainActivity
 import com.encorsa.wandr.R
 import com.encorsa.wandr.database.WandrDatabase
@@ -85,6 +86,8 @@ class RegisterFragment : Fragment() {
             Log.i("RegisterFragment", it.toString())
             if (it)
                 binding.passwordInfo.setVisibility(View.VISIBLE)
+            else
+                binding.passwordInfo.setVisibility(View.GONE)
         })
 
         viewModel.status.observe(this, Observer {
@@ -107,20 +110,17 @@ class RegisterFragment : Fragment() {
                     when (it.requestId) {
                         WandrApiRequestId.REGISTER -> {
                             Log.i("RegisterFragment", "DONE REGISTER")
-//                            val tokenRequestModel = LoginRequestModel(
-//                                binding.emailEdit.text.toString(),
-//                                binding.passwordEdit.text.toString()
-//                            )
-//                            viewModel.login(tokenRequestModel)
-                            Navigation.createNavigateOnClickListener(
+                            this.findNavController().navigate(
                                 RegisterFragmentDirections.actionRegisterFragmentToCheckEmailFragment()
                             )
+
                         }
                         WandrApiRequestId.LOGIN -> {
                             Log.i("RegisterFragment", "DONE LOGIN")
                         }
                         else -> Log.i("RegisterFragment", "UNKNOWN")
                     }
+                    viewModel.clearStatus()
                 }
                 WandrApiStatus.ERROR -> {
                     binding.progressBarRegister.visibility = View.INVISIBLE
@@ -137,23 +137,6 @@ class RegisterFragment : Fragment() {
                 else -> binding.progressBarRegister.visibility = View.INVISIBLE
             }
         })
-
-//        viewModel.tokenModel.observe(this, Observer {
-//            if (DEBUG_MODE)
-//                Toast.makeText(application.applicationContext, it?.token, Toast.LENGTH_SHORT).show()
-////            binding.infoText.text = it?.token?.length.toString()
-//            prefs.userEmail = it?.email
-//            prefs.userId = it?.userId
-//            prefs.userName = it?.userName
-//            prefs.token = it?.token
-//            prefs.firstName = it?.firstName
-//            prefs.password = binding.passwordEdit.text.toString()
-//
-//            val tokenExpireAt = Utilities.getLongDate(it?.tokenExpirationDate)
-//            if (null != tokenExpireAt)
-//                prefs.tokenExpireAtInMillis = tokenExpireAt
-//            startActivity(Intent(activity, MainActivity::class.java))
-//        })
 
 
         viewModel.showPassword1.observe(this, Observer {

@@ -28,7 +28,7 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"
-            app:popUpTo="@+id/viewUrlFragment"
+            app:popUpTo="@+id/registerFragment"
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
@@ -48,6 +48,6 @@
     <fragment
         android:id="@+id/checkEmailFragment"
         android:name="com.encorsa.wandr.logInFragments.checkEmail.CheckEmailFragment"
-        android:label="fragment_check_email"
+        android:label="Verificare email"
         tools:layout="@layout/fragment_check_email" />
 </navigation>
