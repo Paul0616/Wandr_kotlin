@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
 class ViewUrlViewModel : ViewModel() {
-    // TODO: Implement the ViewModel
+
 
     // Create a Coroutine scope using a job to be able to cancel when needed
     private var viewModelJob = Job()

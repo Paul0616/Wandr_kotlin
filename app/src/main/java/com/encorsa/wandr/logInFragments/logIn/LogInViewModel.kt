@@ -106,11 +106,7 @@ class LogInViewModel(app: Application, val database: WandrDatabaseDao) : Android
     }
 
     fun onClickShowPassword() {
-        if(_showPassword.value != null)
-            _showPassword.value = !_showPassword.value!!
-        else {
-            _showPassword.value = true
-        }
+        _showPassword.value = !(_showPassword.value ?: false)
     }
 
     fun login(credentials: LoginRequestModel) {

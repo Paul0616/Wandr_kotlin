@@ -52,7 +52,7 @@ class ViewUrlFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         val application = requireNotNull(activity).application
         viewModel = ViewModelProviders.of(this).get(ViewUrlViewModel::class.java)
-        // TODO: Use the ViewModel
+
 
         binding.viewUrlViewModel = viewModel
         viewModel.status.observe(this, Observer {

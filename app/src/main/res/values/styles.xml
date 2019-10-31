@@ -18,8 +18,8 @@
         <item name="android:drawablePadding">@dimen/edit_padding</item>
         <item name="android:fontFamily">@font/roboto_condensed_regular</item>
         <item name="android:textSize">20sp</item>
-        <item name="android:gravity">center_horizontal</item>
-        <item name="android:textColor">@color/colorPrimaryDark</item>
+<!--        <item name="android:gravity">center_horizontal</item>-->
+<!--        <item name="android:textColor">@color/colorPrimaryDark</item>-->
 
     </style>
 
