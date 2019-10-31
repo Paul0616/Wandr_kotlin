@@ -27,6 +27,8 @@ import com.encorsa.wandr.databinding.FragmentLogInBinding
 import com.encorsa.wandr.utils.DEBUG_MODE
 import com.encorsa.wandr.utils.Prefs
 import com.encorsa.wandr.utils.Utilities
+import com.encorsa.wandr.utils.Utilities.errorAlert
+
 
 import java.util.*
 
@@ -212,19 +214,19 @@ class LogInFragment : Fragment() {
     }
 
 
-    fun errorAlert(context: Context, message: String) {
-        val positiveButtonClick = { dialog: DialogInterface, which: Int -> }
-        val builder = AlertDialog.Builder(context)
-
-        with(builder)
-        {
-            setTitle(getString(R.string.app_name))
-            setMessage(message)
-            setCancelable(false)
-            setPositiveButton("OK", DialogInterface.OnClickListener(positiveButtonClick))
-            show()
-        }
-
-
-    }
+//    fun errorAlert(context: Context, message: String) {
+//        val positiveButtonClick = { _: DialogInterface, _: Int -> }
+//        val builder = AlertDialog.Builder(context)
+//
+//        with(builder)
+//        {
+//            setTitle(getString(R.string.app_name))
+//            setMessage(message)
+//            setCancelable(false)
+//            setPositiveButton("OK", DialogInterface.OnClickListener(positiveButtonClick))
+//            show()
+//        }
+//
+//
+//    }
 }

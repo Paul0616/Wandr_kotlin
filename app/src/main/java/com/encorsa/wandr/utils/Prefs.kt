@@ -15,6 +15,7 @@ class Prefs(context: Context) {
     private val FIRST_NAME = "first_name"
     private val CURRENT_CATEGORY_ID = "current_category_id"
     private val CURRENT_LANGUAGE = "current_language"
+    private val SECURITY_CODE = "security_code"
 
     private val prefs: SharedPreferences =
         context.getSharedPreferences(PREFS_FILENAME, Context.MODE_PRIVATE)
@@ -55,6 +56,10 @@ class Prefs(context: Context) {
         get() = prefs.getString(CURRENT_LANGUAGE, null)
         set(value) = prefs.edit().putString(CURRENT_LANGUAGE, value).apply()
 
+    var securityCode: Int
+        get() = prefs.getInt(SECURITY_CODE, -1)
+        set(value) = prefs.edit().putInt(SECURITY_CODE, value).apply()
+
 
 
 
@@ -66,6 +71,7 @@ class Prefs(context: Context) {
         prefs.edit().remove(TOKEN_EXPIRE_AT).apply()
         prefs.edit().remove(FIRST_NAME).apply()
         prefs.edit().remove(CURRENT_CATEGORY_ID).apply()
+        prefs.edit().remove(SECURITY_CODE).apply()
     }
 
 }

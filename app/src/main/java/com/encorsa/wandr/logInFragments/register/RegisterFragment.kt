@@ -64,12 +64,12 @@ class RegisterFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val application = requireNotNull(activity).application
-        val prefs = Prefs(requireNotNull(activity).applicationContext)
         val dataSource = WandrDatabase.getInstance(application).wandrDatabaseDao
+        val prefs = Prefs(application.applicationContext)
         val viewModelFactory = RegisterViewModelFactory(application, dataSource)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(RegisterViewModel::class.java)
         binding.registerViewModel = viewModel
-        // TODO: Use the ViewModel
+
 
         binding.passwordInfo.setVisibility(View.GONE)
 
@@ -110,6 +110,10 @@ class RegisterFragment : Fragment() {
                     when (it.requestId) {
                         WandrApiRequestId.REGISTER -> {
                             Log.i("RegisterFragment", "DONE REGISTER")
+                            prefs.logOut()
+                            prefs.userEmail = binding.emailEdit.text.toString()
+                            prefs.password = binding.passwordEdit.text.toString()
+                            prefs.securityCode =
                             this.findNavController().navigate(
                                 RegisterFragmentDirections.actionRegisterFragmentToCheckEmailFragment()
                             )

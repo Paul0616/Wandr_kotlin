@@ -147,28 +147,16 @@ class RegisterViewModel(app: Application, val database: WandrDatabaseDao) : Andr
             firstName.value!!,
             lastname.value!!
         )
-       // _userValidation.value = registerUser
+        _userValidation.value = registerUser
 
         //uncomment if you want to skip validation andregistering
-        _status.value = CallAndStatus(WandrApiStatus.DONE, WandrApiRequestId.REGISTER)
+       // _status.value = CallAndStatus(WandrApiStatus.DONE, WandrApiRequestId.REGISTER)
     }
 
     fun onClickShowPassword(id: Int) {
         when (id) {
-            1 -> {
-                if (_showPassword1.value != null)
-                    _showPassword1.value = !_showPassword1.value!!
-                else {
-                    _showPassword1.value = true
-                }
-            }
-            2 -> {
-                if (_showPassword2.value != null)
-                    _showPassword2.value = !_showPassword2.value!!
-                else {
-                    _showPassword2.value = true
-                }
-            }
+            1 -> _showPassword1.value = !(_showPassword1.value ?: false)
+            2 -> _showPassword2.value = !(_showPassword2.value ?: false)
         }
     }
 

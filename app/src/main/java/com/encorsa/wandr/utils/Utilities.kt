@@ -1,11 +1,20 @@
 package com.encorsa.wandr.utils
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.res.Configuration
 import android.os.Build
+import androidx.appcompat.app.AlertDialog
+import com.encorsa.wandr.R
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+
+
+const val BASE_URL = "https://harta-ar-interactiva.azurewebsites.net/api/"
+const val DEBUG_MODE = true
+const val DEFAULT_LANGUAGE = "RO"
+const val URL_PRIVACY = "PRIVACY"
 
 object Utilities {
 
@@ -42,6 +51,22 @@ object Utilities {
             config,
             ctx.resources.displayMetrics
         )
+
+    }
+
+    fun errorAlert(context: Context, message: String) {
+        val positiveButtonClick = { _: DialogInterface, _: Int -> }
+        val builder = AlertDialog.Builder(context)
+
+        with(builder)
+        {
+            setTitle(context.getString(R.string.app_name))
+            setMessage(message)
+            setCancelable(false)
+            setPositiveButton("OK", DialogInterface.OnClickListener(positiveButtonClick))
+            show()
+        }
+
 
     }
 }
