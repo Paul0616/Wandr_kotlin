@@ -1,6 +1,5 @@
 package com.encorsa.wandr.network
 
-import com.encorsa.wandr.database.LanguageDatabase
 import com.encorsa.wandr.network.models.*
 import com.encorsa.wandr.utils.BASE_URL
 

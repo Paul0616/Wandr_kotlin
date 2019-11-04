@@ -1,16 +1,14 @@
 package com.encorsa.wandr.splashScreen
 
-import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
-import com.encorsa.wandr.database.LabelDatabase
-import com.encorsa.wandr.database.LanguageDatabase
+import com.encorsa.wandr.database.LabelDatabaseModel
+import com.encorsa.wandr.database.LanguageDatabaseModel
 import com.encorsa.wandr.database.WandrDatabaseDao
 
 import com.encorsa.wandr.network.WandrApi
 import com.encorsa.wandr.network.WandrApiStatus
 import com.encorsa.wandr.network.models.LabelModel
-import com.encorsa.wandr.utils.Prefs
 import kotlinx.coroutines.*
 import retrofit2.HttpException
 
@@ -40,8 +38,8 @@ class SplashScreenViewModel(val database: WandrDatabaseDao) : ViewModel() {
         get() = _error
 
     //List of languages
-    private val _languages = MutableLiveData<List<LanguageDatabase>>()
-    val languages: LiveData<List<LanguageDatabase>>
+    private val _languages = MutableLiveData<List<LanguageDatabaseModel>>()
+    val languages: LiveData<List<LanguageDatabaseModel>>
         get() = _languages
 
     //List of labels
@@ -117,22 +115,22 @@ class SplashScreenViewModel(val database: WandrDatabaseDao) : ViewModel() {
     }
 
 
-    fun synchronizeLanguages(wandrDao: WandrDatabaseDao, apiLanguageDatabases: List<LanguageDatabase>) {
+    fun synchronizeLanguages(wandrDao: WandrDatabaseDao, apiLanguageDatabaseModels: List<LanguageDatabaseModel>) {
         ioScope.launch {
             var inserted: Int = 0
             var updated: Int = 0
             var deleted: Int = 0
-            for (languageDatabase: LanguageDatabase in apiLanguageDatabases) {
-                val foundedDatabaseLang = wandrDao.findLanguageByLanguageId(languageDatabase.languageId)
+            for (languageDatabaseModel: LanguageDatabaseModel in apiLanguageDatabaseModels) {
+                val foundedDatabaseLang = wandrDao.findLanguageByLanguageId(languageDatabaseModel.languageId)
                 if (null == foundedDatabaseLang) {
-                    wandrDao.insertLanguage(languageDatabase)
+                    wandrDao.insertLanguage(languageDatabaseModel)
                     inserted++
                 } else {
-                    if (languageDatabase.name != foundedDatabaseLang.name || languageDatabase.tag != foundedDatabaseLang.tag) {
+                    if (languageDatabaseModel.name != foundedDatabaseLang.name || languageDatabaseModel.tag != foundedDatabaseLang.tag) {
                         wandrDao.updateLanguageByRow(
                             foundedDatabaseLang.rowId,
-                            languageDatabase.tag,
-                            languageDatabase.name
+                            languageDatabaseModel.tag,
+                            languageDatabaseModel.name
                         )
                         updated++;
                     }
@@ -141,7 +139,7 @@ class SplashScreenViewModel(val database: WandrDatabaseDao) : ViewModel() {
             val allDatabaseLanguages = wandrDao.getAllLanguages()
             for (langDb in allDatabaseLanguages) {
                 var wasFoundInApiLanguage = false
-                for (langApi in apiLanguageDatabases) {
+                for (langApi in apiLanguageDatabaseModels) {
                     if (langApi.languageId == langDb.languageId) {
                         wasFoundInApiLanguage = true
                         break
@@ -169,7 +167,7 @@ class SplashScreenViewModel(val database: WandrDatabaseDao) : ViewModel() {
                     val label =
                         wandrDao.findLabelByLabelId(labelModel.id, languageAndNameModel.language)
                     if (null == label) {
-                        val newLabel = LabelDatabase(
+                        val newLabel = LabelDatabaseModel(
                             0,
                             labelModel.tag,
                             languageAndNameModel.name,
