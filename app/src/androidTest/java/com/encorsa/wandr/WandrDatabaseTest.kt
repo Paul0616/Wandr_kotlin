@@ -19,21 +19,18 @@ package com.encorsa.wandr
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.encorsa.wandr.database.LabelDatabase
+import com.encorsa.wandr.database.LabelDatabaseModel
 import com.encorsa.wandr.database.WandrDatabase
 import com.encorsa.wandr.database.WandrDatabaseDao
-import com.encorsa.wandr.database.LanguageDatabase
+import com.encorsa.wandr.database.LanguageDatabaseModel
 import com.encorsa.wandr.network.models.LabelModel
 import com.encorsa.wandr.network.models.LanguageAndNameModel
 
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
-import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.IOException
-import java.text.SimpleDateFormat
-import java.util.*
 
 /**
  * This is not meant to be a full set of tests. For simplicity, most of your samples do not
@@ -68,7 +65,7 @@ class WandrDatabaseTest {
     //@Test
     @Throws(Exception::class)
     fun insertAndGetNight() {
-        val language1 = LanguageDatabase(1, "RO", "Romana", "123aBC")
+        val language1 = LanguageDatabaseModel(1, "RO", "Romana", "123aBC")
         wandrDao.insertLanguage(language1)
         val language2 = wandrDao.findLanguageByLanguageId("123aBC")
         language2?.name = "Turca"
@@ -77,11 +74,11 @@ class WandrDatabaseTest {
         val currentLanguage = wandrDao.findLanguageByRow(currentLanguageRow?.rowId!!)
         Assert.assertEquals(currentLanguage?.tag, "RO")
         Assert.assertEquals(currentLanguage?.name, "Turca")
-        val group: List<LanguageDatabase> = wandrDao.getAllLanguages()
+        val group: List<LanguageDatabaseModel> = wandrDao.getAllLanguages()
         wandrDao.updateLanguageByRow(currentLanguageRow?.rowId!!, "BG", "Bulgara")
         val group1 = wandrDao.getAllLanguages()
 
-//        val label1 = LabelDatabase(1, "testTagLabel", "lanelName", "123aBC", "labelId")
+//        val label1 = LabelDatabaseModel(1, "testTagLabel", "lanelName", "123aBC", "labelId")
 //        wandrDao.insertLabel(label1)
 //        val label2 = wandrDao.findLabelByLabelId("labelId", )
 //        label2?.name = "labelName"
@@ -90,7 +87,7 @@ class WandrDatabaseTest {
 //        val currentLabel = wandrDao.findLabelByRow(currentLabelRow?.rowId!!)
 //        Assert.assertEquals(currentLabel?.tag, "testTagLabel")
 //        Assert.assertEquals(currentLabel?.name, "labelName")
-//        val groupL: List<LabelDatabase> = wandrDao.getAllLabels()
+//        val groupL: List<LabelDatabaseModel> = wandrDao.getAllLabels()
 //        wandrDao.updateLabelByRow(currentLabelRow?.rowId!!, "2", "2A")
 //        val group1L = wandrDao.getAllLabels()
     }
@@ -98,16 +95,16 @@ class WandrDatabaseTest {
     //@Test
     @Throws(Exception::class)
     fun synchronizeLanguages() {
-        wandrDao.insertLanguage(LanguageDatabase(0, "DEL", "FOR DELETE", "idDEL"))
+        wandrDao.insertLanguage(LanguageDatabaseModel(0, "DEL", "FOR DELETE", "idDEL"))
         val apiLanguages = listOf(
-            LanguageDatabase(0, "RO", "Romana", "idRO"),
-            LanguageDatabase(0, "BG", "Bulgara", "idBG"),
-            LanguageDatabase(0, "EN", "Engleza", "idEN")
+            LanguageDatabaseModel(0, "RO", "Romana", "idRO"),
+            LanguageDatabaseModel(0, "BG", "Bulgara", "idBG"),
+            LanguageDatabaseModel(0, "EN", "Engleza", "idEN")
         )
-        for (languageDatabase: LanguageDatabase in apiLanguages) {
-            val foundedDatabaseLang = wandrDao.findLanguageByLanguageId(languageDatabase.languageId)
+        for (languageDatabaseModel: LanguageDatabaseModel in apiLanguages) {
+            val foundedDatabaseLang = wandrDao.findLanguageByLanguageId(languageDatabaseModel.languageId)
             if (null == foundedDatabaseLang) {
-                wandrDao.insertLanguage(languageDatabase)
+                wandrDao.insertLanguage(languageDatabaseModel)
             } else {
                 wandrDao.updateLanguageByRow(
                     foundedDatabaseLang.rowId,
@@ -135,7 +132,7 @@ class WandrDatabaseTest {
     //@Test
     @Throws(Exception::class)
     fun synchronizeLabels() {
-        wandrDao.insertLabel(LabelDatabase(0, "gchach", "jhx bjhx", "x b", "agsvxhg"))
+        wandrDao.insertLabel(LabelDatabaseModel(0, "gchach", "jhx bjhx", "x b", "agsvxhg"))
         val apiLabels = listOf(
             LabelModel(
                 "id1", "tag1", listOf(
@@ -164,7 +161,7 @@ class WandrDatabaseTest {
             for (languageAndNameModel in labelModel.labelNames){
                 val label = wandrDao.findLabelByLabelId(labelModel.id, languageAndNameModel.language)
                 if (null == label){
-                    val newLabel = LabelDatabase(0, labelModel.tag, languageAndNameModel.name, languageAndNameModel.language, labelModel.id)
+                    val newLabel = LabelDatabaseModel(0, labelModel.tag, languageAndNameModel.name, languageAndNameModel.language, labelModel.id)
                     wandrDao.insertLabel(newLabel)
                 } else {
                     wandrDao.updateLabelByRow(label.rowId, labelModel.tag, languageAndNameModel.name!!)

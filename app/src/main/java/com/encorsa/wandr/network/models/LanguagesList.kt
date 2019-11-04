@@ -1,7 +1,7 @@
 package com.encorsa.wandr.network.models
 
-import com.encorsa.wandr.database.LanguageDatabase
+import com.encorsa.wandr.database.LanguageDatabaseModel
 
 data class LanguagesList (
-    val items: List<LanguageDatabase>
+    val items: List<LanguageDatabaseModel>
 )

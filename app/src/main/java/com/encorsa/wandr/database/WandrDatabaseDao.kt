@@ -16,67 +16,72 @@
 
 package com.encorsa.wandr.database
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.lifecycle.LiveData
+import androidx.room.*
 
 /**
- * Defines methods for using the LanguageDatabase class with Room.
+ * Defines methods for using the LanguageDatabaseModel class with Room.
  */
 @Dao
 interface WandrDatabaseDao {
 
     @Insert
-    fun insertLanguage(languageDatabase: LanguageDatabase)
+    fun insertLanguage(languageDatabaseModel: LanguageDatabaseModel)
 
     /**
      * When updating a row with a value already set in a column,
      * replaces the old value with the new one.
      *
-     * @param languageDatabase new value to write
+     * @param languageDatabaseModel new value to write
      */
     @Update
-    fun updateLanguage(languageDatabase: LanguageDatabase)
+    fun updateLanguage(languageDatabaseModel: LanguageDatabaseModel)
 
     @Query("SELECT * FROM languages_table WHERE languageId = :languageId LIMIT 1")
-    fun findLanguageByLanguageId(languageId: String): LanguageDatabase?
+    fun findLanguageByLanguageId(languageId: String): LanguageDatabaseModel?
 
     @Query("SELECT * FROM languages_table WHERE rowId = :rowId LIMIT 1")
-    fun findLanguageByRow(rowId: Long): LanguageDatabase?
+    fun findLanguageByRow(rowId: Long): LanguageDatabaseModel?
 
     @Query("UPDATE languages_table SET tag = :tag, name = :name WHERE rowId = :rowId")
     fun updateLanguageByRow(rowId: Long, tag: String, name: String)
 
     @Query("SELECT * FROM languages_table")
-    fun getAllLanguages(): List<LanguageDatabase>
+    fun getAllLanguages(): List<LanguageDatabaseModel>
 
     @Query("DELETE FROM languages_table WHERE rowId = :rowId")
     fun deleteLanguageByRow(rowId: Long)
 
     //LABELS -------------------------------
     @Insert
-    fun insertLabel(labelDatabase: LabelDatabase)
+    fun insertLabel(labelDatabaseModel: LabelDatabaseModel)
 
     @Update
-    fun updateLabel(labelDatabase: LabelDatabase)
+    fun updateLabel(labelDatabaseModel: LabelDatabaseModel)
 
     @Query("SELECT * FROM labels_table WHERE labelId = :labelId AND languageTag = :languageTag LIMIT 1")
-    fun findLabelByLabelId(labelId: String, languageTag: String): LabelDatabase?
+    fun findLabelByLabelId(labelId: String, languageTag: String): LabelDatabaseModel?
 
     @Query("SELECT * FROM labels_table WHERE rowId = :rowId LIMIT 1")
-    fun findLabelByRow(rowId: Long): LabelDatabase?
+    fun findLabelByRow(rowId: Long): LabelDatabaseModel?
 
     @Query("UPDATE labels_table SET tag = :tag, name = :name WHERE rowId = :rowId")
     fun updateLabelByRow(rowId: Long, tag: String, name: String)
 
     @Query("SELECT * FROM labels_table")
-    fun getAllLabels(): List<LabelDatabase>
+    fun getAllLabels(): List<LabelDatabaseModel>
 
     @Query("DELETE FROM labels_table WHERE rowId = :rowId")
     fun deleteLabelByRow(rowId: Long)
 
     @Query("Select * FROM labels_table WHERE tag = :tag AND languageTag = :languageTag LIMIT 1")
-    fun findlabelByTag(tag: String, languageTag: String): LabelDatabase?
+    fun findlabelByTag(tag: String, languageTag: String): LabelDatabaseModel?
+
+    //OBJECTIVES ------------------------------
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertObjectives(var post: List<ObjectiveDatabaseModel>)
+
+    @Query("SELECT * FROM objectives_table WHERE languageTag = :languageId")
+    fun getDatabaseObjectives(languageId: String) : LiveData<List<ObjectiveDatabaseModel>>
 }
 

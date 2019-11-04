@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "labels_table")
-data class LabelDatabase  (
+data class LabelDatabaseModel  (
     @PrimaryKey(autoGenerate = true)
     var rowId: Long = 0L,
     @ColumnInfo(name = "tag")

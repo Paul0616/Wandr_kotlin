@@ -22,7 +22,7 @@ import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
 
 @Entity(tableName = "languages_table")
-data class LanguageDatabase(
+data class LanguageDatabaseModel(
     @PrimaryKey(autoGenerate = true)
     var rowId: Long = 0L,
 
@@ -37,7 +37,7 @@ data class LanguageDatabase(
     var languageId: String = ""
 )
 
-//    fun List<LanguageDatabase>.asLanguageMainModel(): List<Language> {
+//    fun List<LanguageDatabaseModel>.asLanguageMainModel(): List<Language> {
 //        return map {
 //            Language(
 //                tag = it.tag,

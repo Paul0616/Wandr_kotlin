@@ -22,13 +22,13 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 /**
- * A database that stores LanguageDatabase information.
+ * A database that stores LanguageDatabaseModel information.
  * And a global method to get access to the database.
  *
  * This pattern is pretty much the same for any database,
  * so you can reuse it.
  */
-@Database(entities = arrayOf(LanguageDatabase::class, LabelDatabase::class), version = 3, exportSchema = false)
+@Database(entities = arrayOf(LanguageDatabaseModel::class, LabelDatabaseModel::class, ObjectiveDatabaseModel::class), version = 5, exportSchema = false)
 abstract class WandrDatabase : RoomDatabase() {
 
     /**
