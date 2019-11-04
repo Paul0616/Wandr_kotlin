@@ -23,11 +23,12 @@
             android:layout_marginTop="@dimen/medium_dim" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/textLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/small_dim"
             android:layout_marginTop="@dimen/medium_dim"
-            android:text="@string/label_text1"
+            android:text="@string/check_email_screen_label"
             android:textAlignment="viewStart" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -48,8 +49,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:ems="10"
-                android:inputType="textPersonName"
-                android:text="Hello"
+                android:imeOptions="actionDone"
+                android:inputType="textEmailAddress"
+                android:text="@={checkEmailViewModel.newEmail}"
                 android:textAlignment="viewStart"
                 app:layout_constraintEnd_toStartOf="@+id/guideline5"
                 app:layout_constraintStart_toEndOf="@+id/edit_email_button"
@@ -65,7 +67,6 @@
                 android:paddingStart="4dp"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
-                android:text="Hello"
                 android:textAllCaps="false"
                 app:layout_constraintEnd_toStartOf="@+id/guideline5"
                 app:layout_constraintStart_toEndOf="@+id/edit_email_button"
@@ -135,9 +136,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:hint="codul primit pe email"
-                    android:text="@={checkEmailViewModel.securityCode}"
-                    android:inputType="number" />
+                    android:hint="@string/security_code_hint"
+                    android:inputType="number"
+                    android:text="@={checkEmailViewModel.securityCode}" />
 
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -150,6 +151,7 @@
             android:layout_marginStart="@dimen/small_dim"
             android:layout_marginTop="@dimen/logo_height"
             android:layout_marginEnd="@dimen/small_dim"
+            android:onClick="@{() -> checkEmailViewModel.onClickResendEmail()}"
             android:text="@string/resend_email_button" />
 
     </LinearLayout>

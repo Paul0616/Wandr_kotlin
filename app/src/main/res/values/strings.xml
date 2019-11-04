@@ -1,9 +1,6 @@
 <resources>
     <string name="app_name">Wandr</string>
 
-
-    <string name="accept_privacy">Trebuie să accepți Termenii și Condițiile pentru a continua înregistrarea.</string>
-
     <!-- string used in login screen (RO) -->
     <string name="emailHint">Email</string>
     <string name="passwordHint">Parolă</string>
@@ -11,7 +8,10 @@
     <string name="invalid_credentials">Date conectare invalide</string>
     <string name="error_field_required">Câmpul e obligatoriu</string>
     <string name="error_invalid_email">Email invalid</string>
+    <string name="error_email_not_confirmed">Adresa de email nu a fost confirmată. Vrei sa faci asta acum?</string>
 
+    <!-- string used in view privacy screen (RO) -->
+    <string name="accept_privacy">Trebuie să accepți Termenii și Condițiile pentru a continua înregistrarea.</string>
 
     <!-- string used in registration screen (RO -->
     <string name="error_invalid_password">Parola invalida</string>
@@ -21,13 +21,17 @@
     <string name="confirmPasswordHint">Confirmă parola</string>
     <string name="password_info_title">Parola trebuie să conțină cel puțin:</string>
     <string name="password_info_number">- 1 caracter numeric</string>
-    <string name="password_info_case"><![CDATA[- 1 literă mare &amp; 1 literă mică]]></string>
+    <string name="password_info_case"><![CDATA[- 1 literă mare & 1 literă mică]]></string>
     <string name="password_info_lenght">- 5 caractere minim</string>
-    <string name="password_info_special_char"><![CDATA[- 1 un caracter special din listă [ ! @ # $ % ^ &amp; * _ + ? ]]]></string>
-    <string name="label_text1">Adresa de email pe care vrei sa o inregistrezi:</string>
-    <string name="modify_email_button_text">Schimbă adresa email pe care o înregistrezi</string>
+    <string name="password_info_special_char"><![CDATA[- 1 un caracter special din listă [ ! @ # $ % ^ & * _ + ? ]]]></string>
+
+    <!-- string used in check email screen (RO -->
+    <string name="check_email_screen_label">Adresa de email pe care vrei sa o inregistrezi:</string>
     <string name="resend_email_button">Retrimite email</string>
-    <string name="continue_registration">Continua inregistrarea</string>
     <string name="wrong_security_code">Acest cod este greșit. Corectează sau poți solicita retrimiterea emailului pentru a obține alt cod.</string>
+    <string name="security_code_hint">codul primit pe email</string>
+    <string name="error_email_no_change">Adresa de email nu poate fi schimbata deoarece a fost confirmata.</string>
+    <string name="no_info">Fără informații</string>
+    <string name="more">mai mult</string>
 
 </resources>

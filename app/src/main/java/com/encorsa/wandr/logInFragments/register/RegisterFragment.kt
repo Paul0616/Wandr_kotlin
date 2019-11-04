@@ -51,6 +51,12 @@ class RegisterFragment : Fragment() {
     var validationErrorInvalidPassword: String? = null
     var validationErrorPasswordMatch: String? = null
 
+    var passwordInfo1: String? = null
+    var passwordInfo2: String? = null
+    var passwordInfo3: String? = null
+    var passwordInfo4: String? = null
+    var passwordInfo5: String? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -58,6 +64,7 @@ class RegisterFragment : Fragment() {
         binding = FragmentRegisterBinding.inflate(inflater)
         binding.setLifecycleOwner(this)
         (activity as AppCompatActivity).supportActionBar?.show()
+        (activity as? AppCompatActivity)?.supportActionBar?.title =
         return binding.root
     }
 
@@ -214,6 +221,26 @@ class RegisterFragment : Fragment() {
 
         viewModel.validationErrorPasswordMatch.observe(this, Observer {
             this.validationErrorPasswordMatch = it
+        })
+
+        viewModel.passwordInfoMessage1.observe(this, Observer {
+            binding.passwordInfo1.text = it ?: getString(R.string.password_info_title)
+        })
+
+        viewModel.passwordInfoMessage2.observe(this, Observer {
+            binding.passwordInfo2.text = it ?: getString(R.string.password_info_number)
+        })
+
+        viewModel.passwordInfoMessage3.observe(this, Observer {
+            binding.passwordInfo3.text = it ?: getString(R.string.password_info_case)
+        })
+
+        viewModel.passwordInfoMessage4.observe(this, Observer {
+            binding.passwordInfo4.text = it ?: getString(R.string.password_info_lenght)
+        })
+
+        viewModel.passwordInfoMessage5.observe(this, Observer {
+            binding.passwordInfo5.text = it ?: getString(R.string.password_info_special_char)
         })
 
         viewModel.userValidation.observe(this, Observer {

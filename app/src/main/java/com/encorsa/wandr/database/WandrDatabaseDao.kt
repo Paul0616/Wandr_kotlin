@@ -39,10 +39,10 @@ interface WandrDatabaseDao {
     @Update
     fun updateLanguage(languageDatabase: LanguageDatabase)
 
-    @Query("SELECT * from languages_table WHERE languageId = :languageId LIMIT 1")
+    @Query("SELECT * FROM languages_table WHERE languageId = :languageId LIMIT 1")
     fun findLanguageByLanguageId(languageId: String): LanguageDatabase?
 
-    @Query("SELECT * from languages_table WHERE rowId = :rowId LIMIT 1")
+    @Query("SELECT * FROM languages_table WHERE rowId = :rowId LIMIT 1")
     fun findLanguageByRow(rowId: Long): LanguageDatabase?
 
     @Query("UPDATE languages_table SET tag = :tag, name = :name WHERE rowId = :rowId")
@@ -61,10 +61,10 @@ interface WandrDatabaseDao {
     @Update
     fun updateLabel(labelDatabase: LabelDatabase)
 
-    @Query("SELECT * from labels_table WHERE labelId = :labelId AND languageTag = :languageTag LIMIT 1")
+    @Query("SELECT * FROM labels_table WHERE labelId = :labelId AND languageTag = :languageTag LIMIT 1")
     fun findLabelByLabelId(labelId: String, languageTag: String): LabelDatabase?
 
-    @Query("SELECT * from labels_table WHERE rowId = :rowId LIMIT 1")
+    @Query("SELECT * FROM labels_table WHERE rowId = :rowId LIMIT 1")
     fun findLabelByRow(rowId: Long): LabelDatabase?
 
     @Query("UPDATE labels_table SET tag = :tag, name = :name WHERE rowId = :rowId")

@@ -12,4 +12,5 @@
     <color name="colorAccent">#dbbe8f</color>
 
     <color name="colorAccentLightTrans">#75E9D1B0</color>
+    <color name="colorLightGray">#FAFAFA</color>
 </resources>

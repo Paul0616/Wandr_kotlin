@@ -17,7 +17,7 @@ data class RegistrationRequestModel(
 
 
     fun isPasswordValid(): Boolean {
-        // (?=.*\d)            #   must contains one digit from 0-9
+        // (?=.*\d)            #   must contains one digit bind 0-9
         // (?=.*[a-z])         #   must contains one lowercase characters
         // (?=.*[A-Z])         #   must contains one uppercase characters
         // (?=.*[!@#$%^&*_+?]) #   must contains one special symbols in the list "@#$%"

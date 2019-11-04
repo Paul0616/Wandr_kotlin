@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import com.encorsa.wandr.MainActivity
 import com.encorsa.wandr.R
 import com.encorsa.wandr.database.WandrDatabase
@@ -34,6 +35,7 @@ import java.util.*
 
 class LogInFragment : Fragment() {
 
+    var emailNotConfirmedMessage: String? = null
     var invalidCredentialsMessage: String? = null
     var validationErrorFieldRequired: String? = null
     var validationErrorInvalidEmail: String? = null
@@ -52,7 +54,6 @@ class LogInFragment : Fragment() {
             ViewModelProviders.of(this, viewModelFactory).get(LogInViewModel::class.java)
         binding.setLifecycleOwner(this)
         binding.loginViewModel = viewModel
-        // binding.infoText.text = "Welcome to Log In Fragment"
 
         (activity as AppCompatActivity).supportActionBar?.hide()
 
@@ -80,7 +81,7 @@ class LogInFragment : Fragment() {
             viewModel.getLabelByTagAndLanguage("invalid_credentials", it)
             viewModel.getLabelByTagAndLanguage("error_field_required", it)
             viewModel.getLabelByTagAndLanguage("error_invalid_email", it)
-
+            viewModel.getLabelByTagAndLanguage("email_not_confirmed_message", it)
         })
 
         viewModel.emailHint.observe(this, Observer {
@@ -110,7 +111,12 @@ class LogInFragment : Fragment() {
             this.validationErrorInvalidEmail = it
         })
 
+        viewModel.validationErrorEmailNotConfirmed.observe(this, Observer {
+            this.emailNotConfirmedMessage = it
+        })
+
         viewModel.status.observe(this, Observer {
+            Log.i("LogInFragment", "Status changed to ${it?.toString()}")
             when (it) {
                 WandrApiStatus.LOADING -> binding.progressBarLogIn.visibility = View.VISIBLE
                 WandrApiStatus.DONE -> {
@@ -122,13 +128,11 @@ class LogInFragment : Fragment() {
                 }
                 else -> binding.progressBarLogIn.visibility = View.INVISIBLE
             }
-            //viewModel.clearStatus()
         })
 
         viewModel.tokenModel.observe(this, Observer {
             if (DEBUG_MODE)
                 Toast.makeText(application.applicationContext, it?.token, Toast.LENGTH_SHORT).show()
-//            binding.infoText.text = it?.token?.length.toString()
             prefs.userEmail = it?.email
             prefs.userId = it?.userId
             prefs.userName = it?.userName
@@ -144,15 +148,39 @@ class LogInFragment : Fragment() {
         })
 
         viewModel.error.observe(this, Observer {
+            Log.i("LogInFragment", "Treating errors")
             if (it.contains("code")) {
+                var positiveButtonClick = { _: DialogInterface, _: Int -> }
                 if (it.get("code") == 403) {
                     if (invalidCredentialsMessage != null)
-                        errorAlert(activity as AppCompatActivity, invalidCredentialsMessage!!)
+                        errorAlert(activity as AppCompatActivity, invalidCredentialsMessage!!, false, positiveButtonClick)
                     else
                         errorAlert(
                             activity as AppCompatActivity,
-                            getString(R.string.invalid_credentials)
+                            getString(R.string.invalid_credentials),
+                            false,
+                            positiveButtonClick
                         )
+                } else if (it.get("code") == 404){
+                    Toast.makeText(application.applicationContext, "NOT FOUND", Toast.LENGTH_SHORT).show()
+                } else if (it.get("code") == 417){
+                    positiveButtonClick = { _: DialogInterface, _: Int ->
+                        prefs.userEmail = binding.emailEdit.text.toString()
+                        prefs.password = binding.passwordEdit.text.toString()
+                        this.findNavController().navigate(LogInFragmentDirections.actionLogInFragmentToCheckEmailFragment()
+                        )}
+                    if (emailNotConfirmedMessage != null)
+                        errorAlert(activity as AppCompatActivity, emailNotConfirmedMessage!!, true, positiveButtonClick)
+                    else
+                        errorAlert(
+                            activity as AppCompatActivity,
+                            getString(R.string.error_email_not_confirmed),
+                            true,
+                            positiveButtonClick
+                        )
+                } else {
+                    if (DEBUG_MODE)
+                        Toast.makeText(application.applicationContext, it.get("message").toString(), Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -173,7 +201,7 @@ class LogInFragment : Fragment() {
 
 
         viewModel.userValidation.observe(this, Observer {
-
+            Log.i("LogInFragment", "Validating user")
             if (TextUtils.isEmpty(Objects.requireNonNull<LoginRequestModel>(it).email)) {
                 if (validationErrorFieldRequired != null)
                     binding.emailEdit.error = validationErrorFieldRequired
@@ -202,6 +230,7 @@ class LogInFragment : Fragment() {
                 viewModel.login(it)
 
             }
+
         })
 
         return binding.root
@@ -214,19 +243,4 @@ class LogInFragment : Fragment() {
     }
 
 
-//    fun errorAlert(context: Context, message: String) {
-//        val positiveButtonClick = { _: DialogInterface, _: Int -> }
-//        val builder = AlertDialog.Builder(context)
-//
-//        with(builder)
-//        {
-//            setTitle(getString(R.string.app_name))
-//            setMessage(message)
-//            setCancelable(false)
-//            setPositiveButton("OK", DialogInterface.OnClickListener(positiveButtonClick))
-//            show()
-//        }
-//
-//
-//    }
 }

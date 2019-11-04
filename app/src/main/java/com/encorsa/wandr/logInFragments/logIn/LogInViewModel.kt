@@ -59,6 +59,10 @@ class LogInViewModel(app: Application, val database: WandrDatabaseDao) : Android
     val validationErrorInvalidEmail: LiveData<String?>
         get() = _validationErrorInvalidEmail
 
+    private val _validationErrorEmailNotConfirmed = MutableLiveData<String?>()
+    val validationErrorEmailNotConfirmed: LiveData<String?>
+        get() = _validationErrorEmailNotConfirmed
+
     private val _tokenModel = MutableLiveData<LoginResponseModel>()
     val tokenModel: LiveData<LoginResponseModel>
         get() = _tokenModel
@@ -95,11 +99,6 @@ class LogInViewModel(app: Application, val database: WandrDatabaseDao) : Android
 
     }
 
-
-    fun clearStatus(){
-        _status.value = null
-    }
-
     fun onClickLogIn() {
         val loginUser = LoginRequestModel(email.value!!, password.value!!, false)
         _userValidation.value = loginUser
@@ -110,22 +109,24 @@ class LogInViewModel(app: Application, val database: WandrDatabaseDao) : Android
     }
 
     fun login(credentials: LoginRequestModel) {
-        viewModelScope.launch {
-            // Get the Deferred object for our Retrofit request
-            var getTokenModel = WandrApi.RETROFIT_SERVICE.login(credentials)
+        if(credentials != null) {
+            viewModelScope.launch {
+                // Get the Deferred object for our Retrofit request
+                var getTokenModel = WandrApi.RETROFIT_SERVICE.login(credentials, false)
 
-            // Await the completion of our Retrofit request
-            try {
-                _status.value = WandrApiStatus.LOADING
-                _tokenModel.value = getTokenModel.await()
-                _status.value = WandrApiStatus.DONE
-            } catch (ex: HttpException) {
-                _status.value = WandrApiStatus.ERROR
-                val errorMap = HashMap<String, Any?>()
-                errorMap.put("code", ex.response().code())
-                errorMap.put("message", ex.response().errorBody()?.string())
-                _error.value = errorMap
+                // Await the completion of our Retrofit request
+                try {
+                    _status.value = WandrApiStatus.LOADING
+                    _tokenModel.value = getTokenModel.await()
+                    _status.value = WandrApiStatus.DONE
+                } catch (ex: HttpException) {
+                    _status.value = WandrApiStatus.ERROR
+                    val errorMap = HashMap<String, Any?>()
+                    errorMap.put("code", ex.response().code())
+                    errorMap.put("message", ex.response().errorBody()?.string())
+                    _error.value = errorMap
 
+                }
             }
         }
     }
@@ -148,6 +149,7 @@ class LogInViewModel(app: Application, val database: WandrDatabaseDao) : Android
                     "invalid_credentials" -> _invalidCredentials.value = label?.name
                     "error_field_required" -> _validationErrorFieldRequired.value = label?.name
                     "error_invalid_email" -> _validationErrorInvalidEmail.value = label?.name
+                    "email_not_confirmed_message" -> _validationErrorEmailNotConfirmed.value = label?.name
                 }
             }
         }

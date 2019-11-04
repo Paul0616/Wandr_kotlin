@@ -224,10 +224,10 @@
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            tools:visibility="gone">
+            tools:visibility="visible">
 
             <TextView
-                android:id="@+id/passwordInfo"
+                android:id="@+id/passwordInfo1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -251,7 +251,7 @@
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/passwordInfo" />
+                app:layout_constraintTop_toBottomOf="@+id/passwordInfo1" />
 
             <TextView
                 android:id="@+id/passwordInfo3"

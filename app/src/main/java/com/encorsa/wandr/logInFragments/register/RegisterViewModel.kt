@@ -82,6 +82,26 @@ class RegisterViewModel(app: Application, val database: WandrDatabaseDao) : Andr
     val validationErrorInvalidPassword: LiveData<String?>
         get() = _validationErrorInvalidPassword
 
+    private val _passwordInfoMessage1 = MutableLiveData<String?>()
+    val passwordInfoMessage1: LiveData<String?>
+        get() = _passwordInfoMessage1
+
+    private val _passwordInfoMessage2 = MutableLiveData<String?>()
+    val passwordInfoMessage2: LiveData<String?>
+        get() = _passwordInfoMessage2
+
+    private val _passwordInfoMessage3 = MutableLiveData<String?>()
+    val passwordInfoMessage3: LiveData<String?>
+        get() = _passwordInfoMessage3
+
+    private val _passwordInfoMessage4 = MutableLiveData<String?>()
+    val passwordInfoMessage4: LiveData<String?>
+        get() = _passwordInfoMessage4
+
+    private val _passwordInfoMessage5 = MutableLiveData<String?>()
+    val passwordInfoMessage5: LiveData<String?>
+        get() = _passwordInfoMessage5
+
     //-------
 
     private val _showPassword1 = MutableLiveData<Boolean>()
@@ -124,6 +144,12 @@ class RegisterViewModel(app: Application, val database: WandrDatabaseDao) : Andr
         getLabelByTagAndLanguage("error_passwords_match", currentLanguage.value!!)
         getLabelByTagAndLanguage("error_field_required", currentLanguage.value!!)
         getLabelByTagAndLanguage("error_invalid_email", currentLanguage.value!!)
+
+        getLabelByTagAndLanguage("password_info_message1", currentLanguage.value!!)
+        getLabelByTagAndLanguage("password_info_message2", currentLanguage.value!!)
+        getLabelByTagAndLanguage("password_info_message3", currentLanguage.value!!)
+        getLabelByTagAndLanguage("password_info_message4", currentLanguage.value!!)
+        getLabelByTagAndLanguage("password_info_message5", currentLanguage.value!!)
 
         _status.value = null
         email.value = ""
@@ -221,6 +247,11 @@ class RegisterViewModel(app: Application, val database: WandrDatabaseDao) : Andr
                     "error_invalid_password" -> _validationErrorInvalidPassword.value = label?.name
                     "error_field_required" -> _validationErrorFieldRequired.value = label?.name
                     "error_invalid_email" -> _validationErrorInvalidEmail.value = label?.name
+                    "password_info_message1" -> _passwordInfoMessage1.value = label?.name
+                    "password_info_message2" -> _passwordInfoMessage2.value = label?.name
+                    "password_info_message3" -> _passwordInfoMessage3.value = label?.name
+                    "password_info_message4" -> _passwordInfoMessage4.value = label?.name
+                    "password_info_message5" -> _passwordInfoMessage5.value = label?.name
                 }
             }
         }
