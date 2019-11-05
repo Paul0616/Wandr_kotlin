@@ -18,6 +18,7 @@ package com.encorsa.wandr.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import androidx.sqlite.db.SupportSQLiteQuery
 
 /**
  * Defines methods for using the LanguageDatabaseModel class with Room.
@@ -79,9 +80,9 @@ interface WandrDatabaseDao {
 
     //OBJECTIVES ------------------------------
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertObjectives(var post: List<ObjectiveDatabaseModel>)
+    fun insertObjectives(post: List<ObjectiveDatabaseModel>)
 
-    @Query("SELECT * FROM objectives_table WHERE languageTag = :languageId")
-    fun getDatabaseObjectives(languageId: String) : LiveData<List<ObjectiveDatabaseModel>>
+    @RawQuery(observedEntities = [ObjectiveDatabaseModel::class])
+    fun getDatabaseObjectivesWithRaw(query: SupportSQLiteQuery) : LiveData<List<ObjectiveDatabaseModel>>
 }
 

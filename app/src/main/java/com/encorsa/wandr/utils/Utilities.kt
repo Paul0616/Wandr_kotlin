@@ -4,9 +4,12 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.res.Configuration
 import android.os.Build
+import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
+import androidx.sqlite.db.SupportSQLiteQuery
+import androidx.sqlite.db.SupportSQLiteQueryBuilder
 import com.encorsa.wandr.R
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener
 import java.text.ParseException
@@ -73,6 +76,55 @@ object Utilities {
             setPositiveButton("OK", DialogInterface.OnClickListener(positiveButtonClick))
             show()
         }
+    }
+
+    fun getQuery(
+        languageTag: String,
+        onlyFavs: Boolean?,
+        name: String?,
+        categoryId: String?,
+        subcategoryIds: Array<Any>?
+    ): SupportSQLiteQuery {
+        val bindArgs = ArrayList<Any>()
+
+        var stringSelection = ""
+        val builder = SupportSQLiteQueryBuilder
+            .builder("objectives_table")
+            .columns(arrayOf("*"))
+
+        if (!languageTag.isEmpty()) {
+            bindArgs.add(languageTag)
+            stringSelection += " languageTag = ?"
+        }
+
+        if (onlyFavs != null) {
+            bindArgs.add(onlyFavs)
+            stringSelection += " AND isFavorite = ?"
+        }
+
+        if (name != null) {
+            bindArgs.add("%".plus(name).plus("%"))
+            stringSelection += " AND name LIKE ?"
+        }
+
+        if (categoryId != null) {
+            bindArgs.add(categoryId!!)
+            stringSelection += " AND categoryId = ?"
+        }
+
+        if (subcategoryIds != null) {
+            val str = "?,".repeat(subcategoryIds.size).dropLast(1)
+            bindArgs.addAll(subcategoryIds)
+            stringSelection += " AND subcategoryId IN (${str})"
+        }
+
+        if (!stringSelection.equals(""))
+            builder.selection(stringSelection, bindArgs.toArray())
+        val query = builder.create()
+
+        Log.i("WandrDatabaseTest", query.sql + " " + bindArgs.toString())
+
+        return query
     }
 }
 
