@@ -1,9 +1,9 @@
 package com.encorsa.wandr.mainFragments.main
 
 
+import android.app.Application
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -12,17 +12,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.encorsa.wandr.LogInActivity
 
 import com.encorsa.wandr.R
 import com.encorsa.wandr.adapters.ObjectiveAdapter
 import com.encorsa.wandr.database.WandrDatabase
 import com.encorsa.wandr.databinding.FragmentMainBinding
-import com.encorsa.wandr.network.WandrApiStatus
-import com.encorsa.wandr.network.models.ObjectiveModel
 import com.encorsa.wandr.utils.DEBUG_MODE
-import com.encorsa.wandr.utils.PAGE_SIZE
-import com.encorsa.wandr.utils.PaginationScrollListener
 import com.encorsa.wandr.utils.Prefs
 
 /**
@@ -46,65 +43,36 @@ class MainFragment : Fragment() {
 
         val adapter = ObjectiveAdapter()
         setHasOptionsMenu(true)
-        var isLastPage: Boolean = false
-        var isLoading: Boolean = false
-        var nextLoadingPage: Int = 0
-       // var objectiveItems = List<ObjectiveModel>()
+        setupScrollListener(binding.objectiveList, viewModel)
 
-        binding.objectiveList.addOnScrollListener(object : PaginationScrollListener(binding.objectiveList.layoutManager as LinearLayoutManager){
-            override fun isLastPage(): Boolean {
-                return isLastPage
-            }
 
-            override fun isLoading(): Boolean {
-                return isLoading
-            }
-
-            override fun loadMoreItems() {
-                isLoading = true
-                val options = HashMap<String, Any>()
-                options.put("languageTag", "RO")
-                options.put("pageId", nextLoadingPage)
-                options.put("pageSize", PAGE_SIZE)
-                Log.i("MainFragment", "LOAD MORE ITEMS page ${nextLoadingPage}")
-                viewModel.getObjectives(options, null)
+        binding.setLifecycleOwner(this)
+        binding.mainViewmodel = viewModel
+        viewModel.currentLanguage.observe(this, Observer {
+            it?.let {
+                viewModel.loadObjectives()
             }
         })
-
-        binding.objectiveList.adapter = adapter
 
         binding.testButton.setOnClickListener (
             Navigation.createNavigateOnClickListener(MainFragmentDirections.actionMainFragmentToDetailFragment())
         )
+        binding
+        adapter.initAdapter(binding, viewModel, application)
+        return binding.root
+    }
 
-        viewModel.objectives.observe(this, Observer {
-            it?.let {
-                adapter.submitList(it.objectives)
-                //adapter.addData(it.objectives)
-                isLastPage = it.isLastPage()
-                nextLoadingPage = it.currentPage() + 1
-                Log.i("MainFragment", "isLastPage = ${isLastPage.toString()} nextLoadingPage = ${nextLoadingPage.toString()}")
-            }
-
+    private fun ObjectiveAdapter.initAdapter(
+        binding: FragmentMainBinding,
+        viewModel: MainViewModel,
+        application: Application
+    ) {
+        binding.objectiveList.adapter = this
+        viewModel.objectives.observe(this@MainFragment, Observer {
+            this.submitList(it)
         })
 
-        viewModel.status.observe(this, Observer {
-            Log.i("MainFragment", "Status changed to ${it?.toString()}")
-            when (it) {
-                WandrApiStatus.LOADING -> binding.progressBarMain.visibility = View.VISIBLE
-                WandrApiStatus.DONE -> {
-                    isLoading = false
-                    binding.progressBarMain.visibility = View.INVISIBLE
-                }
-                WandrApiStatus.ERROR -> {
-                    binding.progressBarMain.visibility = View.INVISIBLE
-                    Log.i("MainFragment", "ERROR")
-                }
-                else -> binding.progressBarMain.visibility = View.INVISIBLE
-            }
-        })
-
-        viewModel.error.observe(this, Observer {
+        viewModel.networkErrors.observe(this@MainFragment, Observer {
             if (DEBUG_MODE)
                 Toast.makeText(
                     application.applicationContext,
@@ -115,7 +83,20 @@ class MainFragment : Fragment() {
                     Toast.LENGTH_LONG
                 ).show()
         })
-        return binding.root
+    }
+
+    private fun setupScrollListener(list: RecyclerView, viewModel: MainViewModel) {
+        val layoutManager = list.layoutManager as LinearLayoutManager
+        list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val totalItemCount = layoutManager.itemCount
+                val visibleItemCount = layoutManager.childCount
+                val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
+
+                viewModel.objectiveListScrolled(visibleItemCount, lastVisibleItem, totalItemCount)
+            }
+        })
     }
 
 

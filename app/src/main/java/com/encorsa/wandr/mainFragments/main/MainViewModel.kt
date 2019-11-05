@@ -3,17 +3,16 @@ package com.encorsa.wandr.mainFragments.main
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import com.encorsa.wandr.database.ObjectiveDatabaseModel
 
 import com.encorsa.wandr.database.WandrDatabaseDao
 import com.encorsa.wandr.network.WandrApi
 import com.encorsa.wandr.network.WandrApiStatus
 import com.encorsa.wandr.network.models.ObjectivePage
+import com.encorsa.wandr.network.models.ObjectiveRepositoryResult
+import com.encorsa.wandr.repository.ObjectivesRepository
 import com.encorsa.wandr.utils.DEFAULT_LANGUAGE
-import com.encorsa.wandr.utils.PAGE_SIZE
 import com.encorsa.wandr.utils.Prefs
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -22,57 +21,52 @@ import retrofit2.HttpException
 class MainViewModel(app: Application, val database: WandrDatabaseDao) :
     AndroidViewModel(app) {
 
+    companion object {
+        private const val VISIBLE_THRESHOLD = 5
+    }
+
     private val prefs = Prefs(app.applicationContext)
+    private val objectiveRepository = ObjectivesRepository(app, database)
+
     val currentLanguage = MutableLiveData<String>()
+    val showFavorite = MutableLiveData<Boolean>()
     init {
         Log.i("MainViewModel", "CREATED")
         currentLanguage.value = prefs.currentLanguage.let {
             it ?: DEFAULT_LANGUAGE
         }
-        val options = HashMap<String, Any>()
-        options.put("languageTag", currentLanguage.value!!)
-        options.put("pageId", 1)
-        options.put("pageSize", PAGE_SIZE)
-        getObjectives(options, null)
     }
 
-    private val _status = MutableLiveData<WandrApiStatus>()
-    val status: LiveData<WandrApiStatus>
-        get() = _status
+    private val objectiveRepositoryResponse: LiveData<ObjectiveRepositoryResult> = Transformations.map(currentLanguage) {
+        objectiveRepository.setObjectivesQuery(it, showFavorite.value, null, null, null)
+    }
 
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String>
-        get() = _error
+    val objectives: LiveData<List<ObjectiveDatabaseModel>> = Transformations.switchMap(objectiveRepositoryResponse) { it ->
+        it.objectives
+    }
 
-    private val _objectives = MutableLiveData<ObjectivePage>()
-    val objectives: LiveData<ObjectivePage>
-       get() =_objectives
+    val networkErrors: LiveData<String> = Transformations.switchMap(objectiveRepositoryResponse) { it ->
+        it.networkErrors
+    }
 
 
-
-    fun getObjectives(options: HashMap<String, Any>, subcategoryIds: List<String>?) {
-        viewModelScope.launch {
-            // Get the Deferred object for our Retrofit request
-            var getObjectivePageDeferred = WandrApi.RETROFIT_SERVICE.getObjectives(options, subcategoryIds)
-
-            // Await the completion of our Retrofit request
-            try {
-                _status.value = WandrApiStatus.LOADING
-                val objectivePage = getObjectivePageDeferred.await()
-                _status.value = WandrApiStatus.DONE
-//                val url = objectivePage.raw().request().url().toString()
-//                Log.i("MainViewmodel", url)
-                _objectives.value = objectivePage
-               // Log.i("MainViewmodel", objectivePage.toString())
-            } catch (e: Exception) {
-                _status.value = WandrApiStatus.ERROR
-                _error.value = e.message
-                //_status.value = "Failure: ${e.message}"
-            } catch (ex: HttpException) {
-                _error.value = ex.response().message() + ex.response().errorBody()?.string()
-            }
+    fun objectiveListScrolled(visibleItemCount: Int, lastVisibleItemPosition: Int, totalItemCount: Int) {
+        if (visibleItemCount + lastVisibleItemPosition + VISIBLE_THRESHOLD >= totalItemCount) {
+            loadObjectives()
         }
     }
+
+    fun loadObjectives() {
+        viewModelScope.launch {
+            objectiveRepository.refreshObjectives(currentLanguage.value!!)
+        }
+    }
+
+    fun setShowFavorite(){
+        showFavorite.value = !(showFavorite.value ?: false)
+        objectiveRepository.setObjectivesQuery(currentLanguage.value!!, showFavorite.value, null, null, null)
+    }
+
 
     override fun onCleared() {
         super.onCleared()
