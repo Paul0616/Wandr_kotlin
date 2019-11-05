@@ -80,7 +80,7 @@ interface WandrDatabaseDao {
 
     //OBJECTIVES ------------------------------
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertObjectives(post: List<ObjectiveDatabaseModel>)
+    fun insertObjectives(post: List<ObjectiveDatabaseModel>): List<Long>
 
     @RawQuery(observedEntities = [ObjectiveDatabaseModel::class])
     fun getDatabaseObjectivesWithRaw(query: SupportSQLiteQuery) : LiveData<List<ObjectiveDatabaseModel>>

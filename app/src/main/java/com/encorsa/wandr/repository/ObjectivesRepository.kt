@@ -23,9 +23,7 @@ import retrofit2.HttpException
 class ObjectivesRepository(private val app: Application, private val database: WandrDatabaseDao) {
 
     private val prefs = Prefs(app.applicationContext)
-//    private val currentLanguage = prefs.currentLanguage.let {
-//        it ?: DEFAULT_LANGUAGE
-//    }
+
 
 
 
@@ -55,7 +53,7 @@ class ObjectivesRepository(private val app: Application, private val database: W
             options.put("pageId", lastRequestedPage)
             options.put("pageSize", PAGE_SIZE)
             prefs.userId.apply {
-                //userId
+                options.put("userId", prefs.userId!!)
             }
             isRequestInProgress = true
             try {
@@ -63,16 +61,15 @@ class ObjectivesRepository(private val app: Application, private val database: W
                 val objectivesNetwork: ObjectivePage =
                     WandrApi.RETROFIT_SERVICE.getObjectives(options, null).await()
                 //save in database
-                database.insertObjectives(objectivesNetwork.asDatabaseModel())
-
+                val rowsInserted = database.insertObjectives(objectivesNetwork.asDatabaseModel())
+                Log.i("ObjectiverRepository", "Inserted ${rowsInserted.size.toString()} in local database")
                 lastRequestedPage = objectivesNetwork.currentPage()
-
-                if (!objectivesNetwork.isLastPage()) {
-                    isRequestInProgress = true
-                } else {
+                isRequestInProgress = false
+                if (!objectivesNetwork.isLastPage())
                     lastRequestedPage++
-                    isRequestInProgress = false
-                }
+                else
+                    isRequestInProgress = true
+
             } catch (e: Exception) {
                 networkError.postValue(e.message)
                 isRequestInProgress = false

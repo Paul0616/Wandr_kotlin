@@ -14,22 +14,23 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.encorsa.wandr.R
+import com.encorsa.wandr.database.ObjectiveDatabaseModel
 import com.encorsa.wandr.network.models.ObjectiveModel
 
 
-class ObjectiveAdapter : ListAdapter<ObjectiveModel, ObjectiveAdapter.ItemViewHolder>(ObjectiveAdapter.ObjectiveDiffCallback()){//RecyclerView.Adapter<ObjectiveAdapter.ItemViewHolder>() {
-    var objectives = mutableListOf<ObjectiveModel>()
+class ObjectiveAdapter : ListAdapter<ObjectiveDatabaseModel, ObjectiveAdapter.ItemViewHolder>(ObjectiveDiffCallback()){
+//    var objectives = mutableListOf<ObjectiveDatabaseModel>()
 //        set(value) {
 //            field = value
 //            notifyDataSetChanged()
 //        }
 
-    fun addData(listItems: List<ObjectiveModel>) {
-        var size = objectives.size
-        objectives.addAll(listItems)
-        var sizeNew = objectives.size
-        notifyItemRangeChanged(size, sizeNew)
-    }
+//    fun addData(listItems: List<ObjectiveDatabaseModel>) {
+//        var size = objectives.size
+//        objectives.addAll(listItems)
+//        var sizeNew = objectives.size
+//        notifyItemRangeChanged(size, sizeNew)
+//    }
 
     //    override fun getItemCount(): Int = objectives.size
 
@@ -48,7 +49,7 @@ class ObjectiveAdapter : ListAdapter<ObjectiveModel, ObjectiveAdapter.ItemViewHo
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): ObjectiveAdapter.ItemViewHolder {
+    ): ItemViewHolder {
         return ItemViewHolder.from(parent)
     }
 
@@ -123,11 +124,11 @@ class ObjectiveAdapter : ListAdapter<ObjectiveModel, ObjectiveAdapter.ItemViewHo
         }
 
         fun bind(
-            item: ObjectiveModel
+            item: ObjectiveDatabaseModel
         ) {
-            itemName.text = item.objectiveDescriptions.get(0).name
-            address.text = item.objectiveDescriptions.get(0).address
-            val longDescription = item.objectiveDescriptions.get(0).longDescription
+            itemName.text = item.name
+            address.text = item.address
+            val longDescription = item.longDescription
             longDescription?.let {
                 val txt = fromHtml(longDescription)
                 shortDescription.text = txt.toString()
@@ -154,13 +155,13 @@ class ObjectiveAdapter : ListAdapter<ObjectiveModel, ObjectiveAdapter.ItemViewHo
     }
 
     class ObjectiveDiffCallback :
-        DiffUtil.ItemCallback<ObjectiveModel>() {
+        DiffUtil.ItemCallback<ObjectiveDatabaseModel>() {
 
-        override fun areItemsTheSame(oldItem: ObjectiveModel, newItem: ObjectiveModel): Boolean {
+        override fun areItemsTheSame(oldItem: ObjectiveDatabaseModel, newItem: ObjectiveDatabaseModel): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: ObjectiveModel, newItem: ObjectiveModel): Boolean {
+        override fun areContentsTheSame(oldItem: ObjectiveDatabaseModel, newItem: ObjectiveDatabaseModel): Boolean {
             return oldItem == newItem
         }
     }
