@@ -131,8 +131,6 @@ class LogInFragment : Fragment() {
         })
 
         viewModel.tokenModel.observe(this, Observer {
-            if (DEBUG_MODE)
-                Toast.makeText(application.applicationContext, it?.token, Toast.LENGTH_SHORT).show()
             prefs.userEmail = it?.email
             prefs.userId = it?.userId
             prefs.userName = it?.userName

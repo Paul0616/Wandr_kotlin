@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -48,6 +49,7 @@ class MainFragment : Fragment() {
 
         binding.setLifecycleOwner(this)
         binding.mainViewmodel = viewModel
+        binding.progressBarMain.visibility = View.GONE
         viewModel.currentLanguage.observe(this, Observer {
             it?.let {
                 viewModel.loadObjectives()
@@ -69,6 +71,7 @@ class MainFragment : Fragment() {
     ) {
         binding.objectiveList.adapter = this
         viewModel.objectives.observe(this@MainFragment, Observer {
+            showEmptyList(it?.size == 0, binding.emptyList, binding.objectiveList)
             this.submitList(it)
         })
 
@@ -99,6 +102,15 @@ class MainFragment : Fragment() {
         })
     }
 
+    private fun showEmptyList(show: Boolean, view: TextView, list: RecyclerView) {
+        if (show) {
+            view.visibility = View.VISIBLE
+            list.visibility = View.GONE
+        } else {
+            view.visibility = View.GONE
+            list.visibility = View.VISIBLE
+        }
+    }
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

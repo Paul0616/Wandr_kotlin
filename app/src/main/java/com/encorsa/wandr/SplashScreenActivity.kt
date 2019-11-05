@@ -19,8 +19,6 @@ import com.encorsa.wandr.utils.Prefs
 import com.google.firebase.messaging.FirebaseMessaging
 
 class SplashScreenActivity : AppCompatActivity() {
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding: ActivitySplashScreenBinding =
@@ -90,7 +88,6 @@ class SplashScreenActivity : AppCompatActivity() {
 
             finish()
         })
-
 
     }
 }

@@ -58,11 +58,7 @@ interface WandrApiService {
             Deferred<Response<Unit>>
     @GET("ObjectiveApi/GetObjectivesFiltered")
     fun getObjectives(@QueryMap options: HashMap<String, Any>, @Query("subcategoryId") subcategoryIdList: List<String>?):
-            Deferred<ObjectivePage>@GET("ObjectiveApi/GetObjectivesFiltered")
-    fun getDObjectives(@QueryMap options: HashMap<String, Any>, @Query("subcategoryId") subcategoryIdList: List<String>?):
-            Deferred<Response<ObjectivePage>>
-
-
+            Deferred<ObjectivePage>
 }
 
 object WandrApi {
