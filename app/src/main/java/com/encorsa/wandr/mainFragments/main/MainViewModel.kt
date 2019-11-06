@@ -31,6 +31,7 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
     private val prefs = Prefs(app.applicationContext)
     private val objectiveRepository = ObjectivesRepository(app, database)
     private val showFavorite = MutableLiveData<Boolean>()
+    private val search = MutableLiveData<String>()
     private val query = MutableLiveData<SupportSQLiteQuery>()
     val currentLanguage = MutableLiveData<String>()
     var queryModel: QueryModel
