@@ -11,7 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.sqlite.db.SupportSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQueryBuilder
 import com.encorsa.wandr.R
+import com.encorsa.wandr.network.models.QueryModel
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -64,7 +66,7 @@ object Utilities {
 
     fun errorAlert(context: Context, message: String, hasNegativeButton: Boolean, positiveButtonClick: (DialogInterface, Int) -> Unit) {
        // val positiveButtonClick = { _: DialogInterface, _: Int -> }
-        val builder = AlertDialog.Builder(context)
+        val builder = MaterialAlertDialogBuilder(context, R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog) //.Builder(context)
 
         with(builder)
         {
@@ -79,12 +81,10 @@ object Utilities {
     }
 
     fun getQuery(
-        languageTag: String,
-        onlyFavs: Boolean?,
-        name: String?,
-        categoryId: String?,
-        subcategoryIds: Array<Any>?
+        queryModel: QueryModel
     ): SupportSQLiteQuery {
+        Log.i("Utilities",
+            "New query: language:${queryModel.languageTag} favorite: ${queryModel.onlyFavorite?.toString()} name: ${queryModel.name?.toString()} categoryId: ${queryModel.categoryId?.toString()} subcategoryIds ${queryModel.subcategoryIds?.toString()}")
         val bindArgs = ArrayList<Any>()
 
         var stringSelection = ""
@@ -92,34 +92,36 @@ object Utilities {
             .builder("objectives_table")
             .columns(arrayOf("*"))
 
-        if (!languageTag.isEmpty()) {
-            bindArgs.add(languageTag)
+        if (!queryModel.languageTag.isEmpty()) {
+            bindArgs.add(queryModel.languageTag)
             stringSelection += " languageTag = ?"
         }
 
-        if (onlyFavs != null) {
-            bindArgs.add(onlyFavs)
+        if (queryModel.onlyFavorite != null) {
+            bindArgs.add(queryModel.onlyFavorite!!)
             stringSelection += " AND isFavorite = ?"
         }
 
-        if (name != null) {
-            bindArgs.add("%".plus(name).plus("%"))
+        if (queryModel.name != null) {
+            bindArgs.add("%".plus(queryModel.name).plus("%"))
             stringSelection += " AND name LIKE ?"
         }
 
-        if (categoryId != null) {
-            bindArgs.add(categoryId!!)
+        if (queryModel.categoryId != null) {
+            bindArgs.add(queryModel.categoryId!!)
             stringSelection += " AND categoryId = ?"
         }
 
-        if (subcategoryIds != null) {
-            val str = "?,".repeat(subcategoryIds.size).dropLast(1)
-            bindArgs.addAll(subcategoryIds)
+        if (queryModel.subcategoryIds != null) {
+            val str = "?,".repeat(queryModel.subcategoryIds!!.size).dropLast(1)
+            bindArgs.addAll(queryModel.subcategoryIds!!)
             stringSelection += " AND subcategoryId IN (${str})"
         }
 
         if (!stringSelection.equals(""))
             builder.selection(stringSelection, bindArgs.toArray())
+
+        builder.orderBy("name")
         val query = builder.create()
 
         Log.i("WandrDatabaseTest", query.sql + " " + bindArgs.toString())

@@ -19,32 +19,12 @@ import com.encorsa.wandr.network.models.ObjectiveModel
 
 
 class ObjectiveAdapter : ListAdapter<ObjectiveDatabaseModel, ObjectiveAdapter.ItemViewHolder>(ObjectiveDiffCallback()){
-//    var objectives = mutableListOf<ObjectiveDatabaseModel>()
-//        set(value) {
-//            field = value
-//            notifyDataSetChanged()
-//        }
-
-//    fun addData(listItems: List<ObjectiveDatabaseModel>) {
-//        var size = objectives.size
-//        objectives.addAll(listItems)
-//        var sizeNew = objectives.size
-//        notifyItemRangeChanged(size, sizeNew)
-//    }
-
-    //    override fun getItemCount(): Int = objectives.size
-
 
     override fun onBindViewHolder(holder: ObjectiveAdapter.ItemViewHolder, position: Int) {
-//        val item = objectives[position]
         val item = getItem(position)
         if (item != null)
             holder.bind(item)
     }
-
-
-
-
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -52,7 +32,6 @@ class ObjectiveAdapter : ListAdapter<ObjectiveDatabaseModel, ObjectiveAdapter.It
     ): ItemViewHolder {
         return ItemViewHolder.from(parent)
     }
-
 
     class ItemViewHolder private constructor(itemView: View) : RecyclerView.ViewHolder(itemView){
         var itemName: TextView
@@ -78,49 +57,6 @@ class ObjectiveAdapter : ListAdapter<ObjectiveDatabaseModel, ObjectiveAdapter.It
             mSubcategoryTextView = itemView.findViewById(R.id.subcategory)
             line = itemView.findViewById(R.id.line) as ConstraintLayout
             line.setVisibility(View.GONE)
-
-//            if (moreInfo != null)
-//                mMoreInfoTextView.setText(moreInfo)
-//            locationButton.setOnClickListener(object : View.OnClickListener {
-//                override fun onClick(view: View) {
-//                    selectLocationView()
-//                }
-//            })
-//            urlButton.setOnClickListener(object : View.OnClickListener {
-//                override fun onClick(view: View) {
-//                    if (attractions.get(adapterPosition).getUrl() != null)
-//                        Toast.makeText(
-//                            this@MainActivity,
-//                            attractions.get(adapterPosition).getUrl(),
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-//                    val i = Intent(this@MainActivity, ViewUrlActivity::class.java)
-//                    i.putExtra("url", attractions.get(adapterPosition).getUrl())
-//                    startActivity(i)
-//                    //                        Intent i = new Intent(Intent.ACTION_VIEW);
-//                    //                        i.setData(Uri.parse(Helper.URL_PRIVACY));
-//                    //                        startActivity(i);
-//                }
-//            })
-//            favouritesButton.setOnClickListener(object : View.OnClickListener {
-//                override fun onClick(view: View) {
-//                    //favouritesButton.setSelected(!favouritesButton.isSelected());
-//                    if (!isLoading) {
-//                        if (favouritesButton.isSelected())
-//                            attemptDeleteFromFavorites(getFavoriteId(attractions.get(adapterPosition).getFavorites()))
-//                        else
-//                            attemptAddToFavorites(attractions.get(adapterPosition).getId())
-//                    }
-//                }
-//            })
-//            view.setOnClickListener(object : View.OnClickListener {
-//                override fun onClick(view: View) {
-//                    //Toast.makeText(MainActivity.this, attractions.get(getAdapterPosition()).getName(), Toast.LENGTH_SHORT).show();
-//                    val i = Intent(this@MainActivity, DetailActivity::class.java)
-//                    i.putExtra("objectiveId", attractions.get(adapterPosition).getId())
-//                    startActivity(i)
-//                }
-//            })
         }
 
         fun bind(
@@ -133,6 +69,8 @@ class ObjectiveAdapter : ListAdapter<ObjectiveDatabaseModel, ObjectiveAdapter.It
                 val txt = fromHtml(longDescription)
                 shortDescription.text = txt.toString()
             }
+            mSubcategoryTextView.text = "Subcategoria"
+            favouritesButton.isSelected = item.isFavorite
         }
 
         @SuppressWarnings("deprecation")
