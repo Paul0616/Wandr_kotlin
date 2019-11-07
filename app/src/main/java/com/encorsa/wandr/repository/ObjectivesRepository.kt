@@ -36,9 +36,10 @@ class ObjectivesRepository(private val app: Application, private val database: W
         return ObjectiveRepositoryResult(objectives, networkError)
     }
 
-    suspend fun refreshObjectives(queryModel: QueryModel) {
+    suspend fun refreshObjectives(queryModel: QueryModel, filterHasChanged: Boolean) {
+        if (filterHasChanged)
+            isRequestInProgress = false
         if (isRequestInProgress) return
-        Log.i("ObjectiveRepository", "page = ${lastRequestedPage.toString()}")
         withContext(Dispatchers.IO) {
             var subs: List<String>? = null
             val options = HashMap<String, Any>()
@@ -67,14 +68,14 @@ class ObjectivesRepository(private val app: Application, private val database: W
                     WandrApi.RETROFIT_SERVICE.getObjectives(options, subs).await()
                 //save in database
                 val rowsInserted = database.insertObjectives(objectivesNetwork.asDatabaseModel())
-                Log.i("ObjectiverRepository", "Inserted ${rowsInserted.size.toString()} in local database")
+
                 lastRequestedPage = objectivesNetwork.currentPage()
                 isRequestInProgress = false
                 if (!objectivesNetwork.isLastPage())
                     lastRequestedPage++
                 else
                     isRequestInProgress = true
-
+                Log.i("ObjectiverRepository", "Inserted ${rowsInserted.size.toString()} in local database (isRequestInProgress=${isRequestInProgress.toString()}) (page = ${lastRequestedPage.toString()})")
             } catch (e: Exception) {
                 networkError.postValue(e.message)
                 isRequestInProgress = false

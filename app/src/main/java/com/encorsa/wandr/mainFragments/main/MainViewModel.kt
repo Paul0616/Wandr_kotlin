@@ -2,9 +2,11 @@ package com.encorsa.wandr.mainFragments.main
 
 
 import android.app.Application
+import android.graphics.Color
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.*
 import androidx.sqlite.db.SupportSQLiteQuery
@@ -41,13 +43,14 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
         currentLanguage.value = prefs.currentLanguage.let {
             it ?: DEFAULT_LANGUAGE
         }
-        queryModel = QueryModel(currentLanguage.value!!, showFavorite.value, null, null, null)
+        queryModel = QueryModel(currentLanguage.value!!, showFavorite.value, search.value, null, null)
         makeQuery()
     }
 
 
     private val objectiveRepositoryResponse: LiveData<ObjectiveRepositoryResult> = Transformations.map(query) {
-        loadObjectives()
+        loadObjectives(true)
+        Log.i("MainViewModel", "objectives from repository conform model: ${queryModel}")
         objectiveRepository.setObjectivesQuery(it, queryModel)
     }
 
@@ -59,37 +62,63 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
         it.networkErrors
     }
 
+//    var searchViewTextListener = object : SearchView.OnQueryTextListener{
+//        override fun onQueryTextSubmit(query: String?): Boolean {
+//            Log.i("MainViewModel", "ON TEXT SUBMIT SEARCH VIEW")
+//            search.postValue(query)
+//            queryModel = QueryModel(currentLanguage.value!!, showFavorite.value, search.value, null, null)
+//            makeQuery()
+//            return true
+//        }
+//
+//        override fun onQueryTextChange(newText: String?): Boolean {
+//            return true
+//        }
+//    }
+
+//    var searchViewCloseListener = object : SearchView.OnCloseListener{
+//        override fun onClose(): Boolean {
+//            Log.i("MainViewModel", "ON CLOSE SEARCH VIEW")
+//            return true
+//        }
+//    }
+
     private fun makeQuery(){
+        Log.i("MainViewModel", "in query was posted ${queryModel.toString()}")
         query.postValue(Utilities.getQuery(queryModel))
     }
 
     fun objectiveListScrolled(visibleItemCount: Int, lastVisibleItemPosition: Int, totalItemCount: Int) {
         if (visibleItemCount + lastVisibleItemPosition + VISIBLE_THRESHOLD >= totalItemCount) {
-            loadObjectives()
+            loadObjectives(false)
         }
     }
 
-    fun loadObjectives() {
+    fun loadObjectives(filterHasChanged: Boolean) {
         viewModelScope.launch {
-            objectiveRepository.refreshObjectives(queryModel)
+            objectiveRepository.refreshObjectives(queryModel, filterHasChanged)
         }
+    }
+
+    fun setSearch(searchText: String?){
+        search.value = searchText
+        queryModel = QueryModel(currentLanguage.value!!, showFavorite.value, search.value, null, null)
+        makeQuery()
     }
 
     fun setShowFavorite(view: View){
-
         //if was null then true
         //if is true than null
-
         if (showFavorite.value == null){
             (view as Button).backgroundTintList = ContextCompat.getColorStateList(view.context, R.color.colorAccentLight)
             showFavorite.value = true
         }
         else {
-            (view as Button).backgroundTintList = ContextCompat.getColorStateList(view.context, R.color.colorPrimary)
+            (view as Button).backgroundTintList =  ContextCompat.getColorStateList(view.context, R.color.colorLightGray)
             showFavorite.value = null
         }
         //showFavorite.value = !(showFavorite.value ?: false)
-        queryModel = QueryModel(currentLanguage.value!!, showFavorite.value, null, null, null)
+        queryModel = QueryModel(currentLanguage.value!!, showFavorite.value, search.value, null, null)
         makeQuery()
     }
 

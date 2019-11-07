@@ -1,6 +1,8 @@
 package com.encorsa.wandr
 
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -18,6 +20,7 @@ import com.encorsa.wandr.splashScreen.SplashScreenViewModelFactory
 import com.encorsa.wandr.utils.Prefs
 import com.google.firebase.messaging.FirebaseMessaging
 
+
 class SplashScreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +35,7 @@ class SplashScreenActivity : AppCompatActivity() {
         val viewModel: SplashScreenViewModel = ViewModelProviders.of(this, viewModelFactory).get(
             SplashScreenViewModel::class.java
         )
+
         binding.imageView2.animate()
             .alpha(1f)
             .duration = 500
@@ -82,12 +86,24 @@ class SplashScreenActivity : AppCompatActivity() {
                 //i.putExtra("title","XXX")
                 startActivity(i)
                 //this.findNavController()
-            }
-            else
+            } else
                 startActivity(Intent(this, MainActivity::class.java))
 
             finish()
         })
 
+        if (!isOnline(applicationContext))
+            if (prefs.userName == null)
+                startActivity(Intent(this, LogInActivity::class.java))
+            else
+                startActivity(Intent(this, MainActivity::class.java))
+    }
+
+
+    fun isOnline(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = connectivityManager.activeNetworkInfo
+        return networkInfo != null && networkInfo.isConnected
     }
 }
