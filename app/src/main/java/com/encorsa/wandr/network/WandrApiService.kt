@@ -1,6 +1,6 @@
 package com.encorsa.wandr.network
 
-import com.encorsa.wandr.network.models.*
+import com.encorsa.wandr.models.*
 import com.encorsa.wandr.utils.BASE_URL
 
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
@@ -59,6 +59,9 @@ interface WandrApiService {
     @GET("ObjectiveApi/GetObjectivesFiltered")
     fun getObjectives(@QueryMap options: HashMap<String, Any>, @Query("subcategoryId") subcategoryIdList: List<String>?):
             Deferred<ObjectivePage>
+    @GET("CategoryAPI")
+    fun getCategories(@QueryMap options: HashMap<String, String>):
+            Deferred<CategoryList>
 }
 
 object WandrApi {

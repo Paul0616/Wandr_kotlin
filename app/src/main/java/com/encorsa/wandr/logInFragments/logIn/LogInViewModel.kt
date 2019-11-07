@@ -7,8 +7,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.encorsa.wandr.database.WandrDatabaseDao
-import com.encorsa.wandr.network.models.LoginRequestModel
-import com.encorsa.wandr.network.models.LoginResponseModel
+import com.encorsa.wandr.models.LoginRequestModel
+import com.encorsa.wandr.models.LoginResponseModel
 import com.encorsa.wandr.network.WandrApi
 import com.encorsa.wandr.network.WandrApiStatus
 import com.encorsa.wandr.utils.DEFAULT_LANGUAGE

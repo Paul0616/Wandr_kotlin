@@ -9,8 +9,8 @@
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.encorsa.wandr.mainFragments.main.MainFragment"
-        android:label="fragment_main"
-        tools:layout="@layout/fragment_main" >
+        android:label="Wandr"
+        tools:layout="@layout/fragment_main">
         <action
             android:id="@+id/action_mainFragment_to_detailFragment"
             app:destination="@id/detailFragment" />

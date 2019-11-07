@@ -1,7 +1,6 @@
 package com.encorsa.wandr.logInFragments.register
 
 
-import android.content.Intent
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.text.TextUtils
@@ -18,21 +17,15 @@ import android.widget.Toast
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
-import com.encorsa.wandr.MainActivity
 import com.encorsa.wandr.R
 import com.encorsa.wandr.database.WandrDatabase
 import com.encorsa.wandr.databinding.FragmentRegisterBinding
-import com.encorsa.wandr.logInFragments.logIn.LogInFragmentDirections
-import com.encorsa.wandr.logInFragments.logIn.LogInViewModelFactory
 import com.encorsa.wandr.network.WandrApiRequestId
 import com.encorsa.wandr.network.WandrApiStatus
-import com.encorsa.wandr.network.models.LoginRequestModel
-import com.encorsa.wandr.network.models.RegistrationRequestModel
+import com.encorsa.wandr.models.RegistrationRequestModel
 import com.encorsa.wandr.utils.DEBUG_MODE
 import com.encorsa.wandr.utils.Prefs
-import com.encorsa.wandr.utils.Utilities
 import java.util.*
 
 
@@ -62,9 +55,9 @@ class RegisterFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentRegisterBinding.inflate(inflater)
-        binding.setLifecycleOwner(this)
+        binding.lifecycleOwner = this
         (activity as AppCompatActivity).supportActionBar?.show()
-        (activity as? AppCompatActivity)?.supportActionBar?.title =
+        //(activity as? AppCompatActivity)?.supportActionBar?.title =
         return binding.root
     }
 

@@ -16,22 +16,18 @@
 
 package com.encorsa.wandr
 
-import android.util.Log
 import androidx.room.Room
-import androidx.sqlite.db.SupportSQLiteQuery
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.encorsa.wandr.database.*
-import com.encorsa.wandr.network.models.LabelModel
-import com.encorsa.wandr.network.models.LanguageAndNameModel
+import com.encorsa.wandr.models.LabelModel
+import com.encorsa.wandr.models.LanguageAndNameModel
 
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
-import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.IOException
-import androidx.sqlite.db.SupportSQLiteQueryBuilder
 
 
 /**

@@ -7,16 +7,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.encorsa.wandr.database.ObjectiveDatabaseModel
-import com.encorsa.wandr.database.WandrDatabase
 import com.encorsa.wandr.database.WandrDatabaseDao
 import com.encorsa.wandr.network.WandrApi
-import com.encorsa.wandr.network.models.ObjectivePage
-import com.encorsa.wandr.network.models.ObjectiveRepositoryResult
-import com.encorsa.wandr.network.models.QueryModel
-import com.encorsa.wandr.utils.DEFAULT_LANGUAGE
+import com.encorsa.wandr.models.ObjectivePage
+import com.encorsa.wandr.models.ObjectiveRepositoryResult
+import com.encorsa.wandr.models.QueryModel
 import com.encorsa.wandr.utils.PAGE_SIZE
 import com.encorsa.wandr.utils.Prefs
-import com.encorsa.wandr.utils.Utilities
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
@@ -36,9 +33,10 @@ class ObjectivesRepository(private val app: Application, private val database: W
         return ObjectiveRepositoryResult(objectives, networkError)
     }
 
-    suspend fun refreshObjectives(queryModel: QueryModel) {
+    suspend fun refreshObjectives(queryModel: QueryModel, filterHasChanged: Boolean) {
+        if (filterHasChanged)
+            isRequestInProgress = false
         if (isRequestInProgress) return
-        Log.i("ObjectiveRepository", "page = ${lastRequestedPage.toString()}")
         withContext(Dispatchers.IO) {
             var subs: List<String>? = null
             val options = HashMap<String, Any>()
@@ -67,14 +65,14 @@ class ObjectivesRepository(private val app: Application, private val database: W
                     WandrApi.RETROFIT_SERVICE.getObjectives(options, subs).await()
                 //save in database
                 val rowsInserted = database.insertObjectives(objectivesNetwork.asDatabaseModel())
-                Log.i("ObjectiverRepository", "Inserted ${rowsInserted.size.toString()} in local database")
+
                 lastRequestedPage = objectivesNetwork.currentPage()
                 isRequestInProgress = false
                 if (!objectivesNetwork.isLastPage())
                     lastRequestedPage++
                 else
                     isRequestInProgress = true
-
+                Log.i("ObjectiverRepository", "Inserted ${rowsInserted.size.toString()} in local database (isRequestInProgress=${isRequestInProgress.toString()}) (page = ${lastRequestedPage.toString()})")
             } catch (e: Exception) {
                 networkError.postValue(e.message)
                 isRequestInProgress = false

@@ -4,7 +4,9 @@ package com.encorsa.wandr.mainFragments.main
 import android.app.Application
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -29,7 +31,8 @@ import com.encorsa.wandr.utils.Prefs
  */
 class MainFragment : Fragment() {
 
-
+    private lateinit var viewModel: MainViewModel
+    private lateinit var binding: FragmentMainBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,11 +42,13 @@ class MainFragment : Fragment() {
 
         val application = requireNotNull(activity).application
         val dataSource = WandrDatabase.getInstance(application).wandrDatabaseDao
-        val binding = FragmentMainBinding.inflate(inflater)
+        binding = FragmentMainBinding.inflate(inflater)
         val viewModelFactory = MainModelFactory(application, dataSource)
-        val viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
 
-        val adapter = ObjectiveAdapter()
+        val adapter = ObjectiveAdapter(ObjectiveAdapter.OnClickListener{
+            viewModel.objectiveWasClicked(it)
+        })
         setHasOptionsMenu(true)
         setupScrollListener(binding.objectiveList, viewModel)
 
@@ -51,23 +56,30 @@ class MainFragment : Fragment() {
         binding.setLifecycleOwner(this)
         binding.mainViewmodel = viewModel
         binding.progressBarMain.visibility = View.GONE
+
         viewModel.currentLanguage.observe(this, Observer {
             it?.let {
-                viewModel.loadObjectives()
+                viewModel.loadObjectives(false)
             }
         })
 
-        binding.testButton.setOnClickListener (
+        viewModel.selectedObjectiveModel.observe(this, Observer {
+            Toast.makeText(
+                application.applicationContext,
+                it.defaultImageUrl,
+                Toast.LENGTH_SHORT
+            ).show()
+        })
+
+        binding.testButton.setOnClickListener(
             Navigation.createNavigateOnClickListener(MainFragmentDirections.actionMainFragmentToDetailFragment())
         )
         binding
-        adapter.initAdapter(binding, viewModel, application)
+        adapter.initAdapter(application)
         return binding.root
     }
 
     private fun ObjectiveAdapter.initAdapter(
-        binding: FragmentMainBinding,
-        viewModel: MainViewModel,
         application: Application
     ) {
         binding.objectiveList.adapter = this
@@ -118,42 +130,28 @@ class MainFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.main_option_menu, menu)
 
+        val searchView = menu.findItem(R.id.app_bar_search).actionView as SearchView
 
-//        val searchView = menu.findItem(R.id.app_bar_search).actionView as SearchView
-////        val closeButton = searchView.findViewById(androidx.appcompat.R.id.search_close_btn)
-////
-////        closeButton.setOnClickListener(View.OnClickListener {
-////            if (searchView.query.toString() == "") {
-//////                search = false
-//////                loadedPages = 0
-////            }
-////            searchView.isIconified = true
-////            //attemptGetObjectives()
-////        })
-//        searchView.setOnCloseListener(object: SearchView.OnCloseListener{
-//            override fun onClose(): Boolean {
-//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//            }
-//        })
-//
-//        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-//            override fun onQueryTextSubmit(s: String): Boolean {
-//                searchView.setQuery("", false)
-//                searchView.isIconified = true
-//
-////                search = true
-////                searchString = s
-////                loadedPages = 0
-////                setSearchViewText(searchView)
-////                attemptGetObjectives()
-//                return true
-//            }
-//
-//            override fun onQueryTextChange(s: String): Boolean {
-//                return false
-//            }
-//
-//        })
+        val closeButton =
+            searchView.findViewById(androidx.appcompat.R.id.search_close_btn) as ImageView
+
+        closeButton.setOnClickListener(View.OnClickListener {
+            searchView.setQuery("", false)
+            searchView.isIconified = true
+            viewModel.setSearch(null)
+        })
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(s: String): Boolean {
+                viewModel.setSearch(s)
+                searchView.clearFocus()
+                return true
+            }
+
+            override fun onQueryTextChange(s: String): Boolean {
+                return false
+            }
+        })
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

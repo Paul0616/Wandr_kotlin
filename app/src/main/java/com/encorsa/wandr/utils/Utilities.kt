@@ -5,14 +5,10 @@ import android.content.DialogInterface
 import android.content.res.Configuration
 import android.os.Build
 import android.util.Log
-import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
-import androidx.recyclerview.widget.RecyclerView
 import androidx.sqlite.db.SupportSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQueryBuilder
 import com.encorsa.wandr.R
-import com.encorsa.wandr.network.models.QueryModel
-import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener
+import com.encorsa.wandr.models.QueryModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.text.ParseException
 import java.text.SimpleDateFormat

@@ -11,14 +11,15 @@ import androidx.sqlite.db.SupportSQLiteQuery
 import com.encorsa.wandr.database.ObjectiveDatabaseModel
 
 import com.encorsa.wandr.database.WandrDatabaseDao
-import com.encorsa.wandr.network.models.ObjectiveRepositoryResult
-import com.encorsa.wandr.network.models.QueryModel
+import com.encorsa.wandr.models.ObjectiveRepositoryResult
+import com.encorsa.wandr.models.QueryModel
 import com.encorsa.wandr.repository.ObjectivesRepository
 import com.encorsa.wandr.utils.DEFAULT_LANGUAGE
 import com.encorsa.wandr.utils.Prefs
 import com.encorsa.wandr.utils.Utilities
 import kotlinx.coroutines.launch
 import com.encorsa.wandr.R
+import com.encorsa.wandr.models.ObjectiveModel
 
 
 class MainViewModel(app: Application, val database: WandrDatabaseDao) :
@@ -41,55 +42,80 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
         currentLanguage.value = prefs.currentLanguage.let {
             it ?: DEFAULT_LANGUAGE
         }
-        queryModel = QueryModel(currentLanguage.value!!, showFavorite.value, null, null, null)
+        queryModel =
+            QueryModel(currentLanguage.value!!, showFavorite.value, search.value, null, null)
         makeQuery()
     }
 
 
-    private val objectiveRepositoryResponse: LiveData<ObjectiveRepositoryResult> = Transformations.map(query) {
-        loadObjectives()
-        objectiveRepository.setObjectivesQuery(it, queryModel)
-    }
+    private val objectiveRepositoryResponse: LiveData<ObjectiveRepositoryResult> =
+        Transformations.map(query) {
+            loadObjectives(true)
+            Log.i("MainViewModel", "objectives from repository conform model: ${queryModel}")
+            objectiveRepository.setObjectivesQuery(it, queryModel)
+        }
 
-    val objectives: LiveData<List<ObjectiveDatabaseModel>> = Transformations.switchMap(objectiveRepositoryResponse) { it ->
-        it.objectives
-    }
+    val objectives: LiveData<List<ObjectiveDatabaseModel>> =
+        Transformations.switchMap(objectiveRepositoryResponse) { it ->
+            it.objectives
+        }
 
-    val networkErrors: LiveData<String> = Transformations.switchMap(objectiveRepositoryResponse) { it ->
-        it.networkErrors
-    }
+    val networkErrors: LiveData<String> =
+        Transformations.switchMap(objectiveRepositoryResponse) { it ->
+            it.networkErrors
+        }
 
-    private fun makeQuery(){
+    val _selectedObjectiveModel = MutableLiveData<ObjectiveDatabaseModel>()
+    val selectedObjectiveModel: LiveData<ObjectiveDatabaseModel>
+        get() = _selectedObjectiveModel
+
+    private fun makeQuery() {
+        Log.i("MainViewModel", "in query was posted ${queryModel.toString()}")
         query.postValue(Utilities.getQuery(queryModel))
     }
 
-    fun objectiveListScrolled(visibleItemCount: Int, lastVisibleItemPosition: Int, totalItemCount: Int) {
+    fun objectiveListScrolled(
+        visibleItemCount: Int,
+        lastVisibleItemPosition: Int,
+        totalItemCount: Int
+    ) {
         if (visibleItemCount + lastVisibleItemPosition + VISIBLE_THRESHOLD >= totalItemCount) {
-            loadObjectives()
+            loadObjectives(false)
         }
     }
 
-    fun loadObjectives() {
+    fun objectiveWasClicked(objective: ObjectiveDatabaseModel){
+        _selectedObjectiveModel.value = objective
+    }
+
+    fun loadObjectives(filterHasChanged: Boolean) {
         viewModelScope.launch {
-            objectiveRepository.refreshObjectives(queryModel)
+            objectiveRepository.refreshObjectives(queryModel, filterHasChanged)
         }
     }
 
-    fun setShowFavorite(view: View){
+    fun setSearch(searchText: String?) {
+        search.value = searchText
+        queryModel =
+            QueryModel(currentLanguage.value!!, showFavorite.value, search.value, null, null)
+        makeQuery()
+    }
 
+    fun setShowFavorite(view: View) {
         //if was null then true
         //if is true than null
-
-        if (showFavorite.value == null){
-            (view as Button).backgroundTintList = ContextCompat.getColorStateList(view.context, R.color.colorAccentLight)
+        if (showFavorite.value == null) {
+            (view as Button).backgroundTintList =
+                ContextCompat.getColorStateList(view.context, R.color.colorAccentLight)
             showFavorite.value = true
-        }
-        else {
-            (view as Button).backgroundTintList = ContextCompat.getColorStateList(view.context, R.color.colorPrimary)
+        } else {
+            (view as Button).backgroundTintList =
+                ContextCompat.getColorStateList(view.context, R.color.colorLightGray)
             showFavorite.value = null
         }
         //showFavorite.value = !(showFavorite.value ?: false)
-        queryModel = QueryModel(currentLanguage.value!!, showFavorite.value, null, null, null)
+        queryModel =
+            QueryModel(currentLanguage.value!!, showFavorite.value, search.value, null, null)
         makeQuery()
     }
 

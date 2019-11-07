@@ -6,7 +6,7 @@ import androidx.lifecycle.*
 import com.encorsa.wandr.database.WandrDatabaseDao
 import com.encorsa.wandr.network.WandrApi
 import com.encorsa.wandr.network.WandrApiStatus
-import com.encorsa.wandr.network.models.HtmlPageModel
+import com.encorsa.wandr.models.HtmlPageModel
 import com.encorsa.wandr.utils.DEFAULT_LANGUAGE
 import com.encorsa.wandr.utils.Prefs
 import com.encorsa.wandr.utils.URL_PRIVACY

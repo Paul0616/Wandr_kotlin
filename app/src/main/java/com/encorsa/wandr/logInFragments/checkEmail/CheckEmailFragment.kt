@@ -18,7 +18,7 @@ import com.encorsa.wandr.database.WandrDatabase
 import com.encorsa.wandr.databinding.FragmentCheckEmailBinding
 import com.encorsa.wandr.network.WandrApiRequestId
 import com.encorsa.wandr.network.WandrApiStatus
-import com.encorsa.wandr.network.models.LoginRequestModel
+import com.encorsa.wandr.models.LoginRequestModel
 import com.encorsa.wandr.utils.DEBUG_MODE
 import com.encorsa.wandr.utils.Prefs
 import com.encorsa.wandr.utils.Utilities
