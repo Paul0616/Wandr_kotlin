@@ -45,5 +45,8 @@ data class ObjectiveDatabaseModel (
     var email: String? = null,
 
     @ColumnInfo(name = "phoneNumber")
-    var phoneNumber: String? = null
+    var phoneNumber: String? = null,
+
+    @ColumnInfo(name = "defaultImageUrl")
+    var defaultImageUrl: String? = null
 )

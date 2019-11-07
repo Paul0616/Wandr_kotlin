@@ -14,7 +14,7 @@ import com.encorsa.wandr.network.WandrApiStatus
 import com.encorsa.wandr.database.LanguageDatabaseModel
 import com.encorsa.wandr.database.WandrDatabase
 import com.encorsa.wandr.databinding.ActivitySplashScreenBinding
-import com.encorsa.wandr.network.models.LabelModel
+import com.encorsa.wandr.models.LabelModel
 import com.encorsa.wandr.splashScreen.SplashScreenViewModel
 import com.encorsa.wandr.splashScreen.SplashScreenViewModelFactory
 import com.encorsa.wandr.utils.Prefs

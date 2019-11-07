@@ -5,18 +5,15 @@ import android.util.Log
 import com.encorsa.wandr.network.WandrApi
 import com.encorsa.wandr.network.WandrApiStatus
 
-import com.encorsa.wandr.network.models.RegistrationRequestModel
+import com.encorsa.wandr.models.RegistrationRequestModel
 import retrofit2.HttpException
 import android.view.View.OnFocusChangeListener
 import android.view.View
-import android.widget.ImageView
 import androidx.lifecycle.*
 import com.encorsa.wandr.database.WandrDatabaseDao
 import com.encorsa.wandr.network.CallAndStatus
 import com.encorsa.wandr.network.WandrApiRequestId
-import com.encorsa.wandr.network.models.LoginRequestModel
-import com.encorsa.wandr.network.models.LoginResponseModel
-import com.encorsa.wandr.network.models.SecurityCode
+import com.encorsa.wandr.models.SecurityCode
 import com.encorsa.wandr.utils.DEFAULT_LANGUAGE
 import com.encorsa.wandr.utils.Prefs
 import kotlinx.coroutines.*

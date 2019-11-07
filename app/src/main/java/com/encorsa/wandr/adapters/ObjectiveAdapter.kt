@@ -9,21 +9,26 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.encorsa.wandr.R
 import com.encorsa.wandr.database.ObjectiveDatabaseModel
-import com.encorsa.wandr.network.models.ObjectiveModel
+import com.encorsa.wandr.models.ObjectiveModel
 
 
-class ObjectiveAdapter : ListAdapter<ObjectiveDatabaseModel, ObjectiveAdapter.ItemViewHolder>(ObjectiveDiffCallback()){
+class ObjectiveAdapter(val onClickListener: OnClickListener) : ListAdapter<ObjectiveDatabaseModel, ObjectiveAdapter.ItemViewHolder>(ObjectiveDiffCallback()){
 
     override fun onBindViewHolder(holder: ObjectiveAdapter.ItemViewHolder, position: Int) {
         val item = getItem(position)
-        if (item != null)
+        if (item != null) {
             holder.bind(item)
+            holder.itemImageView.setOnClickListener {
+                onClickListener.onClick(item)
+            }
+        }
     }
 
     override fun onCreateViewHolder(
@@ -71,6 +76,14 @@ class ObjectiveAdapter : ListAdapter<ObjectiveDatabaseModel, ObjectiveAdapter.It
             }
             mSubcategoryTextView.text = "Subcategoria"
             favouritesButton.isSelected = item.isFavorite
+            Glide.with(itemImageView.context)
+                .load(item.defaultImageUrl)
+                .apply(
+                    RequestOptions()
+                    .placeholder(R.drawable.loading_animation)
+                    .error(R.drawable.ic_no_image))
+                .into(itemImageView)
+
         }
 
         @SuppressWarnings("deprecation")
@@ -102,5 +115,9 @@ class ObjectiveAdapter : ListAdapter<ObjectiveDatabaseModel, ObjectiveAdapter.It
         override fun areContentsTheSame(oldItem: ObjectiveDatabaseModel, newItem: ObjectiveDatabaseModel): Boolean {
             return oldItem == newItem
         }
+    }
+
+    class OnClickListener(val clickListener: (objective: ObjectiveDatabaseModel) -> Unit)  {
+        fun onClick(objective: ObjectiveDatabaseModel) = clickListener(objective)
     }
 }

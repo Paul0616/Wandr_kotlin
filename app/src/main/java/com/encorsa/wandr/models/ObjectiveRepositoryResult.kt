@@ -1,4 +1,4 @@
-package com.encorsa.wandr.network.models
+package com.encorsa.wandr.models
 
 import androidx.lifecycle.LiveData
 import com.encorsa.wandr.database.ObjectiveDatabaseModel

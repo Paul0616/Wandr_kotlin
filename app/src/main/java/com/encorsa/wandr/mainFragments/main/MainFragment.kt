@@ -46,7 +46,9 @@ class MainFragment : Fragment() {
         val viewModelFactory = MainModelFactory(application, dataSource)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
 
-        val adapter = ObjectiveAdapter()
+        val adapter = ObjectiveAdapter(ObjectiveAdapter.OnClickListener{
+            viewModel.objectiveWasClicked(it)
+        })
         setHasOptionsMenu(true)
         setupScrollListener(binding.objectiveList, viewModel)
 
@@ -59,6 +61,14 @@ class MainFragment : Fragment() {
             it?.let {
                 viewModel.loadObjectives(false)
             }
+        })
+
+        viewModel.selectedObjectiveModel.observe(this, Observer {
+            Toast.makeText(
+                application.applicationContext,
+                it.defaultImageUrl,
+                Toast.LENGTH_SHORT
+            ).show()
         })
 
         binding.testButton.setOnClickListener(

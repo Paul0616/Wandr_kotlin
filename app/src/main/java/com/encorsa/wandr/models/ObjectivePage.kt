@@ -1,5 +1,6 @@
-package com.encorsa.wandr.network.models
+package com.encorsa.wandr.models
 
+import androidx.lifecycle.Transformations
 import com.encorsa.wandr.database.ObjectiveDatabaseModel
 import com.squareup.moshi.Json
 
@@ -32,7 +33,10 @@ data class ObjectivePage(
                 longitude = it.longitude,
                 url = it.url,
                 email = it.email,
-                phoneNumber = it.phoneNumber
+                phoneNumber = it.phoneNumber,
+                defaultImageUrl = if(it.media.filter { it.isDefault }.isEmpty()) { s ->
+                   s.single().url
+                }
             )
         }
     }

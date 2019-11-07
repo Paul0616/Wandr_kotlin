@@ -1,6 +1,5 @@
 package com.encorsa.wandr.logInFragments.logIn
 
-import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
@@ -12,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -22,7 +20,7 @@ import androidx.navigation.fragment.findNavController
 import com.encorsa.wandr.MainActivity
 import com.encorsa.wandr.R
 import com.encorsa.wandr.database.WandrDatabase
-import com.encorsa.wandr.network.models.LoginRequestModel
+import com.encorsa.wandr.models.LoginRequestModel
 import com.encorsa.wandr.network.WandrApiStatus
 import com.encorsa.wandr.databinding.FragmentLogInBinding
 import com.encorsa.wandr.utils.DEBUG_MODE

@@ -8,7 +8,7 @@ import com.encorsa.wandr.database.WandrDatabaseDao
 
 import com.encorsa.wandr.network.WandrApi
 import com.encorsa.wandr.network.WandrApiStatus
-import com.encorsa.wandr.network.models.LabelModel
+import com.encorsa.wandr.models.LabelModel
 import kotlinx.coroutines.*
 import retrofit2.HttpException
 
