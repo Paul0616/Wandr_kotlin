@@ -16,10 +16,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.encorsa.wandr.R
 import com.encorsa.wandr.database.ObjectiveDatabaseModel
-import com.encorsa.wandr.models.ObjectiveModel
 
 
-class ObjectiveAdapter(val onClickListener: OnClickListener) : ListAdapter<ObjectiveDatabaseModel, ObjectiveAdapter.ItemViewHolder>(ObjectiveDiffCallback()){
+class ObjectiveAdapter(val onClickListener: OnClickListener) :
+    ListAdapter<ObjectiveDatabaseModel, ObjectiveAdapter.ItemViewHolder>(ObjectiveDiffCallback()) {
 
     override fun onBindViewHolder(holder: ObjectiveAdapter.ItemViewHolder, position: Int) {
         val item = getItem(position)
@@ -38,7 +38,7 @@ class ObjectiveAdapter(val onClickListener: OnClickListener) : ListAdapter<Objec
         return ItemViewHolder.from(parent)
     }
 
-    class ItemViewHolder private constructor(itemView: View) : RecyclerView.ViewHolder(itemView){
+    class ItemViewHolder private constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var itemName: TextView
         var address: TextView
         var shortDescription: TextView
@@ -67,9 +67,9 @@ class ObjectiveAdapter(val onClickListener: OnClickListener) : ListAdapter<Objec
         fun bind(
             item: ObjectiveDatabaseModel
         ) {
-            itemName.text = item.name
-            address.text = item.address
-            val longDescription = item.longDescription
+            itemName.text = item.name ?: itemView.context.getString(R.string.no_info)
+            address.text = item.address ?: itemView.context.getString(R.string.no_info)
+            val longDescription = item.longDescription ?: itemView.context.getString(R.string.no_info)
             longDescription?.let {
                 val txt = fromHtml(longDescription)
                 shortDescription.text = txt.toString()
@@ -78,10 +78,12 @@ class ObjectiveAdapter(val onClickListener: OnClickListener) : ListAdapter<Objec
             favouritesButton.isSelected = item.isFavorite
             Glide.with(itemImageView.context)
                 .load(item.defaultImageUrl)
+                .centerCrop()
                 .apply(
                     RequestOptions()
-                    .placeholder(R.drawable.loading_animation)
-                    .error(R.drawable.ic_no_image))
+                        .placeholder(R.drawable.loading_animation)
+                        .error(R.drawable.ic_no_image)
+                )
                 .into(itemImageView)
 
         }
@@ -108,16 +110,22 @@ class ObjectiveAdapter(val onClickListener: OnClickListener) : ListAdapter<Objec
     class ObjectiveDiffCallback :
         DiffUtil.ItemCallback<ObjectiveDatabaseModel>() {
 
-        override fun areItemsTheSame(oldItem: ObjectiveDatabaseModel, newItem: ObjectiveDatabaseModel): Boolean {
+        override fun areItemsTheSame(
+            oldItem: ObjectiveDatabaseModel,
+            newItem: ObjectiveDatabaseModel
+        ): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: ObjectiveDatabaseModel, newItem: ObjectiveDatabaseModel): Boolean {
+        override fun areContentsTheSame(
+            oldItem: ObjectiveDatabaseModel,
+            newItem: ObjectiveDatabaseModel
+        ): Boolean {
             return oldItem == newItem
         }
     }
 
-    class OnClickListener(val clickListener: (objective: ObjectiveDatabaseModel) -> Unit)  {
+    class OnClickListener(val clickListener: (objective: ObjectiveDatabaseModel) -> Unit) {
         fun onClick(objective: ObjectiveDatabaseModel) = clickListener(objective)
     }
 }

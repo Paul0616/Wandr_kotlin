@@ -2,6 +2,7 @@ package com.encorsa.wandr.mainFragments.main
 
 
 import android.app.Application
+import android.content.SharedPreferences
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -19,7 +20,11 @@ import com.encorsa.wandr.utils.Prefs
 import com.encorsa.wandr.utils.Utilities
 import kotlinx.coroutines.launch
 import com.encorsa.wandr.R
-import com.encorsa.wandr.models.ObjectiveModel
+
+
+
+
+
 
 
 class MainViewModel(app: Application, val database: WandrDatabaseDao) :
@@ -34,6 +39,7 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
     private val showFavorite = MutableLiveData<Boolean>()
     private val search = MutableLiveData<String>()
     private val query = MutableLiveData<SupportSQLiteQuery>()
+    private val categoryId = MutableLiveData<String>()
     val currentLanguage = MutableLiveData<String>()
     var queryModel: QueryModel
 
@@ -43,10 +49,17 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
             it ?: DEFAULT_LANGUAGE
         }
         queryModel =
-            QueryModel(currentLanguage.value!!, showFavorite.value, search.value, null, null)
+            QueryModel(currentLanguage.value!!, showFavorite.value, search.value, categoryId.value, null)
         makeQuery()
     }
 
+
+
+
+//    private val preferenceChangeListener =
+//        SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+//
+//        }
 
     private val objectiveRepositoryResponse: LiveData<ObjectiveRepositoryResult> =
         Transformations.map(query) {
@@ -97,7 +110,7 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
     fun setSearch(searchText: String?) {
         search.value = searchText
         queryModel =
-            QueryModel(currentLanguage.value!!, showFavorite.value, search.value, null, null)
+            QueryModel(currentLanguage.value!!, showFavorite.value, search.value, categoryId.value, null)
         makeQuery()
     }
 
@@ -116,6 +129,12 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
         //showFavorite.value = !(showFavorite.value ?: false)
         queryModel =
             QueryModel(currentLanguage.value!!, showFavorite.value, search.value, null, null)
+        makeQuery()
+    }
+
+    fun setCategoryId(id: String?){
+        categoryId.value = id
+        queryModel = QueryModel(currentLanguage.value!!, showFavorite.value, search.value, categoryId.value, null)
         makeQuery()
     }
 

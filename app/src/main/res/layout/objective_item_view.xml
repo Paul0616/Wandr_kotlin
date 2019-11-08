@@ -40,10 +40,10 @@
                 android:layout_width="0dp"
                 android:layout_height="165dp"
                 android:background="@color/colorLightGray"
-                android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/line" />
+                app:layout_constraintTop_toBottomOf="@id/line"
+                app:srcCompat="@drawable/ic_no_image" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="0dp"

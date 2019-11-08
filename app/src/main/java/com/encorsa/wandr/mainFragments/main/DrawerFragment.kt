@@ -1,5 +1,6 @@
 package com.encorsa.wandr.mainFragments.main
 
+import android.content.Context
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -27,6 +28,15 @@ class DrawerFragment : Fragment() {
     private lateinit var viewModel: DrawerViewModel
     private lateinit var binding: FragmentDrawerBinding
     private lateinit var adapter: DrawerAdapter
+    private var drawerListener: FragmentDrawerListener? = null
+
+//    private lateinit var fragmentListener: MainFragment.FragmentDrawerListener
+//
+//    override fun onAttach(context: Context) {
+//        super.onAttach(context)
+//        fragmentListener = activity as MainFragment.FragmentDrawerListener
+//    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,6 +44,11 @@ class DrawerFragment : Fragment() {
     ): View? {
         binding = FragmentDrawerBinding.inflate(inflater)
         binding.lifecycleOwner = this
+        try {
+            drawerListener = context as FragmentDrawerListener
+        } catch (e : RuntimeException) {
+            e.printStackTrace()
+        }
         return binding.root
     }
 
@@ -46,14 +61,24 @@ class DrawerFragment : Fragment() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(DrawerViewModel::class.java)
 
         val menuItems = ArrayList<CategoryModel>()
-        adapter = DrawerAdapter(menuItems)
+        adapter = DrawerAdapter(menuItems, DrawerAdapter.OnClickListener{
+            viewModel.categoryMenuWasClicked(it)
+
+        })
 
 
         binding.rvDrawerList.layoutManager = LinearLayoutManager(activity)
         viewModel.menuItems.observe(this, Observer {
-            adapter = DrawerAdapter(it)
+            adapter = DrawerAdapter(it, DrawerAdapter.OnClickListener{
+                viewModel.categoryMenuWasClicked(it)
+
+            })
             binding.rvDrawerList.adapter = adapter
 
+        })
+
+        viewModel.selectedCategory.observe(this, Observer {
+            drawerListener?.onDrawerItemSelected(it)
         })
 
         viewModel.networkErrors.observe(this, Observer {
@@ -67,6 +92,10 @@ class DrawerFragment : Fragment() {
                     Toast.LENGTH_LONG
                 ).show()
         })
+    }
+
+    interface FragmentDrawerListener {
+        fun onDrawerItemSelected(item: CategoryModel)
     }
 
 }

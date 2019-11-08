@@ -9,7 +9,7 @@ import com.encorsa.wandr.R
 import com.encorsa.wandr.models.CategoryModel
 
 
-class DrawerAdapter(private val menuItems: List<CategoryModel>): RecyclerView.Adapter<DrawerAdapter.MenuViewHolder>() {
+class DrawerAdapter(private val menuItems: List<CategoryModel>, val onClickListener: OnClickListener): RecyclerView.Adapter<DrawerAdapter.MenuViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MenuViewHolder {
         return MenuViewHolder.from(parent)
@@ -22,6 +22,9 @@ class DrawerAdapter(private val menuItems: List<CategoryModel>): RecyclerView.Ad
     override fun onBindViewHolder(holder: MenuViewHolder, position: Int) {
        val current = menuItems[position]
         holder.menuItem.text = current.categoryNames.get(0).name
+        holder.menuItem.setOnClickListener{
+            onClickListener.onClick(current)
+        }
     }
 
     class MenuViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
@@ -29,7 +32,9 @@ class DrawerAdapter(private val menuItems: List<CategoryModel>): RecyclerView.Ad
 
         init {
             menuItem  = itemView.findViewById(R.id.tv_menu_category)
+
         }
+
 
         companion object {
             fun from(parent: ViewGroup): MenuViewHolder {
@@ -40,5 +45,8 @@ class DrawerAdapter(private val menuItems: List<CategoryModel>): RecyclerView.Ad
         }
     }
 
+    class OnClickListener(val clickListener: (menuItem: CategoryModel) -> Unit) {
+        fun onClick(menuItem: CategoryModel) = clickListener(menuItem)
+    }
 
 }

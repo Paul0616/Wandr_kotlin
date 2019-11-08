@@ -19,20 +19,30 @@ class DrawerViewModel(app: Application, val database: WandrDatabaseDao) :
     private val prefs = Prefs(app.applicationContext)
 
     val currentLanguage = MutableLiveData<String>()
-    val menuItems = MutableLiveData<List<CategoryModel>>()//Transformations.switchMap(objectiveRepositoryResponse) { it ->
+    val menuItems =
+        MutableLiveData<List<CategoryModel>>()//Transformations.switchMap(objectiveRepositoryResponse) { it ->
 //        it.objectives
 //    }
 
-    val networkErrors =  MutableLiveData<String>() //Transformations.switchMap(objectiveRepositoryResponse) { it ->
+    private val _selectedCategory = MutableLiveData<CategoryModel>()
+    val selectedCategory: LiveData<CategoryModel>
+        get() = _selectedCategory
+
+    val networkErrors =
+        MutableLiveData<String>() //Transformations.switchMap(objectiveRepositoryResponse) { it ->
 //        it.networkErrors
 //    }
 
-    init{
+    init {
         Log.i("DrawerViewModel", "CREATED")
         currentLanguage.value = prefs.currentLanguage.let {
             it ?: DEFAULT_LANGUAGE
         }
         getCategories()
+    }
+
+    fun categoryMenuWasClicked(category: CategoryModel){
+        _selectedCategory.value = category
     }
 
     private fun getCategories() {
@@ -45,17 +55,15 @@ class DrawerViewModel(app: Application, val database: WandrDatabaseDao) :
 
             // Await the completion of our Retrofit request
             try {
-               // _status.value = WandrApiStatus.LOADING
+                // _status.value = WandrApiStatus.LOADING
                 val listResult = getCategoriesDeferred.await()
-               // _status.value = WandrApiStatus.DONE
+                // _status.value = WandrApiStatus.DONE
                 menuItems.value = listResult.items
-            }
-            catch (e: Exception) {
+            } catch (e: Exception) {
                 //_status.value = WandrApiStatus.ERROR
                 networkErrors.value = e.message
                 //_status.value = "Failure: ${e.message}"
-            }
-            catch (ex: HttpException){
+            } catch (ex: HttpException) {
                 networkErrors.value = ex.response().message() + ex.response().errorBody()?.string()
             }
         }

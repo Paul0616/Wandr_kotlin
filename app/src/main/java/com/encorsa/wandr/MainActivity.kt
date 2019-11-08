@@ -4,21 +4,26 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.encorsa.wandr.databinding.ActivityMainBinding
+import com.encorsa.wandr.mainFragments.main.DrawerFragment
+import com.encorsa.wandr.mainFragments.main.MainFragment
+import com.encorsa.wandr.models.CategoryModel
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), DrawerFragment.FragmentDrawerListener {
 
     private lateinit var drawerLayout: DrawerLayout
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //setContentView(R.layout.activity_main)
 
-        val binding =
+        binding =
             DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
         drawerLayout = binding.drawerLayout
         val navController = this.findNavController(R.id.nav_host_fragment_main)
@@ -37,5 +42,16 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         val navController = this.findNavController(R.id.nav_host_fragment_main)
         return NavigationUI.navigateUp(navController, drawerLayout)
+    }
+
+    override fun onDrawerItemSelected(item: CategoryModel) {
+
+        drawerLayout.closeDrawers()
+//        val i = supportFragmentManager.getFragment()
+//        var fragment: Fragment = MainFragment()
+//        val fragmentManager = supportFragmentManager
+//        val fragmentTransaction = fragmentManager.beginTransaction()
+//        fragmentTransaction.replace(R.id.nav_host_fragment_main, fragment)
+//        fragmentTransaction.commit()
     }
 }

@@ -2,6 +2,7 @@ package com.encorsa.wandr.mainFragments.main
 
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -23,6 +24,7 @@ import com.encorsa.wandr.R
 import com.encorsa.wandr.adapters.ObjectiveAdapter
 import com.encorsa.wandr.database.WandrDatabase
 import com.encorsa.wandr.databinding.FragmentMainBinding
+import com.encorsa.wandr.models.CategoryModel
 import com.encorsa.wandr.utils.DEBUG_MODE
 import com.encorsa.wandr.utils.Prefs
 
@@ -33,6 +35,8 @@ class MainFragment : Fragment() {
 
     private lateinit var viewModel: MainViewModel
     private lateinit var binding: FragmentMainBinding
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -74,7 +78,10 @@ class MainFragment : Fragment() {
         binding.testButton.setOnClickListener(
             Navigation.createNavigateOnClickListener(MainFragmentDirections.actionMainFragmentToDetailFragment())
         )
-        binding
+       // binding
+
+
+
         adapter.initAdapter(application)
         return binding.root
     }
@@ -163,4 +170,6 @@ class MainFragment : Fragment() {
         }
         return super.onOptionsItemSelected(item)
     }
+
+
 }
