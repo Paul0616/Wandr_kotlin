@@ -13,6 +13,7 @@ import com.encorsa.wandr.databinding.ActivityMainBinding
 import com.encorsa.wandr.mainFragments.main.DrawerFragment
 import com.encorsa.wandr.mainFragments.main.MainFragment
 import com.encorsa.wandr.models.CategoryModel
+import com.encorsa.wandr.utils.Prefs
 
 class MainActivity : AppCompatActivity(), DrawerFragment.FragmentDrawerListener {
 
@@ -45,13 +46,8 @@ class MainActivity : AppCompatActivity(), DrawerFragment.FragmentDrawerListener 
     }
 
     override fun onDrawerItemSelected(item: CategoryModel) {
-
+        val prefs = Prefs(applicationContext)
         drawerLayout.closeDrawers()
-//        val i = supportFragmentManager.getFragment()
-//        var fragment: Fragment = MainFragment()
-//        val fragmentManager = supportFragmentManager
-//        val fragmentTransaction = fragmentManager.beginTransaction()
-//        fragmentTransaction.replace(R.id.nav_host_fragment_main, fragment)
-//        fragmentTransaction.commit()
+        prefs.currentCategoryId = item.id
     }
 }

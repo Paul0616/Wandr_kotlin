@@ -21,6 +21,19 @@ const val DEFAULT_LANGUAGE = "RO"
 const val URL_PRIVACY = "PRIVACY"
 const val PAGE_SIZE = 20
 
+const val PREFS_FILENAME = "com.encorsa.wandr.prefs"
+const val USER_EMAIL = "user_email"
+const val USER_NAME = "user_name"
+const val USER_ID = "user_id"
+const val USER_PASSWORD = "user_password"
+const val TOKEN = "token"
+const val TOKEN_EXPIRE_AT = "token_expire_at"
+const val FIRST_NAME = "first_name"
+const val CURRENT_CATEGORY_ID = "current_category_id"
+const val CURRENT_LANGUAGE = "current_language"
+const val SECURITY_CODE = "security_code"
+const val FIREBASE_TOKEN = "firebase_token"
+
 
 object Utilities {
 

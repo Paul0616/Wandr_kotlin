@@ -4,6 +4,7 @@ package com.encorsa.wandr.mainFragments.main
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -24,9 +25,8 @@ import com.encorsa.wandr.R
 import com.encorsa.wandr.adapters.ObjectiveAdapter
 import com.encorsa.wandr.database.WandrDatabase
 import com.encorsa.wandr.databinding.FragmentMainBinding
-import com.encorsa.wandr.models.CategoryModel
-import com.encorsa.wandr.utils.DEBUG_MODE
-import com.encorsa.wandr.utils.Prefs
+
+import com.encorsa.wandr.utils.*
 
 /**
  * A simple [Fragment] subclass.
@@ -44,7 +44,20 @@ class MainFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
 
+
         val application = requireNotNull(activity).application
+
+
+        val prefsLiveData: SharedPreferences = application.getSharedPreferences(PREFS_FILENAME, Context.MODE_PRIVATE)
+
+
+        prefsLiveData.stringLiveData(CURRENT_CATEGORY_ID, null).observe( this, Observer {
+            //if (it != null) {
+               viewModel.setCategoryId(it)
+           // }
+        })
+
+
         val dataSource = WandrDatabase.getInstance(application).wandrDatabaseDao
         binding = FragmentMainBinding.inflate(inflater)
         val viewModelFactory = MainModelFactory(application, dataSource)
@@ -78,7 +91,8 @@ class MainFragment : Fragment() {
         binding.testButton.setOnClickListener(
             Navigation.createNavigateOnClickListener(MainFragmentDirections.actionMainFragmentToDetailFragment())
         )
-       // binding
+
+
 
 
 

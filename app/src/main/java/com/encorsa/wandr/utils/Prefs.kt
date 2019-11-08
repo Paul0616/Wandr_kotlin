@@ -5,21 +5,12 @@ import android.content.SharedPreferences
 
 class Prefs(context: Context) {
 
-    private val PREFS_FILENAME = "com.encorsa.wandr.prefs"
-    private val USER_EMAIL = "user_email"
-    private val USER_NAME = "user_name"
-    private val USER_ID = "user_id"
-    private val USER_PASSWORD = "user_password"
-    private val TOKEN = "token"
-    private val TOKEN_EXPIRE_AT = "token_expire_at"
-    private val FIRST_NAME = "first_name"
-    private val CURRENT_CATEGORY_ID = "current_category_id"
-    private val CURRENT_LANGUAGE = "current_language"
-    private val SECURITY_CODE = "security_code"
-    private val FIREBASE_TOKEN = "firebase_token"
+
 
     private val prefs: SharedPreferences =
         context.getSharedPreferences(PREFS_FILENAME, Context.MODE_PRIVATE)
+
+
 
     var userEmail: String?
         get() = prefs.getString(USER_EMAIL, null)

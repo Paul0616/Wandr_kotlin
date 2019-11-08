@@ -21,12 +21,6 @@ import com.encorsa.wandr.utils.Utilities
 import kotlinx.coroutines.launch
 import com.encorsa.wandr.R
 
-
-
-
-
-
-
 class MainViewModel(app: Application, val database: WandrDatabaseDao) :
     AndroidViewModel(app) {
 
@@ -41,25 +35,16 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
     private val query = MutableLiveData<SupportSQLiteQuery>()
     private val categoryId = MutableLiveData<String>()
     val currentLanguage = MutableLiveData<String>()
-    var queryModel: QueryModel
+    lateinit var queryModel: QueryModel
 
     init {
         Log.i("MainViewModel", "CREATED")
         currentLanguage.value = prefs.currentLanguage.let {
             it ?: DEFAULT_LANGUAGE
         }
-        queryModel =
-            QueryModel(currentLanguage.value!!, showFavorite.value, search.value, categoryId.value, null)
         makeQuery()
     }
 
-
-
-
-//    private val preferenceChangeListener =
-//        SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
-//
-//        }
 
     private val objectiveRepositoryResponse: LiveData<ObjectiveRepositoryResult> =
         Transformations.map(query) {
@@ -78,11 +63,12 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
             it.networkErrors
         }
 
-    val _selectedObjectiveModel = MutableLiveData<ObjectiveDatabaseModel>()
+    private val _selectedObjectiveModel = MutableLiveData<ObjectiveDatabaseModel>()
     val selectedObjectiveModel: LiveData<ObjectiveDatabaseModel>
         get() = _selectedObjectiveModel
 
     private fun makeQuery() {
+        queryModel = QueryModel(currentLanguage.value!!, showFavorite.value, search.value, categoryId.value, null)
         Log.i("MainViewModel", "in query was posted ${queryModel.toString()}")
         query.postValue(Utilities.getQuery(queryModel))
     }
@@ -109,8 +95,6 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
 
     fun setSearch(searchText: String?) {
         search.value = searchText
-        queryModel =
-            QueryModel(currentLanguage.value!!, showFavorite.value, search.value, categoryId.value, null)
         makeQuery()
     }
 
@@ -126,15 +110,11 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
                 ContextCompat.getColorStateList(view.context, R.color.colorLightGray)
             showFavorite.value = null
         }
-        //showFavorite.value = !(showFavorite.value ?: false)
-        queryModel =
-            QueryModel(currentLanguage.value!!, showFavorite.value, search.value, null, null)
         makeQuery()
     }
 
     fun setCategoryId(id: String?){
         categoryId.value = id
-        queryModel = QueryModel(currentLanguage.value!!, showFavorite.value, search.value, categoryId.value, null)
         makeQuery()
     }
 
