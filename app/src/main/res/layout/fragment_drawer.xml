@@ -16,23 +16,23 @@
         <RelativeLayout
             android:id="@+id/rl_drawer_header"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="@dimen/haeder_height"
             android:background="@color/colorPrimary"
-            android:padding="16dp">
+            android:padding="@dimen/medium_dim">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_ws"
+                android:layout_centerInParent="true"
                 android:scaleType="fitCenter"
-                android:layout_centerInParent="true" />
+                android:src="@drawable/ic_ws" />
         </RelativeLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_drawer_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="@dimen/medium_dim" />
 
     </LinearLayout>
 </layout>

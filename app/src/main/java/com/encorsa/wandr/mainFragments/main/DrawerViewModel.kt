@@ -4,10 +4,12 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.*
+import com.encorsa.wandr.database.CategoryDatabaseModel
 import com.encorsa.wandr.database.WandrDatabaseDao
 import com.encorsa.wandr.models.CategoryModel
+import com.encorsa.wandr.models.CategoryRepositoryResult
 import com.encorsa.wandr.network.WandrApi
-import com.encorsa.wandr.network.WandrApiStatus
+import com.encorsa.wandr.repository.CategoryRepository
 import com.encorsa.wandr.utils.DEFAULT_LANGUAGE
 import com.encorsa.wandr.utils.Prefs
 import kotlinx.coroutines.launch
@@ -17,60 +19,55 @@ class DrawerViewModel(app: Application, val database: WandrDatabaseDao) :
     AndroidViewModel(app) {
 
     private val prefs = Prefs(app.applicationContext)
-
+    private val categoryRepository = CategoryRepository(app, database)
     val currentLanguage = MutableLiveData<String>()
-    val menuItems =
-        MutableLiveData<List<CategoryModel>>()//Transformations.switchMap(objectiveRepositoryResponse) { it ->
-//        it.objectives
-//    }
 
-    private val _selectedCategory = MutableLiveData<CategoryModel>()
-    val selectedCategory: LiveData<CategoryModel>
+
+    private val categoryRepositoryResponse: LiveData<CategoryRepositoryResult> =
+        Transformations.map(currentLanguage) {
+            Log.i("DrawerViewModel", "categories from repository for language: ${currentLanguage.value}")
+            categoryRepository.getCategories(it)
+        }
+
+    val menuItems: LiveData<List<CategoryDatabaseModel>> =
+        Transformations.switchMap(categoryRepositoryResponse) { it ->
+            it.categories
+        }
+
+    val networkErrors: LiveData<String> =
+        Transformations.switchMap(categoryRepositoryResponse) { it ->
+            it.networkErrors
+        }
+
+    private val _selectedCategory = MutableLiveData<CategoryDatabaseModel>()
+    val selectedCategory: LiveData<CategoryDatabaseModel>
         get() = _selectedCategory
 
-    val networkErrors =
-        MutableLiveData<String>() //Transformations.switchMap(objectiveRepositoryResponse) { it ->
-//        it.networkErrors
-//    }
 
     init {
         Log.i("DrawerViewModel", "CREATED")
         currentLanguage.value = prefs.currentLanguage.let {
             it ?: DEFAULT_LANGUAGE
         }
-        getCategories()
     }
 
-    fun categoryMenuWasClicked(category: CategoryModel){
+    fun categoryMenuWasClicked(category: CategoryDatabaseModel){
         _selectedCategory.value = category
     }
 
-    private fun getCategories() {
+    fun loadCategories() {
         viewModelScope.launch {
-
-            var options = HashMap<String, String>()
-            options.put("languageTag", currentLanguage.value!!)
-            // Get the Deferred object for our Retrofit request
-            var getCategoriesDeferred = WandrApi.RETROFIT_SERVICE.getCategories(options)
-
-            // Await the completion of our Retrofit request
-            try {
-                // _status.value = WandrApiStatus.LOADING
-                val listResult = getCategoriesDeferred.await()
-                // _status.value = WandrApiStatus.DONE
-                menuItems.value = listResult.items
-            } catch (e: Exception) {
-                //_status.value = WandrApiStatus.ERROR
-                networkErrors.value = e.message
-                //_status.value = "Failure: ${e.message}"
-            } catch (ex: HttpException) {
-                networkErrors.value = ex.response().message() + ex.response().errorBody()?.string()
-            }
+            categoryRepository.refreshCategories()
         }
     }
+
 
     override fun onCleared() {
         super.onCleared()
         Log.i("DrawerViewModel", "DESTROYED")
+    }
+
+    fun setCurrentLanguage(tag: String){
+        currentLanguage.value = tag
     }
 }

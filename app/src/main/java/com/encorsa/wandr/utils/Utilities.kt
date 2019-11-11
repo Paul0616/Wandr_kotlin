@@ -21,7 +21,6 @@ const val DEFAULT_LANGUAGE = "RO"
 const val URL_PRIVACY = "PRIVACY"
 const val PAGE_SIZE = 20
 
-const val PREFS_FILENAME = "com.encorsa.wandr.prefs"
 const val USER_EMAIL = "user_email"
 const val USER_NAME = "user_name"
 const val USER_ID = "user_id"
@@ -30,6 +29,7 @@ const val TOKEN = "token"
 const val TOKEN_EXPIRE_AT = "token_expire_at"
 const val FIRST_NAME = "first_name"
 const val CURRENT_CATEGORY_ID = "current_category_id"
+const val CURRENT_CATEGORY_NAME = "current_category_name"
 const val CURRENT_LANGUAGE = "current_language"
 const val SECURITY_CODE = "security_code"
 const val FIREBASE_TOKEN = "firebase_token"
@@ -42,7 +42,7 @@ object Utilities {
         val test = try {
             val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
             formatter.timeZone = TimeZone.getTimeZone("UTC")
-            formatter.parse(dateString).time
+            formatter.parse(dateString?:"").time
 
         } catch (e: ParseException) {
             null
@@ -98,39 +98,45 @@ object Utilities {
 
         var stringSelection = ""
         val builder = SupportSQLiteQueryBuilder
-            .builder("objectives_table")
-            .columns(arrayOf("*"))
+            .builder("objectives_table INNER JOIN subcategories_table ON objectives_table.subcategoryId = subcategories_table.id")
+            .columns(arrayOf("*", "subcategories_table.name as subcategoryName"))
 
-        if (!queryModel.languageTag.isEmpty()) {
-            bindArgs.add(queryModel.languageTag)
-            stringSelection += " languageTag = ?"
-        }
 
-        if (queryModel.onlyFavorite != null) {
+//        if (queryModel.onlyFavorite != null) {
+//            bindArgs.add(queryModel.onlyFavorite!!)
+//            stringSelection += " AND isFavorite = ?"
+//        }
+
+        if (queryModel.onlyFavorite == null) {
+            if (!queryModel.languageTag.isEmpty()) {
+                bindArgs.add(queryModel.languageTag)
+                stringSelection += " objectives_table.languageTag = ?"
+            }
+
+            if (queryModel.categoryId != null) {
+                bindArgs.add(queryModel.categoryId!!)
+                stringSelection += " AND objectives_table.categoryId = ?"
+            }
+
+            if (queryModel.subcategoryIds != null) {
+                val str = "?,".repeat(queryModel.subcategoryIds!!.size).dropLast(1)
+                bindArgs.addAll(queryModel.subcategoryIds!!)
+                stringSelection += " AND objectives_table.subcategoryId IN (${str})"
+            }
+        } else {
             bindArgs.add(queryModel.onlyFavorite!!)
-            stringSelection += " AND isFavorite = ?"
+            stringSelection += " objectives_table.isFavorite = ?"
         }
 
         if (queryModel.name != null) {
             bindArgs.add("%".plus(queryModel.name).plus("%"))
-            stringSelection += " AND name LIKE ?"
-        }
-
-        if (queryModel.categoryId != null) {
-            bindArgs.add(queryModel.categoryId!!)
-            stringSelection += " AND categoryId = ?"
-        }
-
-        if (queryModel.subcategoryIds != null) {
-            val str = "?,".repeat(queryModel.subcategoryIds!!.size).dropLast(1)
-            bindArgs.addAll(queryModel.subcategoryIds!!)
-            stringSelection += " AND subcategoryId IN (${str})"
+            stringSelection += " AND objectives_table.name LIKE ?"
         }
 
         if (!stringSelection.equals(""))
             builder.selection(stringSelection, bindArgs.toArray())
 
-        builder.orderBy("name")
+        builder.orderBy("objectives_table.name")
         val query = builder.create()
 
         Log.i("WandrDatabaseTest", query.sql + " " + bindArgs.toString())

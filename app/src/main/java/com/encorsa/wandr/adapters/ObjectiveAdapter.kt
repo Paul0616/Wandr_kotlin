@@ -69,12 +69,13 @@ class ObjectiveAdapter(val onClickListener: OnClickListener) :
         ) {
             itemName.text = item.name ?: itemView.context.getString(R.string.no_info)
             address.text = item.address ?: itemView.context.getString(R.string.no_info)
-            val longDescription = item.longDescription ?: itemView.context.getString(R.string.no_info)
-            longDescription?.let {
-                val txt = fromHtml(longDescription)
-                shortDescription.text = txt.toString()
-            }
-            mSubcategoryTextView.text = "Subcategoria"
+            val longDescription =
+                item.longDescription ?: itemView.context.getString(R.string.no_info)
+            val txt = fromHtml(longDescription)
+            shortDescription.text = txt.toString()
+
+            mSubcategoryTextView.text = item.subcategoryName
+
             favouritesButton.isSelected = item.isFavorite
             Glide.with(itemImageView.context)
                 .load(item.defaultImageUrl)

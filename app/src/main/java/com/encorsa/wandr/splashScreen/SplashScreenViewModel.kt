@@ -9,6 +9,7 @@ import com.encorsa.wandr.database.WandrDatabaseDao
 import com.encorsa.wandr.network.WandrApi
 import com.encorsa.wandr.network.WandrApiStatus
 import com.encorsa.wandr.models.LabelModel
+import com.encorsa.wandr.utils.Prefs
 import kotlinx.coroutines.*
 import retrofit2.HttpException
 
@@ -52,7 +53,7 @@ class SplashScreenViewModel(val database: WandrDatabaseDao) : ViewModel() {
         Log.i("SplashScrrenViewModel", "CREATED")
         getLanguages()
         getLabels()
-      //  prefs = Prefs(app.applicationContext)
+
     }
 
     override fun onCleared() {

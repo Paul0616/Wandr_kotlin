@@ -2,15 +2,11 @@ package com.encorsa.wandr.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.preference.PreferenceManager
 
 class Prefs(context: Context) {
 
-
-
-    private val prefs: SharedPreferences =
-        context.getSharedPreferences(PREFS_FILENAME, Context.MODE_PRIVATE)
-
-
+    private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
 
     var userEmail: String?
         get() = prefs.getString(USER_EMAIL, null)
@@ -40,6 +36,10 @@ class Prefs(context: Context) {
         get() = prefs.getString(CURRENT_CATEGORY_ID, null)
         set(value) = prefs.edit().putString(CURRENT_CATEGORY_ID, value).apply()
 
+    var currentCategoryName: String?
+        get() = prefs.getString(CURRENT_CATEGORY_NAME, null)
+        set(value) = prefs.edit().putString(CURRENT_CATEGORY_NAME, value).apply()
+
     var tokenExpireAtInMillis: Long
         get() = prefs.getLong(TOKEN_EXPIRE_AT, 0L)
         set(value) = prefs.edit().putLong(TOKEN_EXPIRE_AT, value).apply()
@@ -65,6 +65,7 @@ class Prefs(context: Context) {
         prefs.edit().remove(TOKEN_EXPIRE_AT).apply()
         prefs.edit().remove(FIRST_NAME).apply()
         prefs.edit().remove(CURRENT_CATEGORY_ID).apply()
+        prefs.edit().remove(CURRENT_CATEGORY_NAME).apply()
         prefs.edit().remove(SECURITY_CODE).apply()
     }
 

@@ -10,5 +10,9 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/logOut"
-        android:title="Log Out" />
+        android:title="Log Out"
+        android:orderInCategory="100"/>
+    <item
+        android:id="@+id/action_language"
+        android:title="@string/language_header" />
 </menu>

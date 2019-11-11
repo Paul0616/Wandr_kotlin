@@ -14,4 +14,5 @@
     <dimen name="extra_big_dim">64dp</dimen>
     <dimen name="objective_name_size">24dp</dimen>
     <dimen name="nav_drawer_width">260dp</dimen>
+    <dimen name="haeder_height">120dp</dimen>
 </resources>

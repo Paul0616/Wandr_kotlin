@@ -84,5 +84,22 @@ interface WandrDatabaseDao {
 
     @RawQuery(observedEntities = [ObjectiveDatabaseModel::class])
     fun getDatabaseObjectivesWithRaw(query: SupportSQLiteQuery) : LiveData<List<ObjectiveDatabaseModel>>
+
+    //CATEGORIES ------------------------------
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertCategories(post: List<CategoryDatabaseModel>): List<Long>
+
+    @Query("SELECT * FROM categories_table WHERE languageTag = :languageTag")
+    fun getAllCategoriesForLanguage(languageTag: String): LiveData<List<CategoryDatabaseModel>>
+
+    @Query("SELECT * FROM categories_table WHERE languageTag = :languageTag AND id = :categoryId")
+    fun getCategoryForLanguage(languageTag: String, categoryId: String): LiveData<CategoryDatabaseModel>
+
+    //SUBCATEGORIES ------------------------------
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertSubcategories(post: List<SubcategoryDatabaseModel>): List<Long>
+
+    @Query("SELECT * FROM subcategories_table WHERE languageTag = :languageTag AND categoryId = :categoryId")
+    fun getAllSubcategoriesForLanguageAndCategory(languageTag: String, categoryId: String?): LiveData<List<SubcategoryDatabaseModel>>
 }
 

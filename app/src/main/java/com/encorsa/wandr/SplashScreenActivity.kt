@@ -17,6 +17,7 @@ import com.encorsa.wandr.databinding.ActivitySplashScreenBinding
 import com.encorsa.wandr.models.LabelModel
 import com.encorsa.wandr.splashScreen.SplashScreenViewModel
 import com.encorsa.wandr.splashScreen.SplashScreenViewModelFactory
+import com.encorsa.wandr.utils.DEFAULT_LANGUAGE
 import com.encorsa.wandr.utils.Prefs
 import com.google.firebase.messaging.FirebaseMessaging
 
@@ -89,6 +90,10 @@ class SplashScreenActivity : AppCompatActivity() {
             } else
                 startActivity(Intent(this, MainActivity::class.java))
 
+
+            val prefs = Prefs(applicationContext)
+            if (prefs.currentLanguage == null)
+                prefs.currentLanguage = DEFAULT_LANGUAGE
             finish()
         })
 

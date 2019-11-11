@@ -109,26 +109,26 @@ class LogInViewModel(app: Application, val database: WandrDatabaseDao) : Android
     }
 
     fun login(credentials: LoginRequestModel) {
-        if(credentials != null) {
-            viewModelScope.launch {
-                // Get the Deferred object for our Retrofit request
-                var getTokenModel = WandrApi.RETROFIT_SERVICE.login(credentials, false)
 
-                // Await the completion of our Retrofit request
-                try {
-                    _status.value = WandrApiStatus.LOADING
-                    _tokenModel.value = getTokenModel.await()
-                    _status.value = WandrApiStatus.DONE
-                } catch (ex: HttpException) {
-                    _status.value = WandrApiStatus.ERROR
-                    val errorMap = HashMap<String, Any?>()
-                    errorMap.put("code", ex.response().code())
-                    errorMap.put("message", ex.response().errorBody()?.string())
-                    _error.value = errorMap
+        viewModelScope.launch {
+            // Get the Deferred object for our Retrofit request
+            var getTokenModel = WandrApi.RETROFIT_SERVICE.login(credentials, false)
 
-                }
+            // Await the completion of our Retrofit request
+            try {
+                _status.value = WandrApiStatus.LOADING
+                _tokenModel.value = getTokenModel.await()
+                _status.value = WandrApiStatus.DONE
+            } catch (ex: HttpException) {
+                _status.value = WandrApiStatus.ERROR
+                val errorMap = HashMap<String, Any?>()
+                errorMap.put("code", ex.response().code())
+                errorMap.put("message", ex.response().errorBody()?.string())
+                _error.value = errorMap
+
             }
         }
+
     }
 
 
@@ -142,14 +142,15 @@ class LogInViewModel(app: Application, val database: WandrDatabaseDao) : Android
         ioScope.launch {
             val label = database.findlabelByTag(labelTag, languageTag)
             withContext(Dispatchers.Main) {
-                when(labelTag){
+                when (labelTag) {
                     "email" -> _emailHint.value = label?.name
                     "password" -> _passwordHint.value = label?.name
                     "action_sign_up_short" -> _registerButtonText.value = label?.name
                     "invalid_credentials" -> _invalidCredentials.value = label?.name
                     "error_field_required" -> _validationErrorFieldRequired.value = label?.name
                     "error_invalid_email" -> _validationErrorInvalidEmail.value = label?.name
-                    "email_not_confirmed_message" -> _validationErrorEmailNotConfirmed.value = label?.name
+                    "email_not_confirmed_message" -> _validationErrorEmailNotConfirmed.value =
+                        label?.name
                 }
             }
         }

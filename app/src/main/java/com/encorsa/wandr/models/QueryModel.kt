@@ -5,5 +5,5 @@ data class QueryModel (
     var onlyFavorite: Boolean?,
     var name: String?,
     var categoryId: String?,
-    var subcategoryIds: Array<Any>?
+    var subcategoryIds: Array<String>?
 )

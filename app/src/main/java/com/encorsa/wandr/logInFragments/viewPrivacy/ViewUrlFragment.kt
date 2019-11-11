@@ -105,7 +105,7 @@ class ViewUrlFragment : Fragment() {
 
         viewModel.htmlPage.observe(this, Observer {
             if (!it.htmlPagesDescriptions.isEmpty()) {
-                (activity as? AppCompatActivity)?.supportActionBar?.title  = it.htmlPagesDescriptions.get(0).title
+                (activity as? AppCompatActivity)?.supportActionBar?.title  = it.htmlPagesDescriptions.single().title
                 binding.privacyText.text = HtmlCompat.fromHtml(
                     it.htmlPagesDescriptions.get(0).html!!,
                     HtmlCompat.FROM_HTML_MODE_COMPACT

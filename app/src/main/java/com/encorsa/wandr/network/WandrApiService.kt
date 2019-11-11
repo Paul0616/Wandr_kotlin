@@ -62,6 +62,9 @@ interface WandrApiService {
     @GET("CategoryAPI")
     fun getCategories(@QueryMap options: HashMap<String, String>):
             Deferred<CategoryList>
+    @GET("SubcategoryApi")
+    fun getSubcategories(@QueryMap options: HashMap<String, String>):
+            Deferred<SubcategoryList>
 }
 
 object WandrApi {

@@ -25,15 +25,14 @@ class ObjectivesRepository(private val app: Application, private val database: W
     private var lastRequestedPage = 1
     private val networkError = MutableLiveData<String>()
 
-    fun setObjectivesQuery(query: SupportSQLiteQuery, queryModel: QueryModel): ObjectiveRepositoryResult{
+    fun setDatabaseObjectivesQuery(query: SupportSQLiteQuery): ObjectiveRepositoryResult{
         lastRequestedPage = 1
-
         val objectives: LiveData<List<ObjectiveDatabaseModel>> =
             database.getDatabaseObjectivesWithRaw(query)
         return ObjectiveRepositoryResult(objectives, networkError)
     }
 
-    suspend fun refreshObjectives(queryModel: QueryModel, filterHasChanged: Boolean) {
+    suspend fun makeNetworkCallAndRefreshDatabase(queryModel: QueryModel, filterHasChanged: Boolean) {
         if (filterHasChanged)
             isRequestInProgress = false
         if (isRequestInProgress) return
@@ -53,7 +52,7 @@ class ObjectivesRepository(private val app: Application, private val database: W
                 options.put("attractionName", queryModel.name!!)
             }
             queryModel.subcategoryIds?.let {
-                subs = queryModel.subcategoryIds!!.toList() as List<String>
+                subs = queryModel.subcategoryIds!!.toList()
             }
             prefs.userId.apply {
                 options.put("userId", prefs.userId!!)

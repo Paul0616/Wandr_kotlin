@@ -2,6 +2,9 @@
     <string name="app_name">Wandr</string>
     <string name="no_results">No results 🤭</string>
 
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+
     <!-- string used in login screen (RO) -->
     <string name="emailHint">Email</string>
     <string name="passwordHint">Parolă</string>
@@ -34,5 +37,8 @@
     <string name="error_email_no_change">Adresa de email nu poate fi schimbata deoarece a fost confirmata.</string>
     <string name="no_info">Fără informații</string>
     <string name="more">mai mult</string>
+    <string name="subcategories">Subcategorii</string>
+    <string name="language_header">Limba</string>
+    <string name="language_title">Alege limba</string>
 
 </resources>

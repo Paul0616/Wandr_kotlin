@@ -48,5 +48,7 @@ data class ObjectiveDatabaseModel (
     var phoneNumber: String? = null,
 
     @ColumnInfo(name = "defaultImageUrl")
-    var defaultImageUrl: String? = null
+    var defaultImageUrl: String? = null,
+
+    var subcategoryName: String = ""
 )
