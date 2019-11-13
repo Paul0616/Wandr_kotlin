@@ -21,6 +21,9 @@ data class ObjectivePage(
         return objectives.map {
             val isFavorite = it.favorites.size > 0
             var defaultImagrUrl: String? = null
+            var favoriteId: String? = null
+            if(isFavorite)
+                favoriteId = it.favorites.single().id
             if (!it.media.isEmpty()) {
                 defaultImagrUrl = it.media.filter { it.isDefault }.single().url
             }
@@ -33,6 +36,7 @@ data class ObjectivePage(
                 address = it.objectiveDescriptions.single().address,
                 longDescription = it.objectiveDescriptions.single().longDescription,
                 isFavorite = isFavorite,
+                favoriteId = favoriteId,
                 latitude = it.latitude,
                 longitude = it.longitude,
                 url = it.url,

@@ -73,7 +73,7 @@ class CheckEmailFragment : Fragment() {
                 } else {
                     currentEmail.text = currentEmailEdit.text.toString()
                     Log.i("CheckEmailFragment", "VALIDATE NEW EMAIL")
-                    if (Patterns.EMAIL_ADDRESS.matcher(viewModel.newEmail.value).matches()) {
+                    if (Patterns.EMAIL_ADDRESS.matcher(viewModel.newEmail.value as CharSequence).matches()) {
                         currentEmailEdit.visibility = View.GONE
                         currentEmail.visibility = View.VISIBLE
                         Log.i("CheckEmailFragment", "UPDATE to ${viewModel.newEmail.value}")
@@ -167,7 +167,7 @@ class CheckEmailFragment : Fragment() {
                     binding.progressBarCheckEmail.visibility = View.GONE
                     Log.i("LogInFragment", "ERROR")
                 }
-                else -> binding.progressBarCheckEmail.visibility = View.GONE
+               // else -> binding.progressBarCheckEmail.visibility = View.GONE
             }
         })
 

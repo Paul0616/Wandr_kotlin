@@ -92,6 +92,8 @@ class DrawerFragment : Fragment() {
                     val selectedCategory = it.filter {
                         it.id == prefs.currentCategoryId
                     }.single()
+
+                    Log.i("DrawerFragment", selectedCategory.toString())
                     prefs.currentCategoryName = selectedCategory.name
                 } catch (e: Exception) {
                     e.printStackTrace()

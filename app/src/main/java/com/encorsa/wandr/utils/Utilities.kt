@@ -99,7 +99,7 @@ object Utilities {
         var stringSelection = ""
         val builder = SupportSQLiteQueryBuilder
             .builder("objectives_table INNER JOIN subcategories_table ON objectives_table.subcategoryId = subcategories_table.id")
-            .columns(arrayOf("*", "subcategories_table.name as subcategoryName"))
+            .columns(arrayOf("objectives_table.*", "subcategories_table.name as subcategoryName"))
 
 
 //        if (queryModel.onlyFavorite != null) {

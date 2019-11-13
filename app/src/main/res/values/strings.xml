@@ -40,5 +40,6 @@
     <string name="subcategories">Subcategorii</string>
     <string name="language_header">Limba</string>
     <string name="language_title">Alege limba</string>
+    <string name="title_activity_maps">Map</string>
 
 </resources>

@@ -4,51 +4,57 @@ import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.android.parcel.Parcelize
+
 
 @Entity(tableName = "objectives_table")
 data class ObjectiveDatabaseModel (
     @PrimaryKey
     @NonNull
-    var id: String,
+    @ColumnInfo(name = "id")
+    val id: String,
 
     @ColumnInfo(name = "subcategoryId")
     val subcategoryId: String,
 
     @ColumnInfo(name = "categoryId")
-    var categoryId: String?,
+    val categoryId: String?,
 
     @ColumnInfo(name = "languageTag")
-    var languageTag: String,
+    val languageTag: String,
 
     @ColumnInfo(name = "name")
-    var name: String? = null,
+    val name: String? = null,
 
     @ColumnInfo(name = "address")
-    var address: String? = null,
+    val address: String? = null,
 
     @ColumnInfo(name = "longDescription")
-    var longDescription: String? = null,
+    val longDescription: String? = null,
 
     @ColumnInfo(name = "isFavorite")
-    var isFavorite: Boolean,
+    val isFavorite: Boolean,
+
+    @ColumnInfo(name = "favoriteId")
+    val favoriteId: String? = null,
 
     @ColumnInfo(name = "latitude")
-    var latitude: Double,
+    val latitude: Double,
 
     @ColumnInfo(name = "longitude")
-    var longitude: Double,
+    val longitude: Double,
 
     @ColumnInfo(name = "url")
-    var url: String? = null,
+    val url: String? = null,
 
     @ColumnInfo(name = "email")
-    var email: String? = null,
+    val email: String? = null,
 
     @ColumnInfo(name = "phoneNumber")
-    var phoneNumber: String? = null,
+    val phoneNumber: String? = null,
 
     @ColumnInfo(name = "defaultImageUrl")
-    var defaultImageUrl: String? = null,
+    val defaultImageUrl: String? = null,
 
     var subcategoryName: String = ""
 )

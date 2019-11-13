@@ -7,8 +7,8 @@
         <ListPreference
             android:key="current_language"
             android:title="@string/language_title"
-            app:useSimpleSummaryProvider="true" />
-
+            app:useSimpleSummaryProvider="true"
+            android:defaultValue="RO"/>
     </PreferenceCategory>
 </PreferenceScreen>
 

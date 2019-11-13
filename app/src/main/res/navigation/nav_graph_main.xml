@@ -21,7 +21,10 @@
     <fragment
         android:id="@+id/detailFragment"
         android:name="com.encorsa.wandr.mainFragments.details.DetailFragment"
-        android:label="DetailFragment" />
+        android:label="DetailFragment" >
+        <argument android:name="selectedObjectiveId"
+            app:argType="string" />
+    </fragment>
     <fragment
         android:id="@+id/languageSettingsFragment"
         android:name="com.encorsa.wandr.mainFragments.settings.LanguageSettingsFragment"

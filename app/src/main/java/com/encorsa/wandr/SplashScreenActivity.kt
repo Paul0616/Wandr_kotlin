@@ -92,8 +92,7 @@ class SplashScreenActivity : AppCompatActivity() {
 
 
             val prefs = Prefs(applicationContext)
-            if (prefs.currentLanguage == null)
-                prefs.currentLanguage = DEFAULT_LANGUAGE
+            prefs.currentLanguage = prefs.currentLanguage ?: DEFAULT_LANGUAGE
             finish()
         })
 

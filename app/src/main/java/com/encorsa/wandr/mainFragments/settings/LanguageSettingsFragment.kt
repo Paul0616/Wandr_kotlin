@@ -25,7 +25,7 @@ class LanguageSettingsFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.widgets_preferences, rootKey)
 
-
+        val prefs = Prefs(context!!)
         val application = requireNotNull(activity).application
         val dataSource = WandrDatabase.getInstance(application).wandrDatabaseDao
         val viewModelFactory = LanguageSettingsViewModelFactory(application, dataSource)
@@ -39,7 +39,6 @@ class LanguageSettingsFragment : PreferenceFragmentCompat() {
             listPreference?.title = it
         })
         viewModel.preferenceCategoryTitle.observe(this, Observer {
-            Log.i("SettingsFragment", it)
             prefCat?.title = it
         })
         viewModel.languagesList.observe(this, Observer { list ->
@@ -52,11 +51,13 @@ class LanguageSettingsFragment : PreferenceFragmentCompat() {
                 val entryValue: CharSequence = it.tag
                 entryValue
             }.toTypedArray()
-            Log.i("SettingsFragment", entryValues.toList().toString())
+            Log.i("SettingsFragment", "${entryValues.toList()} - ${prefs.currentLanguage}")
             listPreference?.entries = entries
             listPreference?.entryValues = entryValues
-           //listPreference?.setDefaultValue(prefs.currentLanguage ?: "RO")
+            //listPreference?.setDefaultValue("RO")
         })
     }
+
+
 
 }

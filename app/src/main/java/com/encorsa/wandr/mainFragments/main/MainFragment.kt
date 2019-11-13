@@ -19,6 +19,7 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.encorsa.wandr.LogInActivity
+import com.encorsa.wandr.MapsActivity
 
 import com.encorsa.wandr.R
 import com.encorsa.wandr.adapters.ObjectiveAdapter
@@ -33,10 +34,8 @@ import com.google.android.material.chip.Chip
  * A simple [Fragment] subclass.
  */
 class MainFragment : Fragment() {
-
     private lateinit var viewModel: MainViewModel
     private lateinit var binding: FragmentMainBinding
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,26 +45,36 @@ class MainFragment : Fragment() {
         val application = requireNotNull(activity).application
         val dataSource = WandrDatabase.getInstance(application).wandrDatabaseDao
 
-
         binding = FragmentMainBinding.inflate(inflater)
         val viewModelFactory = MainModelFactory(application, dataSource)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
 
-        val adapter = ObjectiveAdapter(ObjectiveAdapter.OnClickListener {
-            viewModel.objectiveWasClicked(it)
-        })
+        val adapter = ObjectiveAdapter(
+            application.applicationContext,
+            ObjectiveAdapter.OnClickListener { obj, favoriteWasClicked, insertMode ->
+                if (!favoriteWasClicked)
+                    viewModel.objectiveWasClicked(obj)
+                else {
+
+                    viewModel.favoriteWasClicked(obj, insertMode)
+                }
+            })
+
         setHasOptionsMenu(true)
         setupScrollListener(binding.objectiveList, viewModel)
-
-
         binding.setLifecycleOwner(this)
         binding.mainViewmodel = viewModel
         binding.progressBarMain.visibility = View.GONE
 
+        /*  --------------------------
+         *   observe if shared preference changes
+         *  ----------------------------
+         */
         val prefsLiveData = PreferenceManager.getDefaultSharedPreferences(context)
         prefsLiveData.stringLiveData(CURRENT_LANGUAGE, null).observe(this, Observer {
-            Log.i("MainFragment", it?:"")
-            (activity as? AppCompatActivity)?.supportActionBar?.title = prefsLiveData.getString(CURRENT_CATEGORY_NAME, "")
+            Log.i("MainFragment", it ?: "")
+            (activity as? AppCompatActivity)?.supportActionBar?.title =
+                prefsLiveData.getString(CURRENT_CATEGORY_NAME, "")
         })
 
         prefsLiveData.stringLiveData(CURRENT_CATEGORY_ID, null).observe(this, Observer {
@@ -75,42 +84,30 @@ class MainFragment : Fragment() {
         })
 
         prefsLiveData.stringLiveData(CURRENT_CATEGORY_NAME, null).observe(this, Observer {
-            (activity as? AppCompatActivity)?.supportActionBar?.title = prefsLiveData.getString(CURRENT_CATEGORY_NAME, "")
+            (activity as? AppCompatActivity)?.supportActionBar?.title =
+                prefsLiveData.getString(CURRENT_CATEGORY_NAME, "")
         })
 
-        viewModel.selectedObjectiveModel.observe(this, Observer {
-//            Toast.makeText(
-//                application.applicationContext,
-//                it.defaultImageUrl,
-//                Toast.LENGTH_SHORT
-//            ).show()
-            //this.findNavController().navigate(MainFragmentDirections.actionMainFragmentToDetailFragment())
-            //Navigation.createNavigateOnClickListener(MainFragmentDirections.actionMainFragmentToDetailFragment())
-        })
 
-        viewModel.subcategoryFilterApplied.observe(this, Observer {
-            when(it){
-                true -> binding.filterOnImageView.visibility = View.VISIBLE
-                false -> binding.filterOnImageView.visibility = View.INVISIBLE
+        /*  --------------------------
+         *   observe onclick on objective image
+         *  ----------------------------
+         */
+        viewModel.navigateToDetails.observe(this, Observer {
+            if(null != it) {
+                Log.i("TESTMainViewModel", "OBJECTIVE ${it.id}")
+                this.findNavController()
+                    .navigate(MainFragmentDirections.actionMainFragmentToDetailFragment(it.id))
+                viewModel.displayDetailsComplete()
             }
-
+//            startActivity(Intent(activity, MapsActivity::class.java))
         })
 
-        binding.expandSubcategoriesLayout.setOnClickListener {
-            viewModel.changeChipsGroupVisibility()
-        }
-
-        viewModel.chipsGroupIsVisible.observe(this, Observer {
-            binding.viewFilterIcon.isSelected = it
-            when(it){
-                true -> binding.subcategoriesList.visibility = View.VISIBLE
-                false -> binding.subcategoriesList.visibility = View.GONE
-            }
-        })
-//        binding.testButton.setOnClickListener(
-//            Navigation.createNavigateOnClickListener(MainFragmentDirections.actionMainFragmentToDetailFragment())
-//        )
-
+        /*  --------------------------
+         *   observe subcategories list and refresh UI
+         *   (old CHIPS will be removed and new ones will be created and added)
+         *  ----------------------------
+         */
         viewModel.subcategoriesList.observe(
             viewLifecycleOwner,
             object : Observer<List<SubcategoryDatabaseModel>> {
@@ -123,7 +120,7 @@ class MainFragment : Fragment() {
                         val chip = inflator.inflate(R.layout.subcategory, chipGroup, false) as Chip
                         chip.text = subcategory.name
                         chip.tag = subcategory.id
-                        chip.setOnCheckedChangeListener { chipButton, isChecked ->
+                        chip.setOnCheckedChangeListener { chipButton, _ ->
                             viewModel.getSelectedChipsTags(chipButton)
                         }
                         chip
@@ -136,7 +133,31 @@ class MainFragment : Fragment() {
                 }
             })
 
+        binding.expandSubcategoriesLayout.setOnClickListener {
+            viewModel.changeChipsGroupVisibility()
+        }
 
+        viewModel.chipsGroupIsVisible.observe(this, Observer {
+            binding.viewFilterIcon.isSelected = it
+            when (it) {
+                true -> binding.subcategoriesList.visibility = View.VISIBLE
+                false -> binding.subcategoriesList.visibility = View.GONE
+            }
+        })
+
+        viewModel.subcategoryFilterApplied.observe(this, Observer {
+            when (it) {
+                true -> binding.filterOnImageView.visibility = View.VISIBLE
+                false -> binding.filterOnImageView.visibility = View.INVISIBLE
+            }
+
+        })
+
+        /*  --------------------------
+         *   observe errors from subcategories repository
+         *   and from set favorites
+         *  ----------------------------
+         */
         viewModel.networkErrorsSubcategories.observe(this, Observer {
             if (DEBUG_MODE)
                 Toast.makeText(
@@ -149,6 +170,25 @@ class MainFragment : Fragment() {
                 ).show()
         })
 
+        viewModel.error.observe(this, Observer {
+            if (DEBUG_MODE)
+                Toast.makeText(
+                    application.applicationContext,
+                    when (it) {
+                        (null) -> ""
+                        else -> it
+                    },
+                    Toast.LENGTH_LONG
+                ).show()
+        })
+
+        /*  --------------------------
+         *   refresh UI on added favorite
+         *  ----------------------------
+         */
+        viewModel.favoriteId.observe(this, Observer {
+            viewModel.refreshWithCurrentFilter()
+        })
 
 
         adapter.initAdapter(application)
@@ -156,6 +196,12 @@ class MainFragment : Fragment() {
     }
 
 
+    /*  --------------------------
+     *   initiate adapter and set
+     *   - objective observer
+     *   - error from objective repository observer
+     *  ----------------------------
+     */
     private fun ObjectiveAdapter.initAdapter(
         application: Application
     ) {
@@ -178,6 +224,11 @@ class MainFragment : Fragment() {
         })
     }
 
+    /*  --------------------------
+    *   function for setting scroll listener of recycler view
+    *   - treating scrolling in viewModel
+    *  ----------------------------
+    */
     private fun setupScrollListener(list: RecyclerView, viewModel: MainViewModel) {
         val layoutManager = list.layoutManager as LinearLayoutManager
         list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -192,6 +243,10 @@ class MainFragment : Fragment() {
         })
     }
 
+    /*  --------------------------
+    *   establish if empty list message need to be shown
+    *  ----------------------------
+    */
     private fun showEmptyList(show: Boolean, view: TextView, list: RecyclerView) {
         if (show) {
             view.visibility = View.VISIBLE
@@ -202,7 +257,10 @@ class MainFragment : Fragment() {
         }
     }
 
-
+    /*  --------------------------
+     *  listener for searchView from menu bar
+     *  ----------------------------
+     */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.main_option_menu, menu)
@@ -231,6 +289,12 @@ class MainFragment : Fragment() {
         })
     }
 
+    /*  --------------------------
+     *  option menu
+     *  - Log OUT
+     *  - Change LANGUAGE
+     *  ----------------------------
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.logOut) {
             val prefs = Prefs(requireNotNull(activity).applicationContext)
@@ -238,7 +302,7 @@ class MainFragment : Fragment() {
             startActivity(Intent(activity, LogInActivity::class.java))
             (activity as AppCompatActivity).finish()
         }
-        if (item.itemId == R.id.action_language){
+        if (item.itemId == R.id.action_language) {
             findNavController().navigate(MainFragmentDirections.actionMainFragmentToLanguageSettingsFragment())
         }
         return super.onOptionsItemSelected(item)

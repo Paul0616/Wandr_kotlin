@@ -65,6 +65,12 @@ interface WandrApiService {
     @GET("SubcategoryApi")
     fun getSubcategories(@QueryMap options: HashMap<String, String>):
             Deferred<SubcategoryList>
+    @POST("FavoriteApi")
+    fun addFavorite(@Body body: FavoriteInsertModel,@Header("Authorization") token: String, @Header("Content-Type") contentType: String):
+            Deferred<FavoriteIdModel>
+    @DELETE("FavoriteApi/{id}")
+    fun removeFavorite(@Path("id") id: String, @Header("Authorization") token: String):
+            Deferred<FavoriteIdModel>
 }
 
 object WandrApi {

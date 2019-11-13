@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity(), DrawerFragment.FragmentDrawerListener 
         val navController = this.findNavController(R.id.nav_host_fragment_main)
         NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)
 
-        navController.addOnDestinationChangedListener { nc: NavController, nd: NavDestination, arguments ->
+        navController.addOnDestinationChangedListener { nc: NavController, nd: NavDestination, _ ->
             if (nd.id == nc.graph.startDestination) {
                 drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
             } else {

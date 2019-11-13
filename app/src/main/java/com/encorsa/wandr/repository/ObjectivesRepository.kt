@@ -25,7 +25,7 @@ class ObjectivesRepository(private val app: Application, private val database: W
     private var lastRequestedPage = 1
     private val networkError = MutableLiveData<String>()
 
-    fun setDatabaseObjectivesQuery(query: SupportSQLiteQuery): ObjectiveRepositoryResult{
+    fun getRepositoryObjectiveWithFilter(query: SupportSQLiteQuery): ObjectiveRepositoryResult{
         lastRequestedPage = 1
         val objectives: LiveData<List<ObjectiveDatabaseModel>> =
             database.getDatabaseObjectivesWithRaw(query)

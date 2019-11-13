@@ -43,9 +43,7 @@ class LanguageSettingsViewModel(app: Application,  val database: WandrDatabaseDa
 
     init {
         Log.i("SettingsViewModel", "CREATED")
-        currentLanguage.value = prefs.currentLanguage.let {
-            it ?: DEFAULT_LANGUAGE
-        }
+        currentLanguage.value = prefs.currentLanguage ?: DEFAULT_LANGUAGE
         getLabelByTagAndLanguage("title_activity_settings", currentLanguage.value!!)
         getLabelByTagAndLanguage("language_title", currentLanguage.value!!)
         getLabelByTagAndLanguage("language_header", currentLanguage.value!!)

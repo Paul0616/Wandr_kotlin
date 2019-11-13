@@ -1,8 +1,10 @@
 package com.encorsa.wandr.adapters
 
+import android.content.Context
 import android.os.Build
 import android.text.Html
 import android.text.Spanned
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,18 +18,29 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.encorsa.wandr.R
 import com.encorsa.wandr.database.ObjectiveDatabaseModel
+import com.encorsa.wandr.utils.Prefs
 
 
-class ObjectiveAdapter(val onClickListener: OnClickListener) :
+class ObjectiveAdapter(private val appContext: Context, val onClickListener: OnClickListener) :
     ListAdapter<ObjectiveDatabaseModel, ObjectiveAdapter.ItemViewHolder>(ObjectiveDiffCallback()) {
 
+    private val prefs = Prefs(appContext)
     override fun onBindViewHolder(holder: ObjectiveAdapter.ItemViewHolder, position: Int) {
         val item = getItem(position)
+        val userLogged = prefs.userId
         if (item != null) {
             holder.bind(item)
             holder.itemImageView.setOnClickListener {
-                onClickListener.onClick(item)
+                onClickListener.onClick(item, false, null)
             }
+            if (userLogged != null) {
+                holder.favouritesButton.isEnabled = true
+                holder.favouritesButton.setOnClickListener {
+                    it.isEnabled = false
+                    onClickListener.onClick(item, true, !item.isFavorite)
+                }
+            } else
+                holder.favouritesButton.isEnabled = false
         }
     }
 
@@ -126,7 +139,8 @@ class ObjectiveAdapter(val onClickListener: OnClickListener) :
         }
     }
 
-    class OnClickListener(val clickListener: (objective: ObjectiveDatabaseModel) -> Unit) {
-        fun onClick(objective: ObjectiveDatabaseModel) = clickListener(objective)
+    class OnClickListener(val clickListener: (objective: ObjectiveDatabaseModel, favoriteWasClicked: Boolean, insertMode: Boolean?) -> Unit) {
+        fun onClick(objective: ObjectiveDatabaseModel, favoriteWasClicked: Boolean, insertMode: Boolean?) =
+            clickListener(objective, favoriteWasClicked, insertMode)
     }
 }
