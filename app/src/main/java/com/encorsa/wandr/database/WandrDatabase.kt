@@ -33,7 +33,8 @@ import androidx.room.RoomDatabase
     LabelDatabaseModel::class,
     ObjectiveDatabaseModel::class,
     CategoryDatabaseModel::class,
-    SubcategoryDatabaseModel::class
+    SubcategoryDatabaseModel::class,
+    MediaDatabaseModel::class
 ), version = 6, exportSchema = false)
 abstract class WandrDatabase : RoomDatabase() {
 

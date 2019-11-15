@@ -85,6 +85,14 @@ interface WandrDatabaseDao {
     @RawQuery(observedEntities = [ObjectiveDatabaseModel::class])
     fun getDatabaseObjectivesWithRaw(query: SupportSQLiteQuery) : LiveData<List<ObjectiveDatabaseModel>>
 
+    //MEDIA ------------------------------
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertMedia(post: List<MediaDatabaseModel>): List<Long>
+
+    @Query("SELECT *  FROM media_table WHERE objectiveId = :objectiveId")
+    fun getDatabaseMediaForObjectiveId(objectiveId: String) : LiveData<List<MediaDatabaseModel>>
+
+
     //CATEGORIES ------------------------------
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertCategories(post: List<CategoryDatabaseModel>): List<Long>

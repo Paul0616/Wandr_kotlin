@@ -1,14 +1,20 @@
 package com.encorsa.wandr.database
 
+import android.os.Parcel
+import android.os.Parcelable
 import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.encorsa.wandr.models.FavoriteModel
+import com.encorsa.wandr.models.MediaModel
+import com.encorsa.wandr.models.ObjectiveDescriptionsModel
+import com.encorsa.wandr.models.ObjectiveModel
 import kotlinx.android.parcel.Parcelize
 
-
+@Parcelize
 @Entity(tableName = "objectives_table")
-data class ObjectiveDatabaseModel (
+data class ObjectiveDatabaseModel(
     @PrimaryKey
     @NonNull
     @ColumnInfo(name = "id")
@@ -57,4 +63,5 @@ data class ObjectiveDatabaseModel (
     val defaultImageUrl: String? = null,
 
     var subcategoryName: String = ""
-)
+
+): Parcelable

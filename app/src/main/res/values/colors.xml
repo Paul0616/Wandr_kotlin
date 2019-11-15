@@ -10,6 +10,7 @@
     <color name="colorPrimaryLight">#c7a46a</color>
     <color name="colorAccentLight">#E9D1B0</color>
     <color name="colorAccent">#dbbe8f</color>
+    <color name="colorOnSurface">#de000000</color>
 
     <color name="colorAccentLightTrans">#75E9D1B0</color>
     <color name="colorLightGray">#FAFAFA</color>

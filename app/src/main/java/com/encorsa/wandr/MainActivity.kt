@@ -24,15 +24,11 @@ class MainActivity : AppCompatActivity(), DrawerFragment.FragmentDrawerListener 
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var binding: ActivityMainBinding
-//    private lateinit var drawerToggle: ActionBarDrawerToggle
-//    private lateinit var newTitle: CharSequence
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //setContentView(R.layout.activity_main)
 
-//        val drawerTitle = title
-//        newTitle = title
         binding =
             DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
         drawerLayout = binding.drawerLayout
@@ -46,32 +42,8 @@ class MainActivity : AppCompatActivity(), DrawerFragment.FragmentDrawerListener 
                 drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
             }
         }
-        //NavigationUI.setupWithNavController(binding.navView, navController)
-
-//        drawerToggle = object : ActionBarDrawerToggle(
-//            this, /* Host Activity */
-//            drawerLayout, /* DrawerLayout object */
-//            R.string.drawer_open, /* "Open drawer" description for accessibility */
-//            R.string.drawer_close  /* "Close drawer" description for accessibility */
-//        ) {
-//
-//            override fun onDrawerClosed(drawerView: View) {
-//                actionBar?.title = newTitle
-//                invalidateOptionsMenu() // Creates call to onPrepareOptionsMenu().
-//            }
-//
-//            override fun onDrawerOpened(drawerView: View) {
-//                actionBar?.title = drawerTitle
-//                invalidateOptionsMenu() // Creates call to onPrepareOptionsMenu().
-//            }
-//        }
     }
 
-//    override fun setTitle(title: CharSequence?) {
-//
-//        newTitle = title ?: ""
-//        actionBar?.title = title
-//    }
 
     override fun onSupportNavigateUp(): Boolean {
         val navController = this.findNavController(R.id.nav_host_fragment_main)
@@ -86,13 +58,5 @@ class MainActivity : AppCompatActivity(), DrawerFragment.FragmentDrawerListener 
         //supportActionBar?.title = item.name
     }
 
-//    override fun onPostCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-//        super.onPostCreate(savedInstanceState, persistentState)
-//        drawerToggle.syncState()
-//    }
-//
-//    override fun onConfigurationChanged(newConfig: Configuration) {
-//        super.onConfigurationChanged(newConfig)
-//        drawerToggle.onConfigurationChanged(newConfig)
-//    }
+
 }

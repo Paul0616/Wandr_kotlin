@@ -90,6 +90,7 @@ class ObjectiveAdapter(private val appContext: Context, val onClickListener: OnC
             mSubcategoryTextView.text = item.subcategoryName
 
             favouritesButton.isSelected = item.isFavorite
+
             Glide.with(itemImageView.context)
                 .load(item.defaultImageUrl)
                 .centerCrop()

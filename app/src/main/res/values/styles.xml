@@ -4,8 +4,9 @@
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 
     <style name="MyEditText" >
@@ -23,8 +24,30 @@
 
     </style>
 
+    <style name="Base.Theme.Wandr" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+<!--        <item name="colorOnPrimary">@color/sunflower_yellow_500</item>-->
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <item name="colorOnSurface">@color/colorOnSurface</item>
+        <item name="colorAccent">@color/colorAccent</item>
+<!--        <item name="colorSurface">@color/sunflower_gray_50</item>-->
+<!--        <item name="colorSecondary">@color/sunflower_yellow_500</item>-->
+<!--        <item name="android:colorBackground">@color/sunflower_green_500</item>-->
+    </style>
+
+    <style name="Theme.Wandr" parent="Base.Theme.Wandr"/>
+
+    <style name="Theme.Wandr.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
 
     <!--  <style name="TextAppearance.AppCompat.Widget.ActionBar.Title" parent="android:TextAppearance">-->
 <!--      <item name="android:textColor">@color/colorAccentLight</item>-->
 <!--  </style>-->
+
+
+    <style name="TextAppearance.Sunflower.Toolbar.Text" parent="TextAppearance.MaterialComponents.Headline5" >
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
 </resources>

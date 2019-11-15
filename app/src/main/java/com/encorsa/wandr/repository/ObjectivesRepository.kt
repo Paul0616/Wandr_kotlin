@@ -6,12 +6,11 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.sqlite.db.SupportSQLiteQuery
+import com.encorsa.wandr.database.MediaDatabaseModel
 import com.encorsa.wandr.database.ObjectiveDatabaseModel
 import com.encorsa.wandr.database.WandrDatabaseDao
+import com.encorsa.wandr.models.*
 import com.encorsa.wandr.network.WandrApi
-import com.encorsa.wandr.models.ObjectivePage
-import com.encorsa.wandr.models.ObjectiveRepositoryResult
-import com.encorsa.wandr.models.QueryModel
 import com.encorsa.wandr.utils.PAGE_SIZE
 import com.encorsa.wandr.utils.Prefs
 import kotlinx.coroutines.Dispatchers
@@ -30,6 +29,13 @@ class ObjectivesRepository(private val app: Application, private val database: W
         val objectives: LiveData<List<ObjectiveDatabaseModel>> =
             database.getDatabaseObjectivesWithRaw(query)
         return ObjectiveRepositoryResult(objectives, networkError)
+    }
+
+    fun getRepositoryMedia(objectiveId: String): MediaRepositoryResult{
+        lastRequestedPage = 1
+        val media: LiveData<List<MediaDatabaseModel>> =
+            database.getDatabaseMediaForObjectiveId(objectiveId)
+        return MediaRepositoryResult(media, networkError)
     }
 
     suspend fun makeNetworkCallAndRefreshDatabase(queryModel: QueryModel, filterHasChanged: Boolean) {
@@ -63,7 +69,8 @@ class ObjectivesRepository(private val app: Application, private val database: W
                 val objectivesNetwork: ObjectivePage =
                     WandrApi.RETROFIT_SERVICE.getObjectives(options, subs).await()
                 //save in database
-                val rowsInserted = database.insertObjectives(objectivesNetwork.asDatabaseModel())
+                val rowsObjInserted = database.insertObjectives(objectivesNetwork.asDatabaseModel())
+                val rowsMediaInserted = database.insertMedia(objectivesNetwork.asDatabaseMediaModel())
 
                 lastRequestedPage = objectivesNetwork.currentPage()
                 isRequestInProgress = false
@@ -71,7 +78,8 @@ class ObjectivesRepository(private val app: Application, private val database: W
                     lastRequestedPage++
                 else
                     isRequestInProgress = true
-                Log.i("ObjectiverRepository", "Inserted ${rowsInserted.size.toString()} in local database (isRequestInProgress=${isRequestInProgress.toString()}) (page = ${lastRequestedPage.toString()})")
+                Log.i("ObjectiverRepository", "Inserted ${rowsObjInserted.size.toString()} OBJECTIVES in local database (isRequestInProgress=${isRequestInProgress.toString()}) (page = ${lastRequestedPage.toString()})")
+                Log.i("ObjectiverRepository", "Inserted ${rowsMediaInserted.size.toString()} MEDIA in local database (isRequestInProgress=${isRequestInProgress.toString()}) (page = ${lastRequestedPage.toString()})")
             } catch (e: Exception) {
                 networkError.postValue(e.message)
                 isRequestInProgress = false

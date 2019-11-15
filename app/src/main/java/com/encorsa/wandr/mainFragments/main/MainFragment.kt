@@ -49,6 +49,7 @@ class MainFragment : Fragment() {
         val viewModelFactory = MainModelFactory(application, dataSource)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
 
+        (activity as AppCompatActivity).supportActionBar?.show()
         val adapter = ObjectiveAdapter(
             application.applicationContext,
             ObjectiveAdapter.OnClickListener { obj, favoriteWasClicked, insertMode ->
@@ -65,6 +66,7 @@ class MainFragment : Fragment() {
         binding.setLifecycleOwner(this)
         binding.mainViewmodel = viewModel
         binding.progressBarMain.visibility = View.GONE
+        //(activity as AppCompatActivity).supportActionBar?.show()
 
         /*  --------------------------
          *   observe if shared preference changes
@@ -90,14 +92,13 @@ class MainFragment : Fragment() {
 
 
         /*  --------------------------
-         *   observe onclick on objective image
+         *   observe onclick on media image
          *  ----------------------------
          */
         viewModel.navigateToDetails.observe(this, Observer {
             if(null != it) {
                 Log.i("TESTMainViewModel", "OBJECTIVE ${it.id}")
-                this.findNavController()
-                    .navigate(MainFragmentDirections.actionMainFragmentToDetailFragment(it.id))
+                this.findNavController().navigate(MainFragmentDirections.actionMainFragmentToDetailFragment(it))
                 viewModel.displayDetailsComplete()
             }
 //            startActivity(Intent(activity, MapsActivity::class.java))
@@ -198,8 +199,8 @@ class MainFragment : Fragment() {
 
     /*  --------------------------
      *   initiate adapter and set
-     *   - objective observer
-     *   - error from objective repository observer
+     *   - media observer
+     *   - error from media repository observer
      *  ----------------------------
      */
     private fun ObjectiveAdapter.initAdapter(

@@ -15,4 +15,7 @@
     <dimen name="objective_name_size">24dp</dimen>
     <dimen name="nav_drawer_width">260dp</dimen>
     <dimen name="haeder_height">120dp</dimen>
+    <dimen name="detail_app_bar_height">278dp</dimen>
+    <dimen name="toolbar_elevation">5dp</dimen>
+    <dimen name="fab_bottom_padding">72dp</dimen>
 </resources>

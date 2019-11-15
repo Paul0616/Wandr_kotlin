@@ -9,11 +9,13 @@
             type="com.encorsa.wandr.mainFragments.main.MainViewModel" />
     </data>
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/fragment_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".mainFragments.main.MainFragment"
+        android:fitsSystemWindows="true"
         android:animateLayoutChanges="true">
 
         <Button

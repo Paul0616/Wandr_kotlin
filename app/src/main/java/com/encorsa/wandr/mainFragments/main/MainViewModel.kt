@@ -39,11 +39,11 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
     private var viewModelJob = Job()
     private val ioScope = CoroutineScope(Dispatchers.IO + viewModelJob)
 
-    val dataSource = WandrDatabase.getInstance(app).wandrDatabaseDao
+    private val dataSource = WandrDatabase.getInstance(app).wandrDatabaseDao
     private val prefs = Prefs(app.applicationContext)
     private val objectiveRepository = ObjectivesRepository(app, database)
     private val subcategoryRepository = SubcategoryRepository(app, database)
-    private val categoryRepository = CategoryRepository(app, database)
+    //private val categoryRepository = CategoryRepository(app, database)
     private val showFavorite = MutableLiveData<Boolean>()
     private val search = MutableLiveData<String>()
     private val queryObjectives = MutableLiveData<SupportSQLiteQuery>()
@@ -75,7 +75,7 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
     val error: LiveData<String>
         get() = _error
 
-    lateinit var queryModel: QueryModel
+    private lateinit var queryModel: QueryModel
 
 
     init {
@@ -89,8 +89,8 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
 
 
     /*  --------------------------------------------
-     *  define receiving objective from repository
-     *  every time when value of queryObjectives changes
+     *  define receiving media from repository
+     *  every time when value of @param queryObjectives changes
      *  - loading from network and storing in repository is called
      *  - objectiveRepositoryResponse will change too
      *  --------------------------------------------
@@ -98,7 +98,7 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
     private val objectiveRepositoryResponse: LiveData<ObjectiveRepositoryResult> =
         Transformations.map(queryObjectives) {
             loadObjectives(true)
-            Log.i("MainViewModel", "objectives from repository conform model: ${queryModel}")
+            Log.i("MainViewModel", "media from repository conform model: ${queryModel}")
             objectiveRepository.getRepositoryObjectiveWithFilter(it)
         }
 
@@ -112,7 +112,7 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
             it.networkErrors
         }
 
-    fun loadObjectives(filterHasChanged: Boolean) {
+    private fun loadObjectives(filterHasChanged: Boolean) {
         viewModelScope.launch {
             objectiveRepository.makeNetworkCallAndRefreshDatabase(queryModel, filterHasChanged)
         }
@@ -142,7 +142,7 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
 
 
     /* -----------------------
-     *  click on objective row
+     *  click on media row
      * ------------------------
      */
     fun objectiveWasClicked(objective: ObjectiveDatabaseModel) {
@@ -312,7 +312,7 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
             it.networkErrors
         }
 
-    fun loadSubcategories() {
+    private fun loadSubcategories() {
         viewModelScope.launch {
             subcategoryRepository.refreshCategories()
         }
@@ -323,7 +323,7 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
     }
 
     /*  --------------------------
-     *   set filters for objectives
+     *   set filters for media
      *  ----------------------------
      */
     fun setSearch(searchText: String?) {

@@ -71,6 +71,9 @@ interface WandrApiService {
     @DELETE("FavoriteApi/{id}")
     fun removeFavorite(@Path("id") id: String, @Header("Authorization") token: String):
             Deferred<FavoriteIdModel>
+    @GET("ObjectiveApi/{id}")
+    fun getObjectiveById(@Path("id") id: String, @QueryMap options: HashMap<String, Any>):
+            Deferred<ObjectiveModel>
 }
 
 object WandrApi {
