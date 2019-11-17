@@ -392,4 +392,6 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
         Log.i("MainViewModel", "DESTROYED")
         viewModelJob.cancel()
     }
+
+
 }

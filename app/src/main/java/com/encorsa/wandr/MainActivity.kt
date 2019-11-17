@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.view.Menu
 import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.databinding.DataBindingUtil
@@ -19,6 +20,7 @@ import com.encorsa.wandr.mainFragments.main.DrawerFragment
 import com.encorsa.wandr.mainFragments.main.MainFragment
 import com.encorsa.wandr.models.CategoryModel
 import com.encorsa.wandr.utils.Prefs
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), DrawerFragment.FragmentDrawerListener {
 
@@ -33,7 +35,9 @@ class MainActivity : AppCompatActivity(), DrawerFragment.FragmentDrawerListener 
             DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
         drawerLayout = binding.drawerLayout
         val navController = this.findNavController(R.id.nav_host_fragment_main)
-        NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)
+        setSupportActionBar(mainToolbar)
+        NavigationUI.setupWithNavController(mainToolbar, navController, drawerLayout)
+//         NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)
 
         navController.addOnDestinationChangedListener { nc: NavController, nd: NavDestination, _ ->
             if (nd.id == nc.graph.startDestination) {
@@ -58,5 +62,10 @@ class MainActivity : AppCompatActivity(), DrawerFragment.FragmentDrawerListener 
         //supportActionBar?.title = item.name
     }
 
+//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        menuInflater.inflate(R.menu.main_option_menu, menu)
+//        return true
+//    }
 
 }

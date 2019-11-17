@@ -6,8 +6,17 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowTranslucentStatus">true</item>
+        <item name="colorOnSurface">@color/colorOnSurface</item>
     </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="MyEditText" >
         <item name="android:drawablePadding">@dimen/edit_padding</item>
@@ -19,35 +28,26 @@
         <item name="android:drawablePadding">@dimen/edit_padding</item>
         <item name="android:fontFamily">@font/roboto_condensed_regular</item>
         <item name="android:textSize">20sp</item>
-<!--        <item name="android:gravity">center_horizontal</item>-->
-<!--        <item name="android:textColor">@color/colorPrimaryDark</item>-->
+
 
     </style>
 
-    <style name="Base.Theme.Wandr" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-<!--        <item name="colorOnPrimary">@color/sunflower_yellow_500</item>-->
-        <item name="colorPrimaryDark">@color/colorPrimary</item>
-        <item name="colorOnSurface">@color/colorOnSurface</item>
-        <item name="colorAccent">@color/colorAccent</item>
-<!--        <item name="colorSurface">@color/sunflower_gray_50</item>-->
-<!--        <item name="colorSecondary">@color/sunflower_yellow_500</item>-->
-<!--        <item name="android:colorBackground">@color/sunflower_green_500</item>-->
-    </style>
+<!--    <style name="Base.Theme.Wandr" parent="Theme.MaterialComponents.Light.NoActionBar">-->
+<!--        <item name="colorPrimary">@color/colorPrimary</item>-->
+<!--        <item name="colorPrimaryDark">@color/colorPrimary</item>-->
+<!--        <item name="colorOnSurface">@color/colorOnSurface</item>-->
+<!--        <item name="colorAccent">@color/colorAccent</item>-->
+<!--    </style>-->
 
-    <style name="Theme.Wandr" parent="Base.Theme.Wandr"/>
+<!--    <style name="Theme.Wandr" parent="Base.Theme.Wandr"/>-->
 
-    <style name="Theme.Wandr.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-
-    <!--  <style name="TextAppearance.AppCompat.Widget.ActionBar.Title" parent="android:TextAppearance">-->
-<!--      <item name="android:textColor">@color/colorAccentLight</item>-->
-<!--  </style>-->
+<!--    <style name="Theme.Wandr.NoActionBar">-->
+<!--        <item name="windowActionBar">false</item>-->
+<!--        <item name="windowNoTitle">true</item>-->
+<!--    </style>-->
 
 
-    <style name="TextAppearance.Sunflower.Toolbar.Text" parent="TextAppearance.MaterialComponents.Headline5" >
+    <style name="TextAppearance.Wandr.Toolbar.Text" parent="TextAppearance.MaterialComponents.Headline5" >
         <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
 </resources>

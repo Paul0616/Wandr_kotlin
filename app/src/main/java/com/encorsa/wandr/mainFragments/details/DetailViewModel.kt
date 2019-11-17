@@ -74,5 +74,12 @@ class DetailViewModel(
         }
     }
 
+    private val _viewMenu = MutableLiveData<Boolean>(true)
+    val viewMenu: LiveData<Boolean>
+        get() = _viewMenu
+    fun switchMenu(){
+        Log.i("DetailViewModel", "${_viewMenu.value}")
+        _viewMenu.value = !_viewMenu.value!!
+    }
 
 }

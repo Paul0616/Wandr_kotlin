@@ -20,8 +20,7 @@
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
-        android:name="com.encorsa.wandr.mainFragments.details.DetailFragment"
-        android:label="Detalii">
+        android:name="com.encorsa.wandr.mainFragments.details.DetailFragment">
         <argument
             android:name="selectedObjective"
             app:argType="com.encorsa.wandr.database.ObjectiveDatabaseModel" />

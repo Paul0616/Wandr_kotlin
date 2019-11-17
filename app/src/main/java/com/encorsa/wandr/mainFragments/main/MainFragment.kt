@@ -14,7 +14,9 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -29,6 +31,10 @@ import com.encorsa.wandr.databinding.FragmentMainBinding
 
 import com.encorsa.wandr.utils.*
 import com.google.android.material.chip.Chip
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.view.*
+import kotlinx.android.synthetic.main.fragment_detail.view.*
+import kotlinx.android.synthetic.main.fragment_detail.view.toolbar
 
 /**
  * A simple [Fragment] subclass.
@@ -49,7 +55,11 @@ class MainFragment : Fragment() {
         val viewModelFactory = MainModelFactory(application, dataSource)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
 
+        //(activity as AppCompatActivity).setSupportActionBar(binding.root.toolbar)
         (activity as AppCompatActivity).supportActionBar?.show()
+//        (activity as AppCompatActivity).supportActionBar?.setHomeButtonEnabled(true)
+//        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         val adapter = ObjectiveAdapter(
             application.applicationContext,
             ObjectiveAdapter.OnClickListener { obj, favoriteWasClicked, insertMode ->
@@ -101,6 +111,8 @@ class MainFragment : Fragment() {
                 this.findNavController().navigate(MainFragmentDirections.actionMainFragmentToDetailFragment(it))
                 viewModel.displayDetailsComplete()
             }
+
+
 //            startActivity(Intent(activity, MapsActivity::class.java))
         })
 
@@ -190,7 +202,6 @@ class MainFragment : Fragment() {
         viewModel.favoriteId.observe(this, Observer {
             viewModel.refreshWithCurrentFilter()
         })
-
 
         adapter.initAdapter(application)
         return binding.root

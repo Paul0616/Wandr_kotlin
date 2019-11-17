@@ -15,6 +15,8 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 
 import com.encorsa.wandr.database.WandrDatabase
 import com.encorsa.wandr.databinding.FragmentDetailBinding
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.view.*
 
 class DetailFragment : Fragment() {
 
@@ -33,8 +35,9 @@ class DetailFragment : Fragment() {
         binding = FragmentDetailBinding.inflate(inflater)
         binding.lifecycleOwner = this
 
-       // (activity as AppCompatActivity).supportActionBar?.hide()
-       // (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
+        //(activity as AppCompatActivity).supportActionBar?.hide()
+
+
         return binding.root
     }
 
@@ -72,6 +75,26 @@ class DetailFragment : Fragment() {
             }
         })
 
+        viewModel.viewMenu.observe(this, Observer {
+            when(it){
+                true -> {
+                    //hide red action bar and set transparent one as new toolbar
+                    (activity as AppCompatActivity).supportActionBar?.hide()
+                    (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
+                }
+                false -> {
+                    //set main toolbar as new toolbar
+                    (activity as AppCompatActivity).setSupportActionBar(null)
+                   (activity as AppCompatActivity).supportActionBar?.show()
+                    //
+                }
+            }
+
+        })
+
+        binding.menuButton.setOnClickListener{
+            viewModel.switchMenu()
+        }
         binding.detailScrollview.setOnScrollChangeListener(
             NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, _ ->
 
@@ -93,6 +116,8 @@ class DetailFragment : Fragment() {
 //                }
             }
         )
+
+
 
     }
 
