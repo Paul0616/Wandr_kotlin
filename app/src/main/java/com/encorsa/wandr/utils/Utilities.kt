@@ -5,6 +5,8 @@ import android.content.DialogInterface
 import android.content.res.Configuration
 import android.os.Build
 import android.util.Log
+import android.view.Window
+import android.view.WindowManager
 import androidx.sqlite.db.SupportSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQueryBuilder
 import com.encorsa.wandr.R
@@ -171,4 +173,12 @@ fun String.smartTruncate(length: Int): String {
         builder.append("...")
     }
     return builder.toString()
+}
+
+fun makeTransperantStatusBar(window: Window, isTransperant: Boolean) {
+    if (isTransperant) {
+        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+    } else {
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+    }
 }

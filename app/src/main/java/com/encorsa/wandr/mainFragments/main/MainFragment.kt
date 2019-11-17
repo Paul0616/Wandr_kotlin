@@ -14,6 +14,8 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
@@ -25,6 +27,7 @@ import com.encorsa.wandr.MapsActivity
 
 import com.encorsa.wandr.R
 import com.encorsa.wandr.adapters.ObjectiveAdapter
+import com.encorsa.wandr.database.CategoryDatabaseModel
 import com.encorsa.wandr.database.SubcategoryDatabaseModel
 import com.encorsa.wandr.database.WandrDatabase
 import com.encorsa.wandr.databinding.FragmentMainBinding
@@ -39,7 +42,7 @@ import kotlinx.android.synthetic.main.fragment_detail.view.toolbar
 /**
  * A simple [Fragment] subclass.
  */
-class MainFragment : Fragment() {
+class MainFragment : Fragment()  {
     private lateinit var viewModel: MainViewModel
     private lateinit var binding: FragmentMainBinding
 
@@ -55,10 +58,10 @@ class MainFragment : Fragment() {
         val viewModelFactory = MainModelFactory(application, dataSource)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
 
-        //(activity as AppCompatActivity).setSupportActionBar(binding.root.toolbar)
-        (activity as AppCompatActivity).supportActionBar?.show()
-//        (activity as AppCompatActivity).supportActionBar?.setHomeButtonEnabled(true)
-//        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        (activity as AppCompatActivity).setSupportActionBar(binding.mainToolbar)
+        activity?.window?.let {
+            makeTransperantStatusBar(activity?.window!!, false)
+        }
 
         val adapter = ObjectiveAdapter(
             application.applicationContext,
@@ -76,7 +79,14 @@ class MainFragment : Fragment() {
         binding.setLifecycleOwner(this)
         binding.mainViewmodel = viewModel
         binding.progressBarMain.visibility = View.GONE
-        //(activity as AppCompatActivity).supportActionBar?.show()
+
+
+        val navController = findNavController()
+        NavigationUI.setupWithNavController(
+            binding.mainToolbar,
+            navController,
+            binding.drawerLayout
+        )
 
         /*  --------------------------
          *   observe if shared preference changes
@@ -98,6 +108,7 @@ class MainFragment : Fragment() {
         prefsLiveData.stringLiveData(CURRENT_CATEGORY_NAME, null).observe(this, Observer {
             (activity as? AppCompatActivity)?.supportActionBar?.title =
                 prefsLiveData.getString(CURRENT_CATEGORY_NAME, "")
+            binding.drawerLayout.closeDrawers()
         })
 
 
@@ -106,13 +117,12 @@ class MainFragment : Fragment() {
          *  ----------------------------
          */
         viewModel.navigateToDetails.observe(this, Observer {
-            if(null != it) {
+            if (null != it) {
                 Log.i("TESTMainViewModel", "OBJECTIVE ${it.id}")
-                this.findNavController().navigate(MainFragmentDirections.actionMainFragmentToDetailFragment(it))
+                this.findNavController()
+                    .navigate(MainFragmentDirections.actionMainFragmentToDetailFragment(it))
                 viewModel.displayDetailsComplete()
             }
-
-
 //            startActivity(Intent(activity, MapsActivity::class.java))
         })
 
@@ -206,7 +216,6 @@ class MainFragment : Fragment() {
         adapter.initAdapter(application)
         return binding.root
     }
-
 
     /*  --------------------------
      *   initiate adapter and set

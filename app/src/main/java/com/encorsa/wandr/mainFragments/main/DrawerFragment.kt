@@ -65,7 +65,7 @@ class DrawerFragment : Fragment() {
         val prefs = Prefs(application)
         val prefsLiveData = PreferenceManager.getDefaultSharedPreferences(context)
         prefsLiveData.stringLiveData(CURRENT_LANGUAGE, null).observe(this, Observer {
-            Log.i("DrawerFragment", it ?: "")
+           // Log.i("DrawerFragment", it ?: "")
             it?.let {
                 viewModel.setCurrentLanguage(it)
             }
@@ -75,7 +75,6 @@ class DrawerFragment : Fragment() {
         viewModel.menuItems.observe(this, Observer {
             adapter = DrawerAdapter(application.applicationContext, it, DrawerAdapter.OnClickListener {
                 viewModel.categoryMenuWasClicked(it)
-
             })
             binding.rvDrawerList.adapter = adapter
             if (!it.isEmpty()) {
@@ -93,7 +92,6 @@ class DrawerFragment : Fragment() {
                         it.id == prefs.currentCategoryId
                     }.single()
 
-                    Log.i("DrawerFragment", selectedCategory.toString())
                     prefs.currentCategoryName = selectedCategory.name
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -110,7 +108,7 @@ class DrawerFragment : Fragment() {
 
         viewModel.selectedCategory.observe(this, Observer {
             drawerListener?.onDrawerItemSelected(it)
-
+            Log.i("DrawerFragment","${it}")
         })
 
         viewModel.networkErrors.observe(this, Observer {

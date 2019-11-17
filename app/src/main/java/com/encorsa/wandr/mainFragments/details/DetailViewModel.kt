@@ -23,13 +23,17 @@ class DetailViewModel(
     val selectedObjective: LiveData<ObjectiveDatabaseModel>
         get() = _selectedObjective
 
+
+    val objectiveName = MutableLiveData<String?>()
+
+
     init {
         Log.i("DetailViewModel", "CREATED")
         _selectedObjective.value = objective
+        objectiveName.value = objective.name
         Log.i("DetailViewModel", objective.defaultImageUrl)
         getMedia()
     }
-
 
 
     private val _mediaRepositoryResponse = MutableLiveData<MediaRepositoryResult>()
@@ -42,9 +46,9 @@ class DetailViewModel(
             it.media
         }
 
-    val imageNumber:LiveData<Int> =
+    val imageNumber: LiveData<Int> =
         Transformations.map(media) {
-           it.filter {
+            it.filter {
                 it.mediaType == "image"
             }.size
         }
@@ -64,7 +68,7 @@ class DetailViewModel(
     override fun onCleared() {
         super.onCleared()
         Log.i("DetailViewModel", "DESTROYED")
-       
+
     }
 
     private fun getMedia() {
@@ -74,12 +78,12 @@ class DetailViewModel(
         }
     }
 
-    private val _viewMenu = MutableLiveData<Boolean>(true)
-    val viewMenu: LiveData<Boolean>
-        get() = _viewMenu
-    fun switchMenu(){
-        Log.i("DetailViewModel", "${_viewMenu.value}")
-        _viewMenu.value = !_viewMenu.value!!
-    }
+//    private val _viewMenu = MutableLiveData<Boolean>(true)
+//    val viewMenu: LiveData<Boolean>
+//        get() = _viewMenu
+//    fun switchMenu(){
+//        Log.i("DetailViewModel", "${_viewMenu.value}")
+//        _viewMenu.value = !_viewMenu.value!!
+//    }
 
 }
