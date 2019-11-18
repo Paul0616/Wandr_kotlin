@@ -8,6 +8,9 @@ import androidx.lifecycle.Transformations
 
 import androidx.preference.PreferenceFragmentCompat
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
@@ -16,6 +19,7 @@ import com.encorsa.wandr.R
 import com.encorsa.wandr.database.WandrDatabase
 import com.encorsa.wandr.utils.CURRENT_LANGUAGE
 import com.encorsa.wandr.utils.Prefs
+import com.encorsa.wandr.utils.makeTransperantStatusBar
 
 
 class LanguageSettingsFragment : PreferenceFragmentCompat() {
@@ -30,6 +34,14 @@ class LanguageSettingsFragment : PreferenceFragmentCompat() {
         val dataSource = WandrDatabase.getInstance(application).wandrDatabaseDao
         val viewModelFactory = LanguageSettingsViewModelFactory(application, dataSource)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(LanguageSettingsViewModel::class.java)
+
+//        val navcon = findNavController()
+//        NavigationUI.setupActionBarWithNavController(, navcon)
+//        (activity as AppCompatActivity).supportActionBar?.show()
+//        activity?.window?.let {
+//            makeTransperantStatusBar(activity?.window!!, false)
+//        }
+
         val prefCat = findPreference<Preference>("preferences_category") as PreferenceCategory?
         val listPreference = findPreference<Preference>("current_language") as ListPreference?
         viewModel.settingsTitle.observe(this, Observer {

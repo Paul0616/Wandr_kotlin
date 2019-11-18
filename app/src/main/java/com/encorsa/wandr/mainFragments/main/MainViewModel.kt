@@ -26,6 +26,7 @@ import com.google.android.material.chip.ChipGroup
 import kotlinx.coroutines.*
 import com.encorsa.wandr.models.*
 import com.encorsa.wandr.R
+import com.encorsa.wandr.adapters.ViewClicked
 import retrofit2.HttpException
 
 
@@ -142,12 +143,16 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
 
 
     /* -----------------------
-     *  click on media row
+     *  click on objective row
      * ------------------------
      */
-    fun objectiveWasClicked(objective: ObjectiveDatabaseModel) {
-        _navigateToDetails.value = objective
-
+    fun objectiveWasClicked(objective: ObjectiveDatabaseModel, viewClicked: ViewClicked) {
+        when(viewClicked){
+            ViewClicked.OBJECTIVE -> _navigateToDetails.value = objective
+            ViewClicked.FAVORITE -> favoriteWasClicked(objective, !objective.isFavorite)
+            ViewClicked.URL -> urlWasClicked(objective)
+            ViewClicked.LOCATION -> locationWasClicked(objective)
+        }
     }
 
     fun displayDetailsComplete(){
@@ -156,8 +161,8 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
 
     fun favoriteWasClicked(objective: ObjectiveDatabaseModel, insertMode: Boolean?) {
         Log.i(
-            "TESTMainViewModel",
-            "ADD TO FAVORITE: ID:${objective.id} SUBCATEGORY-ID:${objective.subcategoryId}"
+            "MainViewModel",
+            "ADD TO FAVORITE: ID:${objective.id}"
         )
         insertMode?.let{
             if (it){
@@ -168,6 +173,14 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
             }
         }
 
+    }
+
+    fun urlWasClicked(objective: ObjectiveDatabaseModel){
+        Log.i("MainViewModel", "URL clicked")
+    }
+
+    fun locationWasClicked(objective: ObjectiveDatabaseModel){
+        Log.i("MainViewModel", "LOCATION clicked")
     }
 
     /* ---------------------------------------------------
@@ -220,7 +233,7 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
     }
 
     /* ---------------------------------------------------
-    *  first check if token is expired and if is make network login call
+    *  first check if token is expired and if it is, make network login call
     *  make network insert favorite call
     *  capturing errors in error LiveData
     *  if call was succesfull favoriteId will change and in MainFragment call refresh screen

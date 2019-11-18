@@ -65,13 +65,14 @@ class MainFragment : Fragment()  {
 
         val adapter = ObjectiveAdapter(
             application.applicationContext,
-            ObjectiveAdapter.OnClickListener { obj, favoriteWasClicked, insertMode ->
-                if (!favoriteWasClicked)
-                    viewModel.objectiveWasClicked(obj)
-                else {
-
-                    viewModel.favoriteWasClicked(obj, insertMode)
-                }
+            ObjectiveAdapter.OnClickListener { obj, viewClicked ->
+                viewModel.objectiveWasClicked(obj, viewClicked)
+//                if (!favoriteWasClicked)
+//                    viewModel.objectiveWasClicked(obj)
+//                else {
+//
+//                    viewModel.favoriteWasClicked(obj, insertMode)
+//                }
             })
 
         setHasOptionsMenu(true)
