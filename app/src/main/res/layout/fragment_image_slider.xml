@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="leftArrowVisibility"
+            type="boolean" />
+        <variable
+            name="rightArrowVisibility"
+            type="boolean" />
+    </data>
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/rootview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:fitsSystemWindows="true"
+        >
+
+<!--        android:background="?attr/colorSurface"-->
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:theme="@style/AppTheme.DetailAppBarOverlay"
+        android:fitsSystemWindows="true">
+<!--        android:background="?attr/colorSurface"-->
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/sliderToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/transparent"
+            app:contentInsetStartWithNavigation="0dp"
+            app:navigationIcon="@drawable/ic_detail_black"
+            app:titleTextColor="?attr/colorOnSurface"
+            />
+
+    </com.google.android.material.appbar.AppBarLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".mainFragments.imageSlider.ImageSliderFragment">
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <ImageView
+            android:id="@+id/leftArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/small_dim"
+            app:srcCompat="@drawable/ic_chevron_left_white_24dp"
+            app:arrowVisibility="@{leftArrowVisibility}"/>
+
+        <ImageView
+            android:id="@+id/rightArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/small_dim"
+            app:srcCompat="@drawable/ic_chevron_right_white_24dp"
+            app:arrowVisibility="@{rightArrowVisibility}"/>
+
+
+    </RelativeLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

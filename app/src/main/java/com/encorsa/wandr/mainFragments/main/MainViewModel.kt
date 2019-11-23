@@ -19,15 +19,14 @@ import com.encorsa.wandr.utils.Utilities
 import com.encorsa.wandr.database.SubcategoryDatabaseModel
 import com.encorsa.wandr.database.WandrDatabase
 import com.encorsa.wandr.network.WandrApi
-import com.encorsa.wandr.repository.CategoryRepository
 import com.encorsa.wandr.repository.SubcategoryRepository
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import kotlinx.coroutines.*
 import com.encorsa.wandr.models.*
-import com.encorsa.wandr.R
 import com.encorsa.wandr.adapters.ViewClicked
 import retrofit2.HttpException
+import com.encorsa.wandr.R
 
 
 class MainViewModel(app: Application, val database: WandrDatabaseDao) :
@@ -72,6 +71,18 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
     val navigateToDetails: LiveData<ObjectiveDatabaseModel>
         get() = _navigateToDetails
 
+    private val _navigateToUrl = MutableLiveData<ObjectiveDatabaseModel>()
+    val navigateToUrl: LiveData<ObjectiveDatabaseModel>
+        get() = _navigateToUrl
+
+    private val _navigateToSettings = MutableLiveData<Boolean>(false)
+    val navigateToSettings: LiveData<Boolean>
+        get() = _navigateToSettings
+
+    private val _navigateToMap = MutableLiveData<ObjectiveDatabaseModel>()
+    val navigateToMap: LiveData<ObjectiveDatabaseModel>
+        get() = _navigateToMap
+
     private val _error = MutableLiveData<String>()
     val error: LiveData<String>
         get() = _error
@@ -85,6 +96,7 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
         currentLanguage.value = prefs.currentLanguage ?: DEFAULT_LANGUAGE
         _chipsGroupIsVisible.value = false
         _subcategoryFilterApplied.value = false
+
         Log.i("MainViewModel", "INIT makeQuery was called")
     }
 
@@ -159,6 +171,18 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
         _navigateToDetails.value = null
     }
 
+    fun navigateToSettings(){
+       _navigateToSettings.value = true
+    }
+
+    fun navigateToSettingsComplete(){
+        _navigateToSettings.value = false
+    }
+
+    fun navigateToMapComplete(){
+        _navigateToMap.value = null
+    }
+
     fun favoriteWasClicked(objective: ObjectiveDatabaseModel, insertMode: Boolean?) {
         Log.i(
             "MainViewModel",
@@ -177,10 +201,13 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
 
     fun urlWasClicked(objective: ObjectiveDatabaseModel){
         Log.i("MainViewModel", "URL clicked")
+        _navigateToUrl.value = objective
+
     }
 
     fun locationWasClicked(objective: ObjectiveDatabaseModel){
         Log.i("MainViewModel", "LOCATION clicked")
+        _navigateToMap.value = objective
     }
 
     /* ---------------------------------------------------
@@ -359,6 +386,7 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
         }
         makeQuery()
         Log.i("MainViewModel", "SHOW FAVORITE makeQuery was called")
+//        navigateToSettings()
     }
 
     fun makeQueryForCategoryId(id: String?) {

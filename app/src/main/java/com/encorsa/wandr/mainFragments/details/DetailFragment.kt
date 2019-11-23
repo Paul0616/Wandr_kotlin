@@ -3,12 +3,14 @@ package com.encorsa.wandr.mainFragments.details
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.encorsa.wandr.database.WandrDatabase
 import com.encorsa.wandr.databinding.FragmentDetailBinding
 import com.encorsa.wandr.utils.makeTransperantStatusBar
@@ -51,6 +53,8 @@ class DetailFragment : Fragment() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(DetailViewModel::class.java)
         binding.objectiveId.text = objective.id
         binding.detailViewModel = viewModel
+        binding.photoGallery.visibility = View.GONE
+        binding.videoGallery.visibility = View.GONE
 
 //        viewModel.media.observe(this, Observer {
 //            binding.objectiveId.text = it.size.toString()
@@ -61,13 +65,31 @@ class DetailFragment : Fragment() {
             Log.i("DetailFragment", "Error: ${it}")
         })
 
-//        viewModel.imageNumber.observe(this, Observer {
-//            binding.imagesNum.text = it.toString()
-//        })
-//
-//        viewModel.videoNumber.observe(this, Observer {
-//            binding.videosNum.text = it.toString()
-//        })
+        viewModel.displayPhotoGallery.observe(this, Observer {
+            if (it != null) {
+                this.findNavController()
+                    .navigate(DetailFragmentDirections.actionDetailFragmentToImageSliderFragment(it, objective))
+            }
+        })
+
+        viewModel.displayVideoGallery.observe(this, Observer {
+            if (it != null) {
+                Toast.makeText(
+                    context,
+                    it?.size.toString(),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        })
+        viewModel.photoGallery.observe(this, Observer {
+            if (it.size > 0)
+                binding.photoGallery.visibility = View.VISIBLE
+        })
+
+        viewModel.videoGallery.observe(this, Observer {
+            if (it.size > 0)
+                binding.videoGallery.visibility = View.VISIBLE
+        })
 //        viewModel.selectedObjective.observe(this, Observer {
 //
 //        })
@@ -89,6 +111,10 @@ class DetailFragment : Fragment() {
 //
 //        })
 
+        binding.fab.setOnClickListener{
+            Log.i("DetailFragment", "FAB WAS CLICKED")
+        }
+
         binding.toolbar.setNavigationOnClickListener { view ->
             view.findNavController().navigateUp()
         }
@@ -100,7 +126,7 @@ class DetailFragment : Fragment() {
                 // User scrolled past image to height of toolbar and the title text is
                 // underneath the toolbar, so the toolbar should be shown.
                 Log.i("DetailFragment", "${scrollY}")
-               val shouldShowToolbar = scrollY > binding.toolbar.height
+                val shouldShowToolbar = scrollY > binding.toolbar.height
 
                 // The new state of the toolbar differs from the previous state; update
                 // appbar and toolbar attributes.
@@ -115,7 +141,6 @@ class DetailFragment : Fragment() {
                 }
             }
         )
-
 
 
     }

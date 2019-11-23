@@ -21,4 +21,5 @@ class MainActivity : AppCompatActivity() , DrawerFragment.FragmentDrawerListener
         prefs.currentCategoryName = item.name
     }
 
+    
 }

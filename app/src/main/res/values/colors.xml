@@ -12,8 +12,10 @@
     <color name="colorAccent">#dbbe8f</color>
     <color name="colorOnSurface">#de000000</color>
     <color name="colorSecondary">#FAAB1A</color>
-    <color name="colorOnSecondary">#232F34</color>
+    <color name="colorOnSecondary">#D40704</color>
+    <color name="colorOnSecondary1">#232F34</color>
 
     <color name="colorAccentLightTrans">#75E9D1B0</color>
     <color name="colorLightGray">#FAFAFA</color>
+    <color name="colorText">#8a000000</color>
 </resources>

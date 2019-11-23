@@ -3,6 +3,7 @@ package com.encorsa.wandr.mainFragments.details
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
+import com.encorsa.wandr.database.ListMediaDatabaseModel
 import com.encorsa.wandr.database.MediaDatabaseModel
 import com.encorsa.wandr.database.ObjectiveDatabaseModel
 import com.encorsa.wandr.database.WandrDatabaseDao
@@ -23,6 +24,13 @@ class DetailViewModel(
     val selectedObjective: LiveData<ObjectiveDatabaseModel>
         get() = _selectedObjective
 
+    private val _displayPhotoGallery = MutableLiveData<ListMediaDatabaseModel>()
+    val displayPhotoGallery: LiveData<ListMediaDatabaseModel>
+        get() = _displayPhotoGallery
+
+    private val _displayVideoGallery = MutableLiveData<ListMediaDatabaseModel>()
+    val displayVideoGallery: LiveData<ListMediaDatabaseModel>
+        get() = _displayVideoGallery
 
     val objectiveName = MutableLiveData<String?>()
 
@@ -46,18 +54,18 @@ class DetailViewModel(
             it.media
         }
 
-    val imageNumber: LiveData<Int> =
+    val photoGallery: LiveData<List<MediaDatabaseModel>> =
         Transformations.map(media) {
             it.filter {
                 it.mediaType == "image"
-            }.size
+            }
         }
 
-    val videoNumber =
+    val videoGallery: LiveData<List<MediaDatabaseModel>> =
         Transformations.map(media) {
             it.filter {
                 it.mediaType == "video"
-            }.size
+            }
         }
 
     var networkErrors: LiveData<String> =
@@ -76,6 +84,22 @@ class DetailViewModel(
             _mediaRepositoryResponse.value =
                 objectiveRepository.getRepositoryMedia(objective.id)
         }
+    }
+
+    fun showPhotoGallery(){
+        val medias = ListMediaDatabaseModel()
+        photoGallery.value?.let {
+            medias.addAll(photoGallery.value!!)
+        }
+        _displayPhotoGallery.value = medias
+    }
+
+    fun showVideoGallery(){
+        val medias = ListMediaDatabaseModel()
+        videoGallery.value?.let {
+            medias.addAll(videoGallery.value!!)
+        }
+        _displayVideoGallery.value = medias
     }
 
 //    private val _viewMenu = MutableLiveData<Boolean>(true)

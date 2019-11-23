@@ -14,35 +14,26 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.NavController
-import androidx.navigation.NavDestination
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.encorsa.wandr.LogInActivity
-import com.encorsa.wandr.MapsActivity
 
 import com.encorsa.wandr.R
 import com.encorsa.wandr.adapters.ObjectiveAdapter
-import com.encorsa.wandr.database.CategoryDatabaseModel
 import com.encorsa.wandr.database.SubcategoryDatabaseModel
 import com.encorsa.wandr.database.WandrDatabase
 import com.encorsa.wandr.databinding.FragmentMainBinding
 
 import com.encorsa.wandr.utils.*
 import com.google.android.material.chip.Chip
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main.view.*
-import kotlinx.android.synthetic.main.fragment_detail.view.*
-import kotlinx.android.synthetic.main.fragment_detail.view.toolbar
 
 /**
  * A simple [Fragment] subclass.
  */
-class MainFragment : Fragment()  {
+class MainFragment : Fragment() {
     private lateinit var viewModel: MainViewModel
     private lateinit var binding: FragmentMainBinding
 
@@ -67,12 +58,6 @@ class MainFragment : Fragment()  {
             application.applicationContext,
             ObjectiveAdapter.OnClickListener { obj, viewClicked ->
                 viewModel.objectiveWasClicked(obj, viewClicked)
-//                if (!favoriteWasClicked)
-//                    viewModel.objectiveWasClicked(obj)
-//                else {
-//
-//                    viewModel.favoriteWasClicked(obj, insertMode)
-//                }
             })
 
         setHasOptionsMenu(true)
@@ -114,17 +99,44 @@ class MainFragment : Fragment()  {
 
 
         /*  --------------------------
-         *   observe onclick on media image
+         *   observe NAVIGATION
          *  ----------------------------
          */
         viewModel.navigateToDetails.observe(this, Observer {
             if (null != it) {
-                Log.i("TESTMainViewModel", "OBJECTIVE ${it.id}")
+                Log.i("MainFragment", "OBJECTIVE ${it.id}")
                 this.findNavController()
                     .navigate(MainFragmentDirections.actionMainFragmentToDetailFragment(it))
                 viewModel.displayDetailsComplete()
             }
 //            startActivity(Intent(activity, MapsActivity::class.java))
+        })
+
+
+        viewModel.navigateToMap.observe(this, Observer {
+            if (null != it) {
+                Log.i("MainFragment", "OBJECTIVE ${it.id}")
+                this.findNavController()
+                    .navigate(MainFragmentDirections.actionMainFragmentToMapsActivity(it))
+                viewModel.navigateToMapComplete()
+            }
+//            startActivity(Intent(activity, MapsActivity::class.java))
+        })
+
+        viewModel.navigateToUrl.observe(this, Observer {
+            if (null != it) {
+                Log.i("MainFragment", "OBJECTIVE ${it.id}")
+
+            }
+        })
+
+        viewModel.navigateToSettings.observe(this, Observer {
+            if (false != it) {
+               // startActivity(Intent(activity, SettingsActivity::class.java))
+                 this.findNavController()
+                                    .navigate(MainFragmentDirections.actionMainFragmentToSettingsActivity())
+                viewModel.navigateToSettingsComplete()
+            }
         })
 
         /*  --------------------------
@@ -318,16 +330,20 @@ class MainFragment : Fragment()  {
      *  ----------------------------
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.logOut) {
-            val prefs = Prefs(requireNotNull(activity).applicationContext)
-            prefs.logOut()
-            startActivity(Intent(activity, LogInActivity::class.java))
-            (activity as AppCompatActivity).finish()
+        return when (item.itemId) {
+            R.id.logOut -> {
+                val prefs = Prefs(requireNotNull(activity).applicationContext)
+                prefs.logOut()
+                startActivity(Intent(activity, LogInActivity::class.java))
+                (activity as AppCompatActivity).finish()
+                true
+            }
+            R.id.action_language -> {
+                viewModel.navigateToSettings()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
-        if (item.itemId == R.id.action_language) {
-            findNavController().navigate(MainFragmentDirections.actionMainFragmentToLanguageSettingsFragment())
-        }
-        return super.onOptionsItemSelected(item)
     }
 
 

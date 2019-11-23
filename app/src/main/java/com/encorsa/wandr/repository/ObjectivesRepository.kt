@@ -60,7 +60,7 @@ class ObjectivesRepository(private val app: Application, private val database: W
             queryModel.subcategoryIds?.let {
                 subs = queryModel.subcategoryIds!!.toList()
             }
-            prefs.userId.apply {
+            prefs.userId?.let {
                 options.put("userId", prefs.userId!!)
             }
             isRequestInProgress = true

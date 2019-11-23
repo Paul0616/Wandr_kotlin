@@ -1,11 +1,14 @@
 package com.encorsa.wandr.database
 
 
+import android.os.Parcelable
 import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 @Entity(tableName = "media_table")
 data class MediaDatabaseModel (
     @PrimaryKey
@@ -27,4 +30,4 @@ data class MediaDatabaseModel (
 
     @ColumnInfo(name = "title")
     val title: String? = null
-)
+): Parcelable
