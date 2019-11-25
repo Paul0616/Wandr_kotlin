@@ -13,6 +13,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.encorsa.wandr.database.WandrDatabase
 import com.encorsa.wandr.databinding.FragmentDetailBinding
+import com.encorsa.wandr.utils.DEBUG_MODE
 import com.encorsa.wandr.utils.makeTransperantStatusBar
 
 
@@ -24,6 +25,7 @@ class DetailFragment : Fragment() {
 
     private lateinit var viewModel: DetailViewModel
     private lateinit var binding: FragmentDetailBinding
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,20 +53,44 @@ class DetailFragment : Fragment() {
         val objective = DetailFragmentArgs.fromBundle(arguments!!).selectedObjective
         val viewModelFactory = DetailModelFactory(application, dataSource, objective)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(DetailViewModel::class.java)
+        binding.setLifecycleOwner(viewLifecycleOwner)
         binding.objectiveId.text = objective.id
         binding.detailViewModel = viewModel
         binding.photoGallery.visibility = View.GONE
         binding.videoGallery.visibility = View.GONE
 
-//        viewModel.media.observe(this, Observer {
-//            binding.objectiveId.text = it.size.toString()
-//        })
-
-
-        viewModel.networkErrors.observe(this, Observer {
-            Log.i("DetailFragment", "Error: ${it}")
+        //----------------------------------------------------------
+        viewModel.selectedObjective.observe(this, Observer {
+            viewModel.getMedia()
         })
 
+        viewModel.fabStatus.observe(this, Observer {
+            binding.fabStatus = it
+            binding.fab.isEnabled = true
+        })
+        //----------------------------------------------------------
+        viewModel.photoGallery.observe(this, Observer {
+            if (it.size > 0)
+                binding.photoGallery.visibility = View.VISIBLE
+        })
+
+        viewModel.videoGallery.observe(this, Observer {
+            if (it.size > 0)
+                binding.videoGallery.visibility = View.VISIBLE
+        })
+
+        viewModel.networkErrors.observe(this, Observer {
+            if (DEBUG_MODE)
+                Toast.makeText(
+                    application.applicationContext,
+                    when (it) {
+                        (null) -> ""
+                        else -> it
+                    },
+                    Toast.LENGTH_LONG
+                ).show()
+        })
+        //----------------------------------------------------------
         viewModel.displayPhotoGallery.observe(this, Observer {
             if (it != null) {
                 this.findNavController()
@@ -81,39 +107,30 @@ class DetailFragment : Fragment() {
                 ).show()
             }
         })
-        viewModel.photoGallery.observe(this, Observer {
-            if (it.size > 0)
-                binding.photoGallery.visibility = View.VISIBLE
+        //----------------------------------------------------------
+
+
+        binding.fab.setOnClickListener(View.OnClickListener {
+            Log.i("TEST", "FAB CLICKED")
+            binding.fab.isEnabled = false
+            viewModel.favoriteWasClicked(objective)
         })
 
-        viewModel.videoGallery.observe(this, Observer {
-            if (it.size > 0)
-                binding.videoGallery.visibility = View.VISIBLE
+        viewModel.favoriteId.observe(this, Observer {
+            viewModel.refreshObjective(objective.id)
         })
-//        viewModel.selectedObjective.observe(this, Observer {
-//
-//        })
 
-//        viewModel.viewMenu.observe(this, Observer {
-//            when(it){
-//                true -> {
-//                    //hide red action bar and set transparent one as new toolbar
-//                    (activity as AppCompatActivity).supportActionBar?.hide()
-//                    (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
-//                }
-//                false -> {
-//                    //set main toolbar as new toolbar
-//                    (activity as AppCompatActivity).setSupportActionBar(null)
-//                   (activity as AppCompatActivity).supportActionBar?.show()
-//                    //
-//                }
-//            }
-//
-//        })
-
-        binding.fab.setOnClickListener{
-            Log.i("DetailFragment", "FAB WAS CLICKED")
-        }
+        viewModel.error.observe(this, Observer {
+            if (DEBUG_MODE)
+                Toast.makeText(
+                    application.applicationContext,
+                    when (it) {
+                        (null) -> ""
+                        else -> it
+                    },
+                    Toast.LENGTH_LONG
+                ).show()
+        })
 
         binding.toolbar.setNavigationOnClickListener { view ->
             view.findNavController().navigateUp()
@@ -144,6 +161,5 @@ class DetailFragment : Fragment() {
 
 
     }
-
 
 }

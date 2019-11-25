@@ -109,7 +109,6 @@ class MainFragment : Fragment() {
                     .navigate(MainFragmentDirections.actionMainFragmentToDetailFragment(it))
                 viewModel.displayDetailsComplete()
             }
-//            startActivity(Intent(activity, MapsActivity::class.java))
         })
 
 
@@ -120,7 +119,6 @@ class MainFragment : Fragment() {
                     .navigate(MainFragmentDirections.actionMainFragmentToMapsActivity(it))
                 viewModel.navigateToMapComplete()
             }
-//            startActivity(Intent(activity, MapsActivity::class.java))
         })
 
         viewModel.navigateToUrl.observe(this, Observer {

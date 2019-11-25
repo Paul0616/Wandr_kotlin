@@ -10,6 +10,8 @@ import android.view.WindowManager
 import androidx.sqlite.db.SupportSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQueryBuilder
 import com.encorsa.wandr.R
+import com.encorsa.wandr.database.ObjectiveDatabaseModel
+import com.encorsa.wandr.models.FavoriteInsertModel
 import com.encorsa.wandr.models.QueryModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.text.ParseException

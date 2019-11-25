@@ -17,7 +17,6 @@ import com.encorsa.wandr.utils.DEFAULT_LANGUAGE
 import com.encorsa.wandr.utils.Prefs
 import com.encorsa.wandr.utils.Utilities
 import com.encorsa.wandr.database.SubcategoryDatabaseModel
-import com.encorsa.wandr.database.WandrDatabase
 import com.encorsa.wandr.network.WandrApi
 import com.encorsa.wandr.repository.SubcategoryRepository
 import com.google.android.material.chip.Chip
@@ -39,7 +38,7 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
     private var viewModelJob = Job()
     private val ioScope = CoroutineScope(Dispatchers.IO + viewModelJob)
 
-    private val dataSource = WandrDatabase.getInstance(app).wandrDatabaseDao
+//    private val dataSource = WandrDatabase.getInstance(app).wandrDatabaseDao
     private val prefs = Prefs(app.applicationContext)
     private val objectiveRepository = ObjectivesRepository(app, database)
     private val subcategoryRepository = SubcategoryRepository(app, database)
@@ -56,7 +55,7 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
     val favoriteId: LiveData<String>
         get() = _favoriteId
 
-    private val deletedFavorite = MutableLiveData<Boolean>(false)
+ //   private val deletedFavorite = MutableLiveData<Boolean>(false)
 
 
     private val _subcategoryFilterApplied = MutableLiveData<Boolean>()
@@ -108,7 +107,7 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
      *  - objectiveRepositoryResponse will change too
      *  --------------------------------------------
      */
-    private val objectiveRepositoryResponse: LiveData<ObjectiveRepositoryResult> =
+    private val objectivesRepositoryResponse: LiveData<ObjectivesRepositoryResult> =
         Transformations.map(queryObjectives) {
             loadObjectives(true)
             Log.i("MainViewModel", "media from repository conform model: ${queryModel}")
@@ -116,12 +115,12 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
         }
 
     var objectives: LiveData<List<ObjectiveDatabaseModel>> =
-        Transformations.switchMap(objectiveRepositoryResponse) { it ->
+        Transformations.switchMap(objectivesRepositoryResponse) { it ->
             it.objectives
         }
 
     var networkErrors: LiveData<String> =
-        Transformations.switchMap(objectiveRepositoryResponse) { it ->
+        Transformations.switchMap(objectivesRepositoryResponse) { it ->
             it.networkErrors
         }
 
@@ -161,7 +160,7 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
     fun objectiveWasClicked(objective: ObjectiveDatabaseModel, viewClicked: ViewClicked) {
         when(viewClicked){
             ViewClicked.OBJECTIVE -> _navigateToDetails.value = objective
-            ViewClicked.FAVORITE -> favoriteWasClicked(objective, !objective.isFavorite)
+            ViewClicked.FAVORITE -> favoriteWasClicked(objective, prefs.userId)
             ViewClicked.URL -> urlWasClicked(objective)
             ViewClicked.LOCATION -> locationWasClicked(objective)
         }
@@ -183,14 +182,15 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
         _navigateToMap.value = null
     }
 
-    fun favoriteWasClicked(objective: ObjectiveDatabaseModel, insertMode: Boolean?) {
+    fun favoriteWasClicked(objective: ObjectiveDatabaseModel, userId: String?) {
+        val shouldAddToFavorite = !objective.isFavorite
         Log.i(
             "MainViewModel",
             "ADD TO FAVORITE: ID:${objective.id}"
         )
-        insertMode?.let{
+        shouldAddToFavorite?.let{
             if (it){
-                val favoriteForInsert = FavoriteInsertModel(prefs.userId!!, objective.id)
+                val favoriteForInsert = FavoriteInsertModel(userId!!, objective.id)
                 addTofavorite(favoriteForInsert)
             } else {
                 deleteFromFavorite(objective.favoriteId)

@@ -7,6 +7,9 @@
         <variable
             name="detailViewModel"
             type="com.encorsa.wandr.mainFragments.details.DetailViewModel" />
+        <variable
+            name="fabStatus"
+            type="com.encorsa.wandr.mainFragments.details.FabStatus" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -155,7 +158,7 @@
             android:tint="@android:color/white"
             app:layout_anchor="@id/appbar"
             app:layout_anchorGravity="bottom|end"
-            app:setFavorite="@{detailViewModel.selectedObjective.favorite}" />
+            app:setFavorite="@{fabStatus}" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

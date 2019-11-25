@@ -18,34 +18,11 @@ data class ObjectivePage(
         return pageMeta.currentPage
     }
 
-    fun asDatabaseModel(): List<ObjectiveDatabaseModel> {
-        return objectives.map {
-            val isFavorite = it.favorites.size > 0
-            var defaultImagrUrl: String? = null
-            var favoriteId: String? = null
-            if (isFavorite)
-                favoriteId = it.favorites.single().id
-            if (!it.media.isEmpty()) {
-                defaultImagrUrl = it.media.filter { it.isDefault }.single().url
-            }
-            ObjectiveDatabaseModel(
-                id = it.id,
-                subcategoryId = it.subcategoryId,
-                categoryId = it.categoryId,
-                languageTag = it.objectiveDescriptions.single().languageValue.toUpperCase(),
-                name = it.objectiveDescriptions.single().name,
-                address = it.objectiveDescriptions.single().address,
-                longDescription = it.objectiveDescriptions.single().longDescription,
-                isFavorite = isFavorite,
-                favoriteId = favoriteId,
-                latitude = it.latitude,
-                longitude = it.longitude,
-                url = it.url,
-                email = it.email,
-                phoneNumber = it.phoneNumber,
-                defaultImageUrl = defaultImagrUrl
 
-            )
+
+    fun asDatabaseModels(): List<ObjectiveDatabaseModel> {
+        return objectives.map {
+            it.asDatabaseModel()
         }
     }
 

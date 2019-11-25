@@ -32,10 +32,20 @@ fun bindRenderHtml(view: TextView, description: String?) {
 }
 
 @BindingAdapter("setFavorite")
-fun bindSetVavorite(view: FloatingActionButton, isFavorite: Boolean) {
-    if (isFavorite)
-        view.setImageResource(R.drawable.ic_favorite_orange_24dp)
-    else
-        view.setImageResource(R.drawable.ic_favorite_border_orange_24dp)
-
+fun bindSetVavorite(view: FloatingActionButton, fabStatus: FabStatus?) {
+    Log.i("DetailBindingAdapter", "${fabStatus}")
+    fabStatus?.let {
+        when (fabStatus) {
+            FabStatus.FAVORITE -> {
+                Log.i("DetailBindingAdapter", "FAB FAVORITE")
+                view.setImageResource(R.drawable.ic_favorite_orange_24dp)
+                view.isEnabled = true
+            }
+            FabStatus.NOT_FAVORITE ->  {
+                Log.i("DetailBindingAdapter", "FAB NOT FAVORITE")
+                view.setImageResource(R.drawable.ic_favorite_border_orange_24dp)
+                view.isEnabled = true
+            }
+        }
+    }
 }

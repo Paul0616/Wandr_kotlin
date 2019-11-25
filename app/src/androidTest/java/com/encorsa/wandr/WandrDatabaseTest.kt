@@ -16,6 +16,9 @@
 
 package com.encorsa.wandr
 
+import android.util.Log
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -26,6 +29,7 @@ import com.encorsa.wandr.models.LanguageAndNameModel
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
+import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.IOException
 
@@ -158,6 +162,34 @@ class WandrDatabaseTest {
 //
 //        return query
 //    }
+
+    @Test
+    @Throws(Exception::class)
+    fun getobjectbyId(){
+        val obj = ObjectiveDatabaseModel("88ef98c0-5070-4db7-b3af-6ffe1ba62e96", "xxx", "dfg", "RO", isFavorite = true, latitude = 0.0, longitude = 0.0)
+        wandrDao.insertObjective(obj)
+        val x = wandrDao.getDatabaseObjectById("88ef98c0-5070-4db7-b3af-6ffe1ba62e96")
+        Log.i("TEST", "${x}")
+        val y = Transformations.switchMap(x) {
+            if (it.size > 0) {
+                Log.i("TEST1", "${it.size}")
+                MutableLiveData<ObjectiveDatabaseModel>(it[0])
+            }
+            else
+                null
+        }
+//        x.value?.let {
+            Log.i("TEST0", "${y.value?.name}")
+//        }
+
+
+//        val x1 = wandrDao.getDatabaseObjectById1("88ef98c0-5070-4db7-b3af-6ffe1ba62e96")
+//        Log.i("TEST1", "${x1[0].subcategoryId}")
+//
+//        val x2 = wandrDao.getDatabaseObjectById2()
+//        Log.i("TEST2", "${x2.size}")
+
+    }
 
     //@Test
 @Throws(Exception::class)

@@ -24,21 +24,53 @@ class ObjectivesRepository(private val app: Application, private val database: W
     private var lastRequestedPage = 1
     private val networkError = MutableLiveData<String>()
 
-    fun getRepositoryObjectiveWithFilter(query: SupportSQLiteQuery): ObjectiveRepositoryResult{
+    fun getRepositoryObjectiveById(id: String): LiveData<List<ObjectiveDatabaseModel>> {
+        val objective = database.getDatabaseObjectById(id)
+        return objective
+    }
+
+    fun getRepositoryObjectiveWithFilter(query: SupportSQLiteQuery): ObjectivesRepositoryResult {
         lastRequestedPage = 1
         val objectives: LiveData<List<ObjectiveDatabaseModel>> =
             database.getDatabaseObjectivesWithRaw(query)
-        return ObjectiveRepositoryResult(objectives, networkError)
+        return ObjectivesRepositoryResult(objectives, networkError)
     }
 
-    fun getRepositoryMedia(objectiveId: String): MediaRepositoryResult{
+    fun getRepositoryMedia(objectiveId: String): MediaRepositoryResult {
         lastRequestedPage = 1
         val media: LiveData<List<MediaDatabaseModel>> =
             database.getDatabaseMediaForObjectiveId(objectiveId)
         return MediaRepositoryResult(media, networkError)
     }
 
-    suspend fun makeNetworkCallAndRefreshDatabase(queryModel: QueryModel, filterHasChanged: Boolean) {
+
+    suspend fun makeNetworkCallAndRefreshObjective(
+        id: String,
+        languageTag: String,
+        userId: String
+    ) {
+        withContext(Dispatchers.IO) {
+            val options = HashMap<String, Any>()
+            options.put("languageTag", languageTag)
+            options.put("userId", userId)
+            try {
+                //network API call
+                val objectiveFromNetwork =
+                    WandrApi.RETROFIT_SERVICE.getObjectiveById(id, options).await()
+                    database.insertObjective(objectiveFromNetwork.asDatabaseModel())
+            } catch (e: Exception) {
+                networkError.postValue(e.message)
+            } catch (ex: HttpException) {
+                val error = "OBJ ${ex.response().code()} - ${ex.response().errorBody()?.string()}"
+                networkError.postValue(error)
+            }
+        }
+    }
+
+    suspend fun makeNetworkCallAndRefreshDatabase(
+        queryModel: QueryModel,
+        filterHasChanged: Boolean
+    ) {
         if (filterHasChanged)
             isRequestInProgress = false
         if (isRequestInProgress) return
@@ -69,8 +101,9 @@ class ObjectivesRepository(private val app: Application, private val database: W
                 val objectivesNetwork: ObjectivePage =
                     WandrApi.RETROFIT_SERVICE.getObjectives(options, subs).await()
                 //save in database
-                val rowsObjInserted = database.insertObjectives(objectivesNetwork.asDatabaseModel())
-                val rowsMediaInserted = database.insertMedia(objectivesNetwork.asDatabaseMediaModel())
+                val rowsObjInserted = database.insertObjectives(objectivesNetwork.asDatabaseModels())
+                val rowsMediaInserted =
+                    database.insertMedia(objectivesNetwork.asDatabaseMediaModel())
 
                 lastRequestedPage = objectivesNetwork.currentPage()
                 isRequestInProgress = false
@@ -78,8 +111,14 @@ class ObjectivesRepository(private val app: Application, private val database: W
                     lastRequestedPage++
                 else
                     isRequestInProgress = true
-                Log.i("ObjectiverRepository", "Inserted ${rowsObjInserted.size.toString()} OBJECTIVES in local database (isRequestInProgress=${isRequestInProgress.toString()}) (page = ${lastRequestedPage.toString()})")
-                Log.i("ObjectiverRepository", "Inserted ${rowsMediaInserted.size.toString()} MEDIA in local database (isRequestInProgress=${isRequestInProgress.toString()}) (page = ${lastRequestedPage.toString()})")
+                Log.i(
+                    "ObjectiverRepository",
+                    "Inserted ${rowsObjInserted.size.toString()} OBJECTIVES in local database (isRequestInProgress=${isRequestInProgress.toString()}) (page = ${lastRequestedPage.toString()})"
+                )
+                Log.i(
+                    "ObjectiverRepository",
+                    "Inserted ${rowsMediaInserted.size.toString()} MEDIA in local database (isRequestInProgress=${isRequestInProgress.toString()}) (page = ${lastRequestedPage.toString()})"
+                )
             } catch (e: Exception) {
                 networkError.postValue(e.message)
                 isRequestInProgress = false
