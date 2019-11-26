@@ -43,7 +43,6 @@ class ImageSliderPagerAdapter: PagerAdapter{
     override fun getCount(): Int = images.size
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        var image: ImageView
         inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val binding = SliderItemBinding.inflate(inflater)
         imageViews.add(binding.sliderItemImageView)

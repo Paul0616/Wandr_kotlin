@@ -58,6 +58,7 @@ class DetailFragment : Fragment() {
         binding.detailViewModel = viewModel
         binding.photoGallery.visibility = View.GONE
         binding.videoGallery.visibility = View.GONE
+        binding.progressBar.visibility = View.GONE
 
         //----------------------------------------------------------
         viewModel.selectedObjective.observe(this, Observer {
@@ -67,6 +68,7 @@ class DetailFragment : Fragment() {
         viewModel.fabStatus.observe(this, Observer {
             binding.fabStatus = it
             binding.fab.isEnabled = true
+            binding.progressBar.visibility = View.GONE
         })
         //----------------------------------------------------------
         viewModel.photoGallery.observe(this, Observer {
@@ -100,11 +102,7 @@ class DetailFragment : Fragment() {
 
         viewModel.displayVideoGallery.observe(this, Observer {
             if (it != null) {
-                Toast.makeText(
-                    context,
-                    it?.size.toString(),
-                    Toast.LENGTH_SHORT
-                ).show()
+               this.findNavController().navigate(DetailFragmentDirections.actionDetailFragmentToVideoPlayerFragment(it, objective))
             }
         })
         //----------------------------------------------------------
@@ -113,6 +111,7 @@ class DetailFragment : Fragment() {
         binding.fab.setOnClickListener(View.OnClickListener {
             Log.i("TEST", "FAB CLICKED")
             binding.fab.isEnabled = false
+            binding.progressBar.visibility = View.VISIBLE
             viewModel.favoriteWasClicked(objective)
         })
 

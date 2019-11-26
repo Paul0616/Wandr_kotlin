@@ -51,7 +51,7 @@ class ImageSliderFragment : Fragment(){
         binding.pager.addOnPageChangeListener(pagerAdapter.onPageChangeListener)
 
 
-        binding.sliderToolbar.setNavigationOnClickListener { view ->
+        binding.sliderToolbar.setNavigationOnClickListener {
             findNavController().navigate(ImageSliderFragmentDirections.actionImageSliderFragmentToDetailFragment(objective))
         }
 

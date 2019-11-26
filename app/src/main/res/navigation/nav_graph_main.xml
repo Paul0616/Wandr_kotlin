@@ -31,6 +31,10 @@
             android:id="@+id/action_detailFragment_to_imageSliderFragment"
             app:destination="@id/imageSliderFragment"
             app:popUpTo="@+id/detailFragment" />
+        <action
+            android:id="@+id/action_detailFragment_to_videoPlayerFragment"
+            app:destination="@id/videoPlayerFragment"
+            app:popUpTo="@+id/detailFragment" />
     </fragment>
     <activity
         android:id="@+id/settingsActivity"
@@ -56,6 +60,21 @@
             app:destination="@id/detailFragment"
             app:popUpTo="@+id/detailFragment"
             app:popUpToInclusive="true" />
+        <argument
+            android:name="objective"
+            app:argType="com.encorsa.wandr.database.ObjectiveDatabaseModel" />
+    </fragment>
+    <fragment
+        android:id="@+id/videoPlayerFragment"
+        android:name="com.encorsa.wandr.mainFragments.videoPlayer.VideoPlayerFragment"
+        android:label="Video Gallery"
+        tools:layout="@layout/fragment_video_player">
+        <argument
+            android:name="listMedia"
+            app:argType="com.encorsa.wandr.database.ListMediaDatabaseModel" />
+        <action
+            android:id="@+id/action_videoPlayerFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
         <argument
             android:name="objective"
             app:argType="com.encorsa.wandr.database.ObjectiveDatabaseModel" />

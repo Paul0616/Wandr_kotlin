@@ -75,6 +75,12 @@
                     app:srcCompat="@drawable/ic_gallery_video_32"
                     android:onClick="@{()->detailViewModel.showVideoGallery()}"/>
 
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|center" />
+
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"

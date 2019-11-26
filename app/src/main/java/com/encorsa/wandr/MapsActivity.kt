@@ -14,7 +14,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
-    private lateinit var objective: ObjectiveDatabaseModel
+    private var objective: ObjectiveDatabaseModel? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
@@ -46,11 +46,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // Add a marker in Sydney and move the camera
       //  val location = LatLng(-34.0, 151.0)
-        val location = LatLng(objective.latitude, objective.longitude)
-        val marker = mMap.addMarker(MarkerOptions().position(location).title(objective.name).snippet(objective.address))
+        objective?.let {
+            val location = LatLng(it.latitude, it.longitude)
+            val marker = mMap.addMarker(MarkerOptions().position(location).title(it.name).snippet(it.address))
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 10.0f))
-        marker.showInfoWindow()
-        //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 12.0f))
-        mMap.mapType = GoogleMap.MAP_TYPE_NORMAL
+            marker.showInfoWindow()
+            //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 12.0f))
+            mMap.mapType = GoogleMap.MAP_TYPE_NORMAL
+        }
+
     }
 }
