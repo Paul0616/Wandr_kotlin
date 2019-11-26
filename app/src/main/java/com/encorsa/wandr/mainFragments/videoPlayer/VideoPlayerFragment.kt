@@ -1,19 +1,22 @@
 package com.encorsa.wandr.mainFragments.videoPlayer
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.encorsa.wandr.R
 import com.encorsa.wandr.databinding.FragmentVideoPlayerBinding
 import com.encorsa.wandr.utils.makeTransperantStatusBar
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
+import com.google.android.youtube.player.YouTubePlayerSupportFragment
+
 
 
 class VideoPlayerFragment : Fragment(), YouTubePlayer.OnInitializedListener {
@@ -36,7 +39,11 @@ class VideoPlayerFragment : Fragment(), YouTubePlayer.OnInitializedListener {
             makeTransperantStatusBar(activity?.window!!, false)
         }
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+//        val fragmentYoutubeView: View =
+//            inflater.inflate(R.layout., container, false)
 
+        val youTubePlayerFragment = (activity as AppCompatActivity).supportFragmentManager.findFragmentById(R.id.youtube_fragment) as YouTubePlayerSupportFragment
+        youTubePlayerFragment.initialize(getString(R.string.you_tube_api3_key), this)
         return binding.root
     }
 
@@ -47,13 +54,17 @@ class VideoPlayerFragment : Fragment(), YouTubePlayer.OnInitializedListener {
         viewModel = ViewModelProviders.of(this).get(VideoPlayerViewModel::class.java)
         // TODO: Use the ViewModel
         Log.i("VideoPlayerFragment", "${getString(R.string.you_tube_api3_key)}")
-        binding.ytPv.initialize(getString(R.string.you_tube_api3_key), this)
+
+        val youTubePlayerFragment =  childFragmentManager.findFragmentById(R.id.youtube_fragment) as YouTubePlayerSupportFragment
+        youTubePlayerFragment.initialize(getString(R.string.you_tube_api3_key), this)
 
         binding.videoToolbar.setNavigationOnClickListener {
             Log.i("VideoPlayerFragment", "navigationup")
             findNavController().navigate(VideoPlayerFragmentDirections.actionVideoPlayerFragmentToDetailFragment(objective))
         }
     }
+
+
 
     override fun onInitializationSuccess(
         provider: YouTubePlayer.Provider?,

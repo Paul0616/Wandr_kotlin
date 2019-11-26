@@ -227,12 +227,12 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
                     val credentials = LoginRequestModel(prefs.userEmail!!, prefs.password!!)
                     val getTokenModel = WandrApi.RETROFIT_SERVICE.login(credentials, false)
                     val tokenModel = getTokenModel.await()
-                    prefs.userEmail = tokenModel?.email
-                    prefs.userId = tokenModel?.userId
-                    prefs.userName = tokenModel?.userName
-                    prefs.token = tokenModel?.token
-                    prefs.firstName = tokenModel?.firstName
-                    val tokenExpireAt = Utilities.getLongDate(tokenModel?.tokenExpirationDate)
+                    prefs.userEmail = tokenModel.email
+                    prefs.userId = tokenModel.userId
+                    prefs.userName = tokenModel.userName
+                    prefs.token = tokenModel.token
+                    prefs.firstName = tokenModel.firstName
+                    val tokenExpireAt = Utilities.getLongDate(tokenModel.tokenExpirationDate)
                     if (null != tokenExpireAt)
                         prefs.tokenExpireAtInMillis = tokenExpireAt
                 }
@@ -276,12 +276,12 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
                     val credentials = LoginRequestModel(prefs.userEmail!!, prefs.password!!)
                     val getTokenModel = WandrApi.RETROFIT_SERVICE.login(credentials, false)
                     val tokenModel = getTokenModel.await()
-                    prefs.userEmail = tokenModel?.email
-                    prefs.userId = tokenModel?.userId
-                    prefs.userName = tokenModel?.userName
-                    prefs.token = tokenModel?.token
+                    prefs.userEmail = tokenModel.email
+                    prefs.userId = tokenModel.userId
+                    prefs.userName = tokenModel.userName
+                    prefs.token = tokenModel.token
                     prefs.firstName = tokenModel?.firstName
-                    val tokenExpireAt = Utilities.getLongDate(tokenModel?.tokenExpirationDate)
+                    val tokenExpireAt = Utilities.getLongDate(tokenModel.tokenExpirationDate)
                     if (null != tokenExpireAt)
                         prefs.tokenExpireAtInMillis = tokenExpireAt
                 }
