@@ -1,5 +1,6 @@
 package com.encorsa.wandr.mainFragments.videoPlayer
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.encorsa.wandr.R
+import com.encorsa.wandr.database.ListMediaDatabaseModel
 import com.encorsa.wandr.databinding.FragmentVideoPlayerBinding
 import com.encorsa.wandr.utils.makeTransperantStatusBar
 import com.google.android.youtube.player.YouTubeInitializationResult
@@ -41,14 +43,17 @@ class VideoPlayerFragment : Fragment(), YouTubePlayer.OnInitializedListener {
         }
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
+            (activity as AppCompatActivity).supportActionBar?.hide()
+        else
+            (activity as AppCompatActivity).supportActionBar?.show()
 
         return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val media = VideoPlayerFragmentArgs.fromBundle(arguments!!).listMedia
+        val media: ListMediaDatabaseModel = VideoPlayerFragmentArgs.fromBundle(arguments!!).listMedia
         val objective = VideoPlayerFragmentArgs.fromBundle(arguments!!).objective
         viewModel = ViewModelProviders.of(this).get(VideoPlayerViewModel::class.java)
         // TODO: Use the ViewModel

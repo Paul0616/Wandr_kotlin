@@ -29,5 +29,7 @@ data class MediaDatabaseModel (
     val isDefault: Boolean,
 
     @ColumnInfo(name = "title")
-    val title: String? = null
+    val title: String? = null,
+
+    val isSelected: Boolean = false
 ): Parcelable
