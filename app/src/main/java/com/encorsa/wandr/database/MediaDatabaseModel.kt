@@ -7,10 +7,12 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
+import java.net.MalformedURLException
+import java.net.URL
 
 @Parcelize
 @Entity(tableName = "media_table")
-data class MediaDatabaseModel (
+data class MediaDatabaseModel(
     @PrimaryKey
     @NonNull
     @ColumnInfo(name = "mediaId")
@@ -31,5 +33,31 @@ data class MediaDatabaseModel (
     @ColumnInfo(name = "title")
     val title: String? = null,
 
-    val isSelected: Boolean = false
-): Parcelable
+    var isSelected: Boolean = false
+) : Parcelable {
+    fun withVideoId(): MediaDatabaseModel {
+        return MediaDatabaseModel(
+            mediaId = this.mediaId,
+            objectiveId = this.objectiveId,
+            mediaType = this.mediaType,
+            mediaUrl = getVideoIdFromUrl(this.mediaUrl),
+            isDefault = this.isDefault,
+            isSelected = this.isSelected,
+            title = this.title
+        )
+}
+
+private fun getVideoIdFromUrl(url: String?): String? {
+    if (url == null)
+        return url
+    return try {
+        val query = URL(url).query
+        val params: List<String> = query.split("&")
+        params.find {
+            it.split("=").first() == "v"
+        }?.split("=")?.last()
+    } catch (e: MalformedURLException) {
+        null
+    }
+}
+}

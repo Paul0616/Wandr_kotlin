@@ -74,7 +74,9 @@
             app:argType="com.encorsa.wandr.database.ListMediaDatabaseModel" />
         <action
             android:id="@+id/action_videoPlayerFragment_to_detailFragment"
-            app:destination="@id/detailFragment" />
+            app:destination="@id/detailFragment"
+            app:popUpTo="@+id/detailFragment"
+            app:popUpToInclusive="true" />
         <argument
             android:name="objective"
             app:argType="com.encorsa.wandr.database.ObjectiveDatabaseModel" />

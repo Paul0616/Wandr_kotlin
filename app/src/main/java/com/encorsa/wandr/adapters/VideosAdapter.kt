@@ -3,13 +3,12 @@ package com.encorsa.wandr.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.encorsa.wandr.database.ListMediaDatabaseModel
 import com.encorsa.wandr.database.MediaDatabaseModel
 import com.encorsa.wandr.databinding.VideoIdItemBinding
 
 
-class VideosAdapter : RecyclerView.Adapter<VideosAdapter.ViewHolder>() {
-    var data = ListMediaDatabaseModel()
+class VideosAdapter(val onClickListener: OnClickListener) : RecyclerView.Adapter<VideosAdapter.ViewHolder>() {
+    var data = listOf<MediaDatabaseModel>()
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -19,7 +18,7 @@ class VideosAdapter : RecyclerView.Adapter<VideosAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = data[position]
-        holder.bind(item, position)
+        holder.bind(onClickListener, item, position)
     }
 
 
@@ -29,9 +28,12 @@ class VideosAdapter : RecyclerView.Adapter<VideosAdapter.ViewHolder>() {
 
     class ViewHolder private constructor(val binding: VideoIdItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(
+            clickListener: OnClickListener,
             item: MediaDatabaseModel,
             position: Int
         ) {
+            binding.clickListener = clickListener
+            binding.video = item
             binding.playButton.isSelected = item.isSelected
             binding.videoName.text = item.title ?: "Video $position"
         }
@@ -46,4 +48,11 @@ class VideosAdapter : RecyclerView.Adapter<VideosAdapter.ViewHolder>() {
     }
 
 
+    class OnClickListener(val clickListener: (video: MediaDatabaseModel) -> Unit) {
+        fun onClick(video: MediaDatabaseModel){
+               video.isSelected = true
+            clickListener(video)
+        }
+
+    }
 }

@@ -6,12 +6,16 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Observer
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.encorsa.wandr.R
+import com.encorsa.wandr.adapters.VideosAdapter
 import com.encorsa.wandr.database.ListMediaDatabaseModel
 import com.encorsa.wandr.databinding.FragmentVideoPlayerBinding
 import com.encorsa.wandr.utils.makeTransperantStatusBar
@@ -30,6 +34,7 @@ class VideoPlayerFragment : Fragment(), YouTubePlayer.OnInitializedListener {
     private lateinit var viewModel: VideoPlayerViewModel
     private lateinit var binding: FragmentVideoPlayerBinding
     private lateinit var youTubePlayerFragment: YouTubePlayerSupportFragment
+    private lateinit var videoId:String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,19 +63,41 @@ class VideoPlayerFragment : Fragment(), YouTubePlayer.OnInitializedListener {
         viewModel = ViewModelProviders.of(this).get(VideoPlayerViewModel::class.java)
         // TODO: Use the ViewModel
 
-        for (med in media){
-            Log.i("VideoPlayerFragment", "${med.mediaUrl}")
-        }
+        var videos = media.map {
+            it.withVideoId()
+        }.toList()
+        val adapter = VideosAdapter(VideosAdapter.OnClickListener{video ->
+            viewModel.videoWasClicked(video)
+        })
+
+
+        videos.first().isSelected = true
+        viewModel.setVideos(0, videos)
+        binding.videosList.adapter = adapter
+
+
+
         binding.videoToolbar.setNavigationOnClickListener {
             Log.i("VideoPlayerFragment", "navigationup")
             findNavController().navigate(VideoPlayerFragmentDirections.actionVideoPlayerFragmentToDetailFragment(objective))
         }
+
+        viewModel.videos.observe(this, Observer {
+            adapter.data = it
+        })
+
+
+        viewModel.videoId.observe(this, Observer {
+            videoId = it
+            youTubePlayerFragment.onDestroy()
+            youTubePlayerFragment.initialize(getString(R.string.you_tube_api3_key), this)
+            Toast.makeText(context, videoId, Toast.LENGTH_SHORT).show()
+        })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         youTubePlayerFragment = childFragmentManager.findFragmentById(R.id.youtube_fragment) as YouTubePlayerSupportFragment
-        youTubePlayerFragment.initialize(getString(R.string.you_tube_api3_key), this)
     }
 
     override fun onInitializationSuccess(
@@ -80,7 +107,7 @@ class VideoPlayerFragment : Fragment(), YouTubePlayer.OnInitializedListener {
     ) {
         Log.i("VideoPlayerFragment", "YouTube initialization succes")
         if (!wasRestored) {
-            player?.cueVideo("wKJ9KzGQq0w");
+            player?.cueVideo(videoId);
         }
     }
 

@@ -5,13 +5,17 @@
 
     <data>
         <variable
+            name="clickListener"
+            type="com.encorsa.wandr.adapters.VideosAdapter.OnClickListener" />
+        <variable
             name="video"
             type="com.encorsa.wandr.database.MediaDatabaseModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:onClick="@{() -> clickListener.onClick(video)}">
 
         <ImageView
             android:id="@+id/playButton"
@@ -21,7 +25,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/play_selector" />
+            app:srcCompat="@drawable/play_selector"
+            app:isSelected="@{video.isSelected}"/>
 
         <TextView
             android:id="@+id/videoName"
