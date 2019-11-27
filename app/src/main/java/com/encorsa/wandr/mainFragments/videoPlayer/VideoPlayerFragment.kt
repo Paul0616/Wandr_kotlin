@@ -27,6 +27,7 @@ class VideoPlayerFragment : Fragment(), YouTubePlayer.OnInitializedListener {
 
     private lateinit var viewModel: VideoPlayerViewModel
     private lateinit var binding: FragmentVideoPlayerBinding
+    private lateinit var youTubePlayerFragment: YouTubePlayerSupportFragment
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,11 +40,9 @@ class VideoPlayerFragment : Fragment(), YouTubePlayer.OnInitializedListener {
             makeTransperantStatusBar(activity?.window!!, false)
         }
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
-//        val fragmentYoutubeView: View =
-//            inflater.inflate(R.layout., container, false)
 
-        val youTubePlayerFragment = (activity as AppCompatActivity).supportFragmentManager.findFragmentById(R.id.youtube_fragment) as YouTubePlayerSupportFragment
-        youTubePlayerFragment.initialize(getString(R.string.you_tube_api3_key), this)
+
+
         return binding.root
     }
 
@@ -53,18 +52,21 @@ class VideoPlayerFragment : Fragment(), YouTubePlayer.OnInitializedListener {
         val objective = VideoPlayerFragmentArgs.fromBundle(arguments!!).objective
         viewModel = ViewModelProviders.of(this).get(VideoPlayerViewModel::class.java)
         // TODO: Use the ViewModel
-        Log.i("VideoPlayerFragment", "${getString(R.string.you_tube_api3_key)}")
 
-        val youTubePlayerFragment =  childFragmentManager.findFragmentById(R.id.youtube_fragment) as YouTubePlayerSupportFragment
-        youTubePlayerFragment.initialize(getString(R.string.you_tube_api3_key), this)
-
+        for (med in media){
+            Log.i("VideoPlayerFragment", "${med.mediaUrl}")
+        }
         binding.videoToolbar.setNavigationOnClickListener {
             Log.i("VideoPlayerFragment", "navigationup")
             findNavController().navigate(VideoPlayerFragmentDirections.actionVideoPlayerFragmentToDetailFragment(objective))
         }
     }
 
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        youTubePlayerFragment = childFragmentManager.findFragmentById(R.id.youtube_fragment) as YouTubePlayerSupportFragment
+        youTubePlayerFragment.initialize(getString(R.string.you_tube_api3_key), this)
+    }
 
     override fun onInitializationSuccess(
         provider: YouTubePlayer.Provider?,
