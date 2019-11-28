@@ -42,7 +42,8 @@ class ObjectiveAdapter(private val appContext: Context, val onClickListener: OnC
         return ItemViewHolder.from(parent)
     }
 
-    class ItemViewHolder private constructor(val binding: ObjectiveItemViewBinding) : RecyclerView.ViewHolder(binding.root) {
+    class ItemViewHolder private constructor(val binding: ObjectiveItemViewBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(
             clickListener: OnClickListener,
@@ -53,18 +54,20 @@ class ObjectiveAdapter(private val appContext: Context, val onClickListener: OnC
             binding.objective = item
             if (userId != null) {
                 binding.favoritesButton.isEnabled = true
-                binding.favoritesButton.setOnClickListener{
-                    Log.i("ObjectiveAdapter",  when(it.isSelected){
-                        true -> "REMOVE FAVORITE"
-                        false -> "ADD FAVORITE"
-                    })
+                binding.favoritesButton.setOnClickListener {
+                    Log.i(
+                        "ObjectiveAdapter", when (it.isSelected) {
+                            true -> "REMOVE FAVORITE"
+                            false -> "ADD FAVORITE"
+                        }
+                    )
                     it.isEnabled = false
                     clickListener.onClick(item, ViewClicked.FAVORITE)
                 }
             } else
                 binding.favoritesButton.isEnabled = false
-        }
 
+        }
 
 
         companion object {
@@ -72,7 +75,7 @@ class ObjectiveAdapter(private val appContext: Context, val onClickListener: OnC
                 val layoutInflater = LayoutInflater.from(parent.context)
 
                 val binding = ObjectiveItemViewBinding.inflate(layoutInflater, parent, false)
-               // val view = layoutInflater.inflate(R.layout.objective_item_view, parent, false)
+                // val view = layoutInflater.inflate(R.layout.objective_item_view, parent, false)
                 return ItemViewHolder(binding)
             }
         }

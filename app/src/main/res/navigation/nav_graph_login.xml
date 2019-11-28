@@ -42,8 +42,8 @@
     </fragment>
     <fragment
         android:id="@+id/viewUrlFragment"
-        android:name="com.encorsa.wandr.logInFragments.viewPrivacy.ViewUrlFragment"
-        tools:layout="@layout/fragment_view_url">
+        android:name="com.encorsa.wandr.logInFragments.viewPrivacy.ViewPrivacyFragment"
+        tools:layout="@layout/fragment_view_privacy">
         <action
             android:id="@+id/action_viewUrlFragment_to_registerFragment"
             app:destination="@id/registerFragment"

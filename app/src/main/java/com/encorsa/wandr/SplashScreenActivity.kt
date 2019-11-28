@@ -92,7 +92,7 @@ class SplashScreenActivity : AppCompatActivity() {
                 startActivity(Intent(this, MainActivity::class.java))
 
 
-            val prefs = Prefs(applicationContext)
+            //val prefs = Prefs(applicationContext)
             prefs.currentLanguage = prefs.currentLanguage ?: DEFAULT_LANGUAGE
             finish()
         })

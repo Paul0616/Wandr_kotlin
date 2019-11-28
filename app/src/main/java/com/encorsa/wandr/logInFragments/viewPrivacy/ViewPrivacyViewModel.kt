@@ -13,7 +13,7 @@ import com.encorsa.wandr.utils.URL_PRIVACY
 import kotlinx.coroutines.*
 import retrofit2.HttpException
 
-class ViewUrlViewModel(app: Application, val database: WandrDatabaseDao) : AndroidViewModel(app) {
+class ViewPrivacyViewModel(app: Application, val database: WandrDatabaseDao) : AndroidViewModel(app) {
 
 
     // Create a Coroutine scope using a job to be able to cancel when needed

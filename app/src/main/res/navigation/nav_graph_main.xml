@@ -20,6 +20,9 @@
         <action
             android:id="@+id/action_mainFragment_to_mapsActivity"
             app:destination="@id/mapsActivity" />
+        <action
+            android:id="@+id/action_mainFragment_to_viewUrlFragment4"
+            app:destination="@id/viewUrlFragment4" />
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
@@ -77,6 +80,14 @@
             app:destination="@id/detailFragment"
             app:popUpTo="@+id/detailFragment"
             app:popUpToInclusive="true" />
+        <argument
+            android:name="objective"
+            app:argType="com.encorsa.wandr.database.ObjectiveDatabaseModel" />
+    </fragment>
+    <fragment
+        android:id="@+id/viewUrlFragment4"
+        android:name="com.encorsa.wandr.mainFragments.viewUrl.ViewUrlFragment"
+        android:label="ViewUrlFragment" >
         <argument
             android:name="objective"
             app:argType="com.encorsa.wandr.database.ObjectiveDatabaseModel" />

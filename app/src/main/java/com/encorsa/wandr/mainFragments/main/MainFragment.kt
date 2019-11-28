@@ -124,7 +124,8 @@ class MainFragment : Fragment() {
         viewModel.navigateToUrl.observe(this, Observer {
             if (null != it) {
                 Log.i("MainFragment", "OBJECTIVE ${it.id}")
-
+                this.findNavController().navigate(MainFragmentDirections.actionMainFragmentToViewUrlFragment4(it))
+                viewModel.navigateToUrlComplete()
             }
         })
 

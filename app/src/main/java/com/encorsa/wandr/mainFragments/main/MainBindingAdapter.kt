@@ -3,6 +3,7 @@ package com.encorsa.wandr.mainFragments.main
 import android.os.Build
 import android.text.Html
 import android.text.Spanned
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
@@ -52,6 +53,18 @@ fun setImageFromUrl(view: ImageView, imageUrl: String?) {
                     .error(R.drawable.ic_no_image)
             )
             .into(view)
+    }
+}
+
+@BindingAdapter("showUrl")
+fun setUrlButton(view: ImageView, url: String?){
+    if (url != null) {
+        view.isSelected = true
+        view.isEnabled = true
+    }
+    else {
+        view.isSelected = false
+        view.isEnabled = false
     }
 }
 

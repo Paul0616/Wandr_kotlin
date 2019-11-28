@@ -17,20 +17,20 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.encorsa.wandr.R
 import com.encorsa.wandr.database.WandrDatabase
+import com.encorsa.wandr.databinding.FragmentViewPrivacyBinding
 
-import com.encorsa.wandr.databinding.FragmentViewUrlBinding
 import com.encorsa.wandr.network.WandrApiStatus
 import com.encorsa.wandr.utils.DEBUG_MODE
 
 
-class ViewUrlFragment : Fragment() {
+class ViewPrivacyFragment : Fragment() {
 
     companion object {
-        fun newInstance() = ViewUrlFragment()
+        fun newInstance() = ViewPrivacyFragment()
     }
 
-    private lateinit var viewModel: ViewUrlViewModel
-    private lateinit var binding: FragmentViewUrlBinding
+    private lateinit var viewModel: ViewPrivacyViewModel
+    private lateinit var binding: FragmentViewPrivacyBinding
 
 
     override fun onCreateView(
@@ -39,13 +39,13 @@ class ViewUrlFragment : Fragment() {
     ): View? {
 
 
-        binding = FragmentViewUrlBinding.inflate(inflater)
+        binding = FragmentViewPrivacyBinding.inflate(inflater)
         binding.setLifecycleOwner(this)
         (activity as AppCompatActivity).supportActionBar?.show()
 
         binding.acceptCheckBox.setOnClickListener {
             if ((it as CheckBox).isChecked)
-                this.findNavController().navigate(ViewUrlFragmentDirections.actionViewUrlFragmentToRegisterFragment())
+                this.findNavController().navigate(ViewPrivacyFragmentDirections.actionViewUrlFragmentToRegisterFragment())
         }
 
         return binding.root
@@ -55,11 +55,11 @@ class ViewUrlFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         val application = requireNotNull(activity).application
         val dataSource = WandrDatabase.getInstance(application).wandrDatabaseDao
-        val viewModelFactory = ViewUrlModelFactory(application, dataSource)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ViewUrlViewModel::class.java)
+        val viewModelFactory = ViewPrivacyModelFactory(application, dataSource)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ViewPrivacyViewModel::class.java)
 
 
-        binding.viewUrlViewModel = viewModel
+        binding.viewPrivacyViewModel = viewModel
         viewModel.status.observe(this, Observer {
             when (it) {
                 WandrApiStatus.LOADING -> {

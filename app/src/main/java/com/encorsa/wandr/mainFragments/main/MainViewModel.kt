@@ -182,6 +182,10 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
         _navigateToMap.value = null
     }
 
+    fun navigateToUrlComplete(){
+        _navigateToUrl.value = null
+    }
+
     fun favoriteWasClicked(objective: ObjectiveDatabaseModel, userId: String?) {
         val shouldAddToFavorite = !objective.isFavorite
         Log.i(

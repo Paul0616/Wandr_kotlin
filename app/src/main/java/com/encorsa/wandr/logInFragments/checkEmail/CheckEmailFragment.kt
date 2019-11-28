@@ -167,7 +167,7 @@ class CheckEmailFragment : Fragment() {
                     binding.progressBarCheckEmail.visibility = View.GONE
                     Log.i("LogInFragment", "ERROR")
                 }
-               // else -> binding.progressBarCheckEmail.visibility = View.GONE
+                //else -> binding.progressBarCheckEmail.visibility = View.GONE
             }
         })
 

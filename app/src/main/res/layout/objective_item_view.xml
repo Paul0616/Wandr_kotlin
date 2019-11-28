@@ -192,6 +192,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/guideline2"
                         app:srcCompat="@drawable/globe_selector"
+                        app:showUrl="@{objective.url}"
                         android:onClick="@{() -> clickListener.onClick(objective, ViewClicked.URL)}"/>
 
                     <androidx.constraintlayout.widget.Guideline
