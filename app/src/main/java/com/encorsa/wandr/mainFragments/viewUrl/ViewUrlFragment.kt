@@ -38,6 +38,7 @@ class ViewUrlFragment : Fragment() {
         }
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         val objective = ViewUrlFragmentArgs.fromBundle(arguments!!).objective
+        binding.webView.webViewClient = myWebClient()
         binding.objective = objective
         return binding.root
     }
@@ -47,22 +48,40 @@ class ViewUrlFragment : Fragment() {
         viewModel = ViewModelProviders.of(this).get(ViewUrlViewModel::class.java)
         // TODO: Use the ViewModel
 
-        binding.webView.setWebViewClient(object : WebViewClient() {
-            override fun onReceivedError(
-                view: WebView,
-                request: WebResourceRequest,
-                error: WebResourceError
-            ) {
-                Toast.makeText(this@ViewUrlFragment.context, error.description.toString(), Toast.LENGTH_SHORT).show()
-                super.onReceivedError(view, request, error)
-            }
-        })
+//        binding.webView.setWebViewClient(object : WebViewClient() {
+//            override fun onReceivedError(
+//                view: WebView,
+//                request: WebResourceRequest,
+//                error: WebResourceError
+//            ) {
+//                Toast.makeText(this@ViewUrlFragment.context, error.description.toString(), Toast.LENGTH_SHORT).show()
+//                super.onReceivedError(view, request, error)
+//            }
+//        })
 
         binding.urlToolbar.setNavigationOnClickListener {
             Log.i("ViewUrlFragment", "navigationup")
             //findNavController().navigate(VideoPlayerFragmentDirections.actionVideoPlayerFragmentToDetailFragment(objective))
             findNavController().navigateUp()
         }
+    }
+
+    inner class myWebClient : WebViewClient() {
+
+        override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+
+            binding.urlProgressBar.visibility = View.VISIBLE
+            view.loadUrl(url)
+            return true
+
+        }
+
+        override fun onPageFinished(view: WebView, url: String) {
+
+            super.onPageFinished(view, url)
+            binding.urlProgressBar.visibility = View.GONE
+        }
+
     }
 
 }

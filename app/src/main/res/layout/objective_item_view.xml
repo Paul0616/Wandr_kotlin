@@ -10,6 +10,9 @@
         <variable
             name="objective"
             type="com.encorsa.wandr.database.ObjectiveDatabaseModel" />
+        <variable
+            name="translation"
+            type="com.encorsa.wandr.utils.Translations" />
         <import type="com.encorsa.wandr.adapters.ViewClicked" />
     </data>
 
@@ -109,7 +112,8 @@
                         app:layout_constraintEnd_toStartOf="@+id/subcategory"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:textString="@{objective.name}"/>
+                        app:textString="@{objective.name}"
+                        app:translation="@{translation.noInfo}"/>
 
                     <ImageView
                         android:id="@+id/imageView7"

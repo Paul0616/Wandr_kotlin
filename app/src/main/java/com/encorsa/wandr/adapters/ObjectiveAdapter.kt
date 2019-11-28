@@ -20,12 +20,18 @@ import com.encorsa.wandr.R
 import com.encorsa.wandr.database.ObjectiveDatabaseModel
 import com.encorsa.wandr.databinding.ObjectiveItemViewBinding
 import com.encorsa.wandr.utils.Prefs
+import com.encorsa.wandr.utils.Translations
 
 enum class ViewClicked { OBJECTIVE, FAVORITE, URL, LOCATION }
 
 
 class ObjectiveAdapter(private val appContext: Context, val onClickListener: OnClickListener) :
     ListAdapter<ObjectiveDatabaseModel, ObjectiveAdapter.ItemViewHolder>(ObjectiveDiffCallback()) {
+
+    var translations = Translations()
+        set (value){
+            notifyDataSetChanged()
+        }
 
     private val prefs = Prefs(appContext)
     override fun onBindViewHolder(holder: ObjectiveAdapter.ItemViewHolder, position: Int) {
@@ -52,6 +58,7 @@ class ObjectiveAdapter(private val appContext: Context, val onClickListener: OnC
         ) {
             binding.clickListener = clickListener
             binding.objective = item
+            binding.translation = translations
             if (userId != null) {
                 binding.favoritesButton.isEnabled = true
                 binding.favoritesButton.setOnClickListener {

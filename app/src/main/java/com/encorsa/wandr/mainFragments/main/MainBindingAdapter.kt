@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.encorsa.wandr.R
+import com.encorsa.wandr.utils.Translations
 
 @BindingAdapter("shortDescriptionFromHtmlString")
 fun setShortDescription(view: TextView, longDescription: String?){
@@ -28,8 +29,12 @@ fun fromHtml(html: String): Spanned {
     }
 }
 
-@BindingAdapter("textString")
-fun setText(view: TextView, txt: String?){
+@BindingAdapter(value = ["textString", "translation"], requireAll = false)
+fun setText(view: TextView, txt: String?, translation: String?){
+    Log.i("TRANSLA", "$translation")
+    translation?.let {
+        view.text = it
+    }
     txt?.let {
         view.text = txt
     }

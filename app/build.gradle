@@ -56,6 +56,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:20.0.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     kapt 'androidx.room:room-compiler:2.2.1'
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.61"
 
     // Testing
     //testImplementation 'junit:junit:4.12'

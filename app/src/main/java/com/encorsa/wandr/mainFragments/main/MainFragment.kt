@@ -83,6 +83,7 @@ class MainFragment : Fragment() {
             Log.i("MainFragment", it ?: "")
             (activity as? AppCompatActivity)?.supportActionBar?.title =
                 prefsLiveData.getString(CURRENT_CATEGORY_NAME, "")
+            viewModel.setCurrentLanguage(it)
         })
 
         prefsLiveData.stringLiveData(CURRENT_CATEGORY_ID, null).observe(this, Observer {
@@ -97,6 +98,17 @@ class MainFragment : Fragment() {
             binding.drawerLayout.closeDrawers()
         })
 
+        /*  --------------------------
+         *   observe language change
+         *  ----------------------------
+         */
+        viewModel.currentLanguage.observe(this, Observer {
+            viewModel.getLabelByTagAndLanguage(it)
+        })
+
+        viewModel.translations.observe(this, Observer{
+            adapter.translations = it
+        })
 
         /*  --------------------------
          *   observe NAVIGATION
@@ -105,9 +117,13 @@ class MainFragment : Fragment() {
         viewModel.navigateToDetails.observe(this, Observer {
             if (null != it) {
                 Log.i("MainFragment", "OBJECTIVE ${it.id}")
-                this.findNavController()
-                    .navigate(MainFragmentDirections.actionMainFragmentToDetailFragment(it))
-                viewModel.displayDetailsComplete()
+                if (it.containUsefulInfo()) {
+                    this.findNavController()
+                        .navigate(MainFragmentDirections.actionMainFragmentToDetailFragment(it))
+                    viewModel.displayDetailsComplete()
+                } else {
+                    Toast.makeText(context, "Fara informatii", Toast.LENGTH_SHORT).show()
+                }
             }
         })
 

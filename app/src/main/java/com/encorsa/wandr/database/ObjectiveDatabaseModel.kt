@@ -64,4 +64,8 @@ data class ObjectiveDatabaseModel(
 
     var subcategoryName: String = ""
 
-): Parcelable
+): Parcelable {
+    fun containUsefulInfo(): Boolean{
+        return this.longDescription != null
+    }
+}
