@@ -17,7 +17,9 @@ import androidx.navigation.fragment.findNavController
 import com.encorsa.wandr.R
 import com.encorsa.wandr.adapters.VideosAdapter
 import com.encorsa.wandr.database.ListMediaDatabaseModel
+import com.encorsa.wandr.database.WandrDatabase
 import com.encorsa.wandr.databinding.FragmentVideoPlayerBinding
+import com.encorsa.wandr.utils.Prefs
 import com.encorsa.wandr.utils.makeTransperantStatusBar
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
@@ -35,13 +37,14 @@ class VideoPlayerFragment : Fragment(), YouTubePlayer.OnInitializedListener {
     private lateinit var binding: FragmentVideoPlayerBinding
     private lateinit var youTubePlayerFragment: YouTubePlayerSupportFragment
     private lateinit var videoId:String
-
+    private lateinit var messageYouTubeConnectionError: String
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentVideoPlayerBinding.inflate(inflater)
         binding.lifecycleOwner = this
+
         (activity as AppCompatActivity).setSupportActionBar(binding.videoToolbar)
         activity?.window?.let {
             makeTransperantStatusBar(activity?.window!!, false)
@@ -60,8 +63,14 @@ class VideoPlayerFragment : Fragment(), YouTubePlayer.OnInitializedListener {
         super.onActivityCreated(savedInstanceState)
         val media: ListMediaDatabaseModel = VideoPlayerFragmentArgs.fromBundle(arguments!!).listMedia
         val objective = VideoPlayerFragmentArgs.fromBundle(arguments!!).objective
-        viewModel = ViewModelProviders.of(this).get(VideoPlayerViewModel::class.java)
-        // TODO: Use the ViewModel
+
+        val application = requireNotNull(activity).application
+        val dataSource = WandrDatabase.getInstance(application).wandrDatabaseDao
+        val viewModelFactory = VideoPlayerModelFactory(application, dataSource)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(VideoPlayerViewModel::class.java)
+
+        messageYouTubeConnectionError = getString(R.string.you_tube_connection_error)
+
 
         var videos = media.map {
             it.withVideoId()
@@ -71,11 +80,23 @@ class VideoPlayerFragment : Fragment(), YouTubePlayer.OnInitializedListener {
         })
 
 
-        videos.first().isSelected = true
+       // videos.first().isSelected = true
         viewModel.setVideos(0, videos)
         binding.videosList.adapter = adapter
+        val currLang = Prefs(application.applicationContext).currentLanguage
+        viewModel.setCurrentLanguage(currLang)
 
+        /*  --------------------------
+         *   observe language change
+         *  ----------------------------
+         */
+        viewModel.currentLanguage.observe(this, Observer {
+            viewModel.getLabelByTagAndLanguage(it)
+        })
 
+        viewModel.translations.observe(this, Observer{
+            messageYouTubeConnectionError = it.youTubeConnectionerror ?: ""
+        })
 
         binding.videoToolbar.setNavigationOnClickListener {
             Log.i("VideoPlayerFragment", "navigationup")
@@ -115,6 +136,7 @@ class VideoPlayerFragment : Fragment(), YouTubePlayer.OnInitializedListener {
         provider: YouTubePlayer.Provider?,
         result: YouTubeInitializationResult?
     ) {
-        Log.i("VideoPlayerFragment", "YouTube initialization failure")
+        Toast.makeText(context, "${messageYouTubeConnectionError}: ${result.toString()}", Toast.LENGTH_LONG).show()
+
     }
 }

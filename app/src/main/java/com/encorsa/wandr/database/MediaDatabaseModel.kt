@@ -33,6 +33,9 @@ data class MediaDatabaseModel(
     @ColumnInfo(name = "title")
     val title: String? = null,
 
+    @ColumnInfo(name = "createdTime")
+    val createdTime : Long = System.currentTimeMillis(),
+
     var isSelected: Boolean = false
 ) : Parcelable {
     fun withVideoId(): MediaDatabaseModel {

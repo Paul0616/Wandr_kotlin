@@ -46,18 +46,7 @@ class ViewUrlFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(ViewUrlViewModel::class.java)
-        // TODO: Use the ViewModel
 
-//        binding.webView.setWebViewClient(object : WebViewClient() {
-//            override fun onReceivedError(
-//                view: WebView,
-//                request: WebResourceRequest,
-//                error: WebResourceError
-//            ) {
-//                Toast.makeText(this@ViewUrlFragment.context, error.description.toString(), Toast.LENGTH_SHORT).show()
-//                super.onReceivedError(view, request, error)
-//            }
-//        })
 
         binding.urlToolbar.setNavigationOnClickListener {
             Log.i("ViewUrlFragment", "navigationup")

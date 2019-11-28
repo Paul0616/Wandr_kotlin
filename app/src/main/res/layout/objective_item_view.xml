@@ -12,7 +12,7 @@
             type="com.encorsa.wandr.database.ObjectiveDatabaseModel" />
         <variable
             name="translation"
-            type="com.encorsa.wandr.utils.Translations" />
+            type="com.encorsa.wandr.utils.TranslationsMain" />
         <import type="com.encorsa.wandr.adapters.ViewClicked" />
     </data>
 

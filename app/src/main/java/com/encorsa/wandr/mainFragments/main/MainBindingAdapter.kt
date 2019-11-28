@@ -6,12 +6,12 @@ import android.text.Spanned
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.encorsa.wandr.R
-import com.encorsa.wandr.utils.Translations
 
 @BindingAdapter(value = ["shortDescriptionFromHtmlString", "translationShort"], requireAll = false)
 fun setShortDescription(view: TextView, longDescription: String?, translation: String?){
@@ -62,6 +62,9 @@ fun setImageFromUrl(view: ImageView, imageUrl: String?) {
                     .error(R.drawable.ic_no_image)
             )
             .into(view)
+    } else {
+        val drawable = ContextCompat.getDrawable(view.context, R.drawable.ic_no_image)
+        view.setImageDrawable(drawable)
     }
 }
 

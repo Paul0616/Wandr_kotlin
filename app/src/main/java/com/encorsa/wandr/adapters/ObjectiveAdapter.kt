@@ -1,26 +1,16 @@
 package com.encorsa.wandr.adapters
 
 import android.content.Context
-import android.os.Build
-import android.text.Html
-import android.text.Spanned
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import com.encorsa.wandr.R
 import com.encorsa.wandr.database.ObjectiveDatabaseModel
 import com.encorsa.wandr.databinding.ObjectiveItemViewBinding
 import com.encorsa.wandr.utils.Prefs
-import com.encorsa.wandr.utils.Translations
+import com.encorsa.wandr.utils.TranslationsMain
 
 enum class ViewClicked { OBJECTIVE, FAVORITE, URL, LOCATION }
 
@@ -59,7 +49,7 @@ class ObjectiveAdapter(private val appContext: Context, val onClickListener: OnC
         ) {
             binding.clickListener = clickListener
             binding.objective = item
-            binding.translation = translations
+            binding.translation = translationsMain
             if (userId != null) {
                 binding.favoritesButton.isEnabled = true
                 binding.favoritesButton.setOnClickListener {
@@ -79,7 +69,7 @@ class ObjectiveAdapter(private val appContext: Context, val onClickListener: OnC
 
 
         companion object {
-            var translations: Translations = Translations()
+            var translationsMain: TranslationsMain = TranslationsMain()
 //            set(value) {
 //                translations = value
 //            }

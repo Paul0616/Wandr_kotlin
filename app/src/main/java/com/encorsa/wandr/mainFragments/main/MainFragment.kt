@@ -107,8 +107,8 @@ class MainFragment : Fragment() {
             viewModel.getLabelByTagAndLanguage(it)
         })
 
-        viewModel.translations.observe(this, Observer{
-            ObjectiveAdapter.ItemViewHolder.translations = it
+        viewModel.translationsMain.observe(this, Observer{
+            ObjectiveAdapter.ItemViewHolder.translationsMain = it
             messageForNoDetails = it.noInfo
             binding.translation = it
         })

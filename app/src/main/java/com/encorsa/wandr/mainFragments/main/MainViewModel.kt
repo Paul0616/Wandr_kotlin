@@ -26,7 +26,7 @@ import com.encorsa.wandr.models.*
 import com.encorsa.wandr.adapters.ViewClicked
 import retrofit2.HttpException
 import com.encorsa.wandr.R
-import com.encorsa.wandr.utils.Translations
+import com.encorsa.wandr.utils.TranslationsMain
 
 
 class MainViewModel(app: Application, val database: WandrDatabaseDao) :
@@ -55,15 +55,15 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
     val currentLanguage: LiveData<String>
         get() = _currentLanguage
 
-    private val _translations = MutableLiveData<Translations>(
-        Translations(
+    private val _translations = MutableLiveData<TranslationsMain>(
+        TranslationsMain(
             app.getString(R.string.no_info),
             app.getString(R.string.more),
             app.getString(R.string.no_results),
             app.getString(R.string.subcategories)
         )
     )
-    val translations: LiveData<Translations>
+    val translationsMain: LiveData<TranslationsMain>
         get() = _translations
 
     private val _favoriteId = MutableLiveData<String>()
@@ -459,7 +459,7 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
             val noRecords = database.findlabelByTag("no_records", languageTag)
             val subcategories = database.findlabelByTag("subcategory", languageTag)
             withContext(Dispatchers.Main) {
-                _translations.value = Translations(
+                _translations.value = TranslationsMain(
                     noInfo = noInfo?.name,
                     more = more?.name,
                     noRecords = noRecords?.name,

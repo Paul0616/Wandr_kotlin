@@ -10,7 +10,7 @@
             type="com.encorsa.wandr.mainFragments.main.MainViewModel" />
         <variable
             name="translation"
-            type="com.encorsa.wandr.utils.Translations" />
+            type="com.encorsa.wandr.utils.TranslationsMain" />
     </data>
 
 
