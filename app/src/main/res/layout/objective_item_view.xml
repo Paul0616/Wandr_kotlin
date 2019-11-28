@@ -79,6 +79,7 @@
                         android:layout_marginBottom="8dp"
                         android:maxLines="3"
                         android:text="@string/no_info"
+                        app:translationShort="@{translation.noInfo}"
                         app:shortDescriptionFromHtmlString="@{objective.longDescription}"
                         app:layout_constraintBottom_toTopOf="@+id/imageView7"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -97,7 +98,9 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/attractionTextView"
-                        app:textString="@{objective.address}"/>
+                        app:translation="@{translation.noInfo}"
+                        app:textString="@{objective.address}"
+                        />
 
                     <TextView
                         android:id="@+id/attractionTextView"
@@ -112,8 +115,9 @@
                         app:layout_constraintEnd_toStartOf="@+id/subcategory"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
+                        app:translation="@{translation.noInfo}"
                         app:textString="@{objective.name}"
-                        app:translation="@{translation.noInfo}"/>
+                        />
 
                     <ImageView
                         android:id="@+id/imageView7"
@@ -130,6 +134,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/more"
                         android:textSize="8sp"
+                        app:translation="@{translation.more}"
                         app:layout_constraintBottom_toBottomOf="@+id/imageView7"
                         app:layout_constraintEnd_toStartOf="@+id/imageView7"
                         app:layout_constraintTop_toTopOf="@+id/imageView7" />

@@ -28,10 +28,11 @@ enum class ViewClicked { OBJECTIVE, FAVORITE, URL, LOCATION }
 class ObjectiveAdapter(private val appContext: Context, val onClickListener: OnClickListener) :
     ListAdapter<ObjectiveDatabaseModel, ObjectiveAdapter.ItemViewHolder>(ObjectiveDiffCallback()) {
 
-    var translations = Translations()
-        set (value){
-            notifyDataSetChanged()
-        }
+//    var translations = Translations()
+//        set (value){
+//            ItemViewHolder.translations = this.translations
+//            //notifyDataSetChanged()
+//        }
 
     private val prefs = Prefs(appContext)
     override fun onBindViewHolder(holder: ObjectiveAdapter.ItemViewHolder, position: Int) {
@@ -78,6 +79,10 @@ class ObjectiveAdapter(private val appContext: Context, val onClickListener: OnC
 
 
         companion object {
+            var translations: Translations = Translations()
+//            set(value) {
+//                translations = value
+//            }
             fun from(parent: ViewGroup): ItemViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
 

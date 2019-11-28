@@ -59,7 +59,8 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
         Translations(
             app.getString(R.string.no_info),
             app.getString(R.string.more),
-            app.getString(R.string.no_results)
+            app.getString(R.string.no_results),
+            app.getString(R.string.subcategories)
         )
     )
     val translations: LiveData<Translations>
@@ -456,15 +457,17 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
             val noInfo = database.findlabelByTag("no_info", languageTag)
             val more = database.findlabelByTag("more", languageTag)
             val noRecords = database.findlabelByTag("no_records", languageTag)
+            val subcategories = database.findlabelByTag("subcategory", languageTag)
             withContext(Dispatchers.Main) {
                 _translations.value = Translations(
                     noInfo = noInfo?.name,
                     more = more?.name,
-                    noRecords = noRecords?.name
+                    noRecords = noRecords?.name,
+                    subcategories = subcategories?.name
                 )
                 Log.i(
                     "TRANSLATIONS1",
-                    "${_translations.value?.noInfo} - ${_translations.value?.more} - ${_translations.value?.noRecords}"
+                    "${_translations.value?.noInfo} - ${_translations.value?.more} - ${_translations.value?.noRecords} - ${_translations.value?.subcategories}"
                 )
             }
         }

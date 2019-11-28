@@ -13,8 +13,11 @@ import com.bumptech.glide.request.RequestOptions
 import com.encorsa.wandr.R
 import com.encorsa.wandr.utils.Translations
 
-@BindingAdapter("shortDescriptionFromHtmlString")
-fun setShortDescription(view: TextView, longDescription: String?){
+@BindingAdapter(value = ["shortDescriptionFromHtmlString", "translationShort"], requireAll = false)
+fun setShortDescription(view: TextView, longDescription: String?, translation: String?){
+    translation?.let {
+        view.text = it
+    }
     longDescription?.let {
         view.text = fromHtml(longDescription).toString()
     }
@@ -39,6 +42,7 @@ fun setText(view: TextView, txt: String?, translation: String?){
         view.text = txt
     }
 }
+
 
 @BindingAdapter("selectedFavorite")
 fun setSelectedFavorite(view: ImageView, isSelected: Boolean){

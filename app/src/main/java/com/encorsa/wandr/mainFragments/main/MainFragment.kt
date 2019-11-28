@@ -44,6 +44,7 @@ class MainFragment : Fragment() {
 
         val application = requireNotNull(activity).application
         val dataSource = WandrDatabase.getInstance(application).wandrDatabaseDao
+        var messageForNoDetails: String? = getString(R.string.no_info)
 
         binding = FragmentMainBinding.inflate(inflater)
         val viewModelFactory = MainModelFactory(application, dataSource)
@@ -107,7 +108,9 @@ class MainFragment : Fragment() {
         })
 
         viewModel.translations.observe(this, Observer{
-            adapter.translations = it
+            ObjectiveAdapter.ItemViewHolder.translations = it
+            messageForNoDetails = it.noInfo
+            binding.translation = it
         })
 
         /*  --------------------------
@@ -122,7 +125,7 @@ class MainFragment : Fragment() {
                         .navigate(MainFragmentDirections.actionMainFragmentToDetailFragment(it))
                     viewModel.displayDetailsComplete()
                 } else {
-                    Toast.makeText(context, "Fara informatii", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, messageForNoDetails ?: "Nu există alte detalii", Toast.LENGTH_SHORT).show()
                 }
             }
         })

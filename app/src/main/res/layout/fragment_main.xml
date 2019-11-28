@@ -8,6 +8,9 @@
         <variable
             name="mainViewmodel"
             type="com.encorsa.wandr.mainFragments.main.MainViewModel" />
+        <variable
+            name="translation"
+            type="com.encorsa.wandr.utils.Translations" />
     </data>
 
 
@@ -77,6 +80,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
                         android:text="@string/subcategories"
+                        app:translation="@{translation.subcategories}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.5"
@@ -148,6 +152,7 @@
                     android:text="@string/no_results"
                     android:textSize="@dimen/objective_name_size"
                     android:visibility="gone"
+                    app:translation="@{translation.noRecords}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
