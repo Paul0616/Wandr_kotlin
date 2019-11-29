@@ -1,8 +1,11 @@
 package com.encorsa.wandr.mainFragments.main
 
 
+import android.app.AlertDialog
 import android.app.Application
+import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -23,6 +26,7 @@ import com.encorsa.wandr.LogInActivity
 
 import com.encorsa.wandr.R
 import com.encorsa.wandr.adapters.ObjectiveAdapter
+import com.encorsa.wandr.database.ObjectiveDatabaseModel
 import com.encorsa.wandr.database.SubcategoryDatabaseModel
 import com.encorsa.wandr.database.WandrDatabase
 import com.encorsa.wandr.databinding.FragmentMainBinding
@@ -45,6 +49,8 @@ class MainFragment : Fragment() {
         val application = requireNotNull(activity).application
         val dataSource = WandrDatabase.getInstance(application).wandrDatabaseDao
         var messageForNoDetails: String? = getString(R.string.no_info)
+        var location1: String = getString(R.string.location_message_1)
+        var location2: String = getString(R.string.location_message_2)
 
         binding = FragmentMainBinding.inflate(inflater)
         val viewModelFactory = MainModelFactory(application, dataSource)
@@ -133,10 +139,14 @@ class MainFragment : Fragment() {
 
         viewModel.navigateToMap.observe(this, Observer {
             if (null != it) {
-                Log.i("MainFragment", "OBJECTIVE ${it.id}")
-                this.findNavController()
-                    .navigate(MainFragmentDirections.actionMainFragmentToMapsActivity(it))
-                viewModel.navigateToMapComplete()
+//                Log.i("MainFragment", "OBJECTIVE ${it.id}")
+//                this.findNavController()
+//                    .navigate(MainFragmentDirections.actionMainFragmentToMapsActivity(it))
+//                viewModel.navigateToMapComplete()
+                showLocationTypeDialog(it, arrayOf(
+                    location1,
+                    location2
+                ))
             }
         })
 
@@ -156,6 +166,8 @@ class MainFragment : Fragment() {
                 viewModel.navigateToSettingsComplete()
             }
         })
+
+
 
         /*  --------------------------
          *   observe subcategories list and refresh UI
@@ -246,6 +258,44 @@ class MainFragment : Fragment() {
 
         adapter.initAdapter(application)
         return binding.root
+    }
+
+
+    /*  --------------------------
+       *   function alert dialog with options list
+       *   for choosing how to view objective LOCATION
+       *  ----------------------------
+       */
+
+    private fun showLocationTypeDialog(objective: ObjectiveDatabaseModel, array: Array<String>){
+        lateinit var dialog: AlertDialog
+        val builder = AlertDialog.Builder(context)
+        builder.setSingleChoiceItems(array, -1) { dialogInterface, which ->
+            when(which){
+                0 -> {
+                    Log.i("MainFragment", "OBJECTIVE ${objective.id}")
+                    this.findNavController()
+                        .navigate(MainFragmentDirections.actionMainFragmentToMapsActivity(objective))
+                    viewModel.navigateToMapComplete()
+                }
+                1 -> {
+                    try {
+                        var url = "waze://?ll="
+                        url = url.plus(objective.latitude)
+                        url = url.plus(",")
+                        url = url.plus(objective.longitude)
+                        url = url.plus("&navigate=yes")
+                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                    } catch (e: ActivityNotFoundException){
+                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.waze")))
+                    }
+                }
+            }
+            dialog.dismiss()
+        }
+
+        dialog = builder.create()
+        dialog.show()
     }
 
     /*  --------------------------

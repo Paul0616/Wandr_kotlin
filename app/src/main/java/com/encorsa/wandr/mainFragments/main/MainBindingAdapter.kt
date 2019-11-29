@@ -4,6 +4,7 @@ import android.os.Build
 import android.text.Html
 import android.text.Spanned
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -20,6 +21,14 @@ fun setShortDescription(view: TextView, longDescription: String?, translation: S
     }
     longDescription?.let {
         view.text = fromHtml(longDescription).toString()
+    }
+}
+
+@BindingAdapter("isVisible")
+fun setVisibility(view: View, isVisible: Boolean){
+    when(isVisible){
+        true -> view.visibility = View.VISIBLE
+        false -> view.visibility = View.INVISIBLE
     }
 }
 
