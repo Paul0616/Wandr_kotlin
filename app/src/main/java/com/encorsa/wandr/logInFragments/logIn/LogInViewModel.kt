@@ -169,7 +169,7 @@ class LogInViewModel(
 
     private fun  getPasswordForSignUp(user: FirebaseUser): String {
         val uid = user.uid
-        return "${uid.substring(6).toLowerCase()}!${uid.substring(0,5).toLowerCase()}"
+        return "${uid.substring(6).toLowerCase()}!${uid.substring(0,5).toUpperCase()}"
     }
 
     fun setStatus(status: WandrApiStatus){

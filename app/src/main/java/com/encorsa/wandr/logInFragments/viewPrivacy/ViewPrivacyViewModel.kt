@@ -56,7 +56,7 @@ class ViewPrivacyViewModel(app: Application, val database: WandrDatabaseDao) :
     init {
         Log.i("ViewUrlViewModel", "CREATED")
         //login(credentials)
-        _status.value = null
+        //_status.value = null
         getPrivacy(DEFAULT_LANGUAGE, URL_PRIVACY)
 
         val currentLanguage = prefs.currentLanguage.let {
@@ -68,6 +68,7 @@ class ViewPrivacyViewModel(app: Application, val database: WandrDatabaseDao) :
     fun registerNewGoogleUser(newGoogleUser: RegistrationRequestModel){
         viewModelScope.launch {
             // Get the Deferred object for our Retrofit request
+            Log.i("ViewPrivacyViewModel", "${newGoogleUser}")
             var deferredRegistration = WandrApi.RETROFIT_SERVICE.register(newGoogleUser)
 
             // Await the completion of our Retrofit request
