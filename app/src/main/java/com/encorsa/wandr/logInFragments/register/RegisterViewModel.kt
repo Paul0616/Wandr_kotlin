@@ -9,6 +9,7 @@ import com.encorsa.wandr.models.RegistrationRequestModel
 import retrofit2.HttpException
 import android.view.View.OnFocusChangeListener
 import android.view.View
+import com.encorsa.wandr.R
 import androidx.lifecycle.*
 import com.encorsa.wandr.database.WandrDatabaseDao
 import com.encorsa.wandr.network.CallAndStatus
@@ -16,6 +17,7 @@ import com.encorsa.wandr.network.WandrApiRequestId
 import com.encorsa.wandr.models.SecurityCode
 import com.encorsa.wandr.utils.DEFAULT_LANGUAGE
 import com.encorsa.wandr.utils.Prefs
+import com.encorsa.wandr.utils.TranslationsRegistration
 import kotlinx.coroutines.*
 
 
@@ -42,64 +44,7 @@ class RegisterViewModel(app: Application, val database: WandrDatabaseDao) : Andr
     val securityCode: LiveData<SecurityCode>
         get() = _securityCode
 
-    //---------validation form
-    private val _emailHint = MutableLiveData<String?>()
-    val emailHint: LiveData<String?>
-        get() = _emailHint
 
-    private val _passwordHint = MutableLiveData<String?>()
-    val passwordHint: LiveData<String?>
-        get() = _passwordHint
-
-    private val _confirmPasswordHint = MutableLiveData<String?>()
-    val confirmPasswordHint: LiveData<String?>
-        get() = _confirmPasswordHint
-
-    private val _firstNameHint = MutableLiveData<String?>()
-    val firstNameHint: LiveData<String?>
-        get() = _firstNameHint
-
-    private val _lastNameHint = MutableLiveData<String?>()
-    val lastNameHint: LiveData<String?>
-        get() = _lastNameHint
-
-    private val _validationErrorFieldRequired = MutableLiveData<String?>()
-    val validationErrorFieldRequired: LiveData<String?>
-        get() = _validationErrorFieldRequired
-
-    private val _validationErrorInvalidEmail = MutableLiveData<String?>()
-    val validationErrorInvalidEmail: LiveData<String?>
-        get() = _validationErrorInvalidEmail
-
-    private val _validationErrorPasswordMatch = MutableLiveData<String?>()
-    val validationErrorPasswordMatch: LiveData<String?>
-        get() = _validationErrorPasswordMatch
-
-    private val _validationErrorInvalidPassword = MutableLiveData<String?>()
-    val validationErrorInvalidPassword: LiveData<String?>
-        get() = _validationErrorInvalidPassword
-
-    private val _passwordInfoMessage1 = MutableLiveData<String?>()
-    val passwordInfoMessage1: LiveData<String?>
-        get() = _passwordInfoMessage1
-
-    private val _passwordInfoMessage2 = MutableLiveData<String?>()
-    val passwordInfoMessage2: LiveData<String?>
-        get() = _passwordInfoMessage2
-
-    private val _passwordInfoMessage3 = MutableLiveData<String?>()
-    val passwordInfoMessage3: LiveData<String?>
-        get() = _passwordInfoMessage3
-
-    private val _passwordInfoMessage4 = MutableLiveData<String?>()
-    val passwordInfoMessage4: LiveData<String?>
-        get() = _passwordInfoMessage4
-
-    private val _passwordInfoMessage5 = MutableLiveData<String?>()
-    val passwordInfoMessage5: LiveData<String?>
-        get() = _passwordInfoMessage5
-
-    //-------
 
     private val _showPassword1 = MutableLiveData<Boolean>()
     val showPassword1: LiveData<Boolean>
@@ -109,8 +54,6 @@ class RegisterViewModel(app: Application, val database: WandrDatabaseDao) : Andr
     val showPassword2: LiveData<Boolean>
         get() = _showPassword2
 
-    val currentLanguage = MutableLiveData<String>()
-    //get() = currentLanguage
 
     var email = MutableLiveData<String>()
     var firstName = MutableLiveData<String>()
@@ -127,26 +70,10 @@ class RegisterViewModel(app: Application, val database: WandrDatabaseDao) : Andr
 
     init {
         Log.i("RegisterViewModel", "CREATED")
-        currentLanguage.value = prefs.currentLanguage.let {
+        val currentLanguage = prefs.currentLanguage.let {
             it ?: DEFAULT_LANGUAGE
         }
-
-        getLabelByTagAndLanguage("email", currentLanguage.value!!)
-        getLabelByTagAndLanguage("password", currentLanguage.value!!)
-        getLabelByTagAndLanguage("first_name", currentLanguage.value!!)
-        getLabelByTagAndLanguage("last_name", currentLanguage.value!!)
-        getLabelByTagAndLanguage("confirm_password", currentLanguage.value!!)
-
-        getLabelByTagAndLanguage("error_invalid_password", currentLanguage.value!!)
-        getLabelByTagAndLanguage("error_passwords_match", currentLanguage.value!!)
-        getLabelByTagAndLanguage("error_field_required", currentLanguage.value!!)
-        getLabelByTagAndLanguage("error_invalid_email", currentLanguage.value!!)
-
-        getLabelByTagAndLanguage("password_info_message1", currentLanguage.value!!)
-        getLabelByTagAndLanguage("password_info_message2", currentLanguage.value!!)
-        getLabelByTagAndLanguage("password_info_message3", currentLanguage.value!!)
-        getLabelByTagAndLanguage("password_info_message4", currentLanguage.value!!)
-        getLabelByTagAndLanguage("password_info_message5", currentLanguage.value!!)
+        getLabelsByLanguage(currentLanguage)
 
         _status.value = null
         email.value = ""
@@ -155,6 +82,28 @@ class RegisterViewModel(app: Application, val database: WandrDatabaseDao) : Andr
         firstName.value = ""
         lastname.value = ""
     }
+
+    private val _translations = MutableLiveData<TranslationsRegistration>(
+        TranslationsRegistration(
+            app.getString(R.string.emailHint),
+            app.getString(R.string.passwordHint),
+            app.getString(R.string.firstNameHint),
+            app.getString(R.string.lastNameHint),
+            app.getString(R.string.confirmPasswordHint),
+            app.getString(R.string.error_invalid_password),
+            app.getString(R.string.error_password_match),
+            app.getString(R.string.error_field_required),
+            app.getString(R.string.error_invalid_email),
+            app.getString(R.string.password_info_title),
+            app.getString(R.string.password_info_number),
+            app.getString(R.string.password_info_case),
+            app.getString(R.string.password_info_lenght),
+            app.getString(R.string.password_info_special_char),
+            app.getString(R.string.registerButonText)
+        )
+    )
+    val translations: LiveData<TranslationsRegistration>
+        get() = _translations
 
     fun clearStatus(){
         _status.value = null
@@ -175,7 +124,7 @@ class RegisterViewModel(app: Application, val database: WandrDatabaseDao) : Andr
         _userValidation.value = registerUser
 
         //uncomment if you want to skip validation andregistering
-       // _status.value = CallAndStatus(WandrApiStatus.DONE, WandrApiRequestId.REGISTER)
+        //_status.value = CallAndStatus(WandrApiStatus.DONE, WandrApiRequestId.REGISTER)
     }
 
     fun onClickShowPassword(id: Int) {
@@ -204,23 +153,6 @@ class RegisterViewModel(app: Application, val database: WandrDatabaseDao) : Andr
         }
     }
 
-//    fun login(credentials: LoginRequestModel) {
-//        viewModelScope.launch {
-//            // Get the Deferred object for our Retrofit request
-//            var getTokenModel = WandrApi.RETROFIT_SERVICE.login(credentials)
-//
-//            // Await the completion of our Retrofit request
-//            try {
-//                _status.value = CallAndStatus(WandrApiStatus.LOADING, WandrApiRequestId.LOGIN)
-//                _tokenModel.value = getTokenModel.await()
-//                _status.value = CallAndStatus(WandrApiStatus.DONE, WandrApiRequestId.LOGIN)
-//            } catch (ex: HttpException) {
-//                _status.value = CallAndStatus(WandrApiStatus.ERROR, WandrApiRequestId.LOGIN)
-//                _error.value =
-//                    " " + ex.response().code() + " " + ex.response().errorBody()?.string()
-//            }
-//        }
-//    }
 
 
     override fun onCleared() {
@@ -229,27 +161,44 @@ class RegisterViewModel(app: Application, val database: WandrDatabaseDao) : Andr
         viewModelJob.cancel()
     }
 
-
-    fun getLabelByTagAndLanguage(labelTag: String, languageTag: String) {
+    fun getLabelsByLanguage(languageTag: String) {
         ioScope.launch {
-            val label = database.findlabelByTag(labelTag, languageTag)
+            val email = database.findlabelByTag("email", languageTag)
+            val password = database.findlabelByTag("password", languageTag)
+            val firstName = database.findlabelByTag("first_name", languageTag)
+            val lastName = database.findlabelByTag("last_name", languageTag)
+            val confirmPassword = database.findlabelByTag("confirm_password", languageTag)
+
+            val errorInvalidPassword = database.findlabelByTag("error_invalid_password", languageTag)
+            val errorPasswordsMatch = database.findlabelByTag("error_passwords_match", languageTag)
+            val errorFieldRequred = database.findlabelByTag("error_field_required", languageTag)
+            val errorInvalidEmail = database.findlabelByTag("error_invalid_email", languageTag)
+
+            val passwordMessage1 = database.findlabelByTag("password_info_message1", languageTag)
+            val passwordMessage2 = database.findlabelByTag("password_info_message2", languageTag)
+            val passwordMessage3 = database.findlabelByTag("password_info_message3", languageTag)
+            val passwordMessage4 = database.findlabelByTag("password_info_message4", languageTag)
+            val passwordMessage5 = database.findlabelByTag("password_info_message5", languageTag)
+
+            val screenTitle = database.findlabelByTag("action_sign_up_short", languageTag)
             withContext(Dispatchers.Main) {
-                when (labelTag) {
-                    "email" -> _emailHint.value = label?.name
-                    "first_name" -> _firstNameHint.value = label?.name
-                    "last_name" -> _lastNameHint.value = label?.name
-                    "password" -> _passwordHint.value = label?.name
-                    "confirm_password" -> _confirmPasswordHint.value = label?.name
-                    "error_passwords_match" -> _validationErrorPasswordMatch.value = label?.name
-                    "error_invalid_password" -> _validationErrorInvalidPassword.value = label?.name
-                    "error_field_required" -> _validationErrorFieldRequired.value = label?.name
-                    "error_invalid_email" -> _validationErrorInvalidEmail.value = label?.name
-                    "password_info_message1" -> _passwordInfoMessage1.value = label?.name
-                    "password_info_message2" -> _passwordInfoMessage2.value = label?.name
-                    "password_info_message3" -> _passwordInfoMessage3.value = label?.name
-                    "password_info_message4" -> _passwordInfoMessage4.value = label?.name
-                    "password_info_message5" -> _passwordInfoMessage5.value = label?.name
-                }
+                _translations.value = TranslationsRegistration(
+                    email = email?.name,
+                    password = password?.name,
+                    firstName = firstName?.name,
+                    lastName = lastName?.name,
+                    confirmPassword = confirmPassword?.name,
+                    errorInvalidPassword = errorInvalidPassword?.name,
+                    errorFieldRequired = errorFieldRequred?.name,
+                    errorPasswordsMatch = errorPasswordsMatch?.name,
+                    errorInvalidEmail = errorInvalidEmail?.name,
+                    passwordMessage1 = passwordMessage1?.name,
+                    passwordMessage2 = passwordMessage2?.name,
+                    passwordMessage3 = passwordMessage3?.name,
+                    passwordMessage4 = passwordMessage4?.name,
+                    passwordMessage5 = passwordMessage5?.name,
+                    screenTitle = screenTitle?.name
+                )
             }
         }
     }

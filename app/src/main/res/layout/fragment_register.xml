@@ -7,6 +7,9 @@
         <variable
             name="registerViewModel"
             type="com.encorsa.wandr.logInFragments.register.RegisterViewModel" />
+        <variable
+            name="translation"
+            type="com.encorsa.wandr.utils.TranslationsRegistration" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -55,7 +58,7 @@
                 android:layout_marginBottom="8dp"
                 android:drawableStart="@drawable/ic_email_24px"
                 android:ems="10"
-                android:hint="@string/emailHint"
+                android:hint="@{translation.email}"
                 android:imeOptions="actionNext"
                 android:inputType="textEmailAddress"
                 android:text="@={registerViewModel.email}"
@@ -76,7 +79,7 @@
                 android:layout_marginBottom="8dp"
                 android:drawableStart="@drawable/ic_perm_identity_black_24dp"
                 android:ems="10"
-                android:hint="@string/firstNameHint"
+                android:hint="@{translation.firstName}"
                 android:imeOptions="actionNext"
                 android:inputType="textEmailAddress"
                 android:text="@={registerViewModel.firstName}"
@@ -97,7 +100,7 @@
                 android:layout_marginBottom="8dp"
                 android:drawableStart="@drawable/ic_perm_identity_black_24dp"
                 android:ems="10"
-                android:hint="@string/lastNameHint"
+                android:hint="@{translation.lastName}"
                 android:imeOptions="actionNext"
                 android:inputType="textEmailAddress"
                 android:text="@={registerViewModel.lastname}"
@@ -118,7 +121,7 @@
                 android:layout_marginBottom="8dp"
                 android:drawableStart="@drawable/ic_lock_24px"
                 android:ems="10"
-                android:hint="@string/passwordHint"
+                android:hint="@{translation.password}"
                 android:imeOptions="actionNext"
                 android:inputType="textPassword"
                 android:text="@={registerViewModel.password}"
@@ -149,7 +152,7 @@
                 android:layout_marginEnd="32dp"
                 android:drawableStart="@drawable/ic_lock_24px"
                 android:ems="10"
-                android:hint="@string/confirmPasswordHint"
+                android:hint="@{translation.confirmPassword}"
                 android:imeOptions="actionDone"
                 android:inputType="textPassword"
 
@@ -234,7 +237,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:fontFamily="sans-serif-condensed-light"
-                android:text="@string/password_info_title"
+                android:text="@{translation.passwordMessage1}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -247,7 +250,7 @@
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="8dp"
                 android:fontFamily="sans-serif-condensed-medium"
-                android:text="@string/password_info_number"
+                android:text="@{translation.passwordMessage2}"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -261,7 +264,7 @@
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="8dp"
                 android:fontFamily="sans-serif-condensed-medium"
-                android:text="@string/password_info_case"
+                android:text="@{translation.passwordMessage3}"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -275,7 +278,7 @@
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="8dp"
                 android:fontFamily="sans-serif-condensed-medium"
-                android:text="@string/password_info_lenght"
+                android:text="@{translation.passwordMessage4}"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -290,7 +293,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:fontFamily="sans-serif-condensed-medium"
-                android:text="@string/password_info_special_char"
+                android:text="@{translation.passwordMessage5}"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

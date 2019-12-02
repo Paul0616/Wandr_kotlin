@@ -91,11 +91,11 @@ interface WandrDatabaseDao {
     @Query("SELECT * FROM objectives_table WHERE id = :id")
     fun getDatabaseObjectById(id: String): LiveData<List<ObjectiveDatabaseModel>>
 
-//    @Query("SELECT * FROM objectives_table WHERE id = :id LIMIT 1")
-//    fun getDatabaseObjectById1(id: String): List<ObjectiveDatabaseModel>
-//
-//    @Query("SELECT * FROM objectives_table")
-//    fun getDatabaseObjectById2(): List<ObjectiveDatabaseModel>
+    @Query("SELECT * FROM objectives_table WHERE createdTime < :createdTime")
+    fun getOldDatabaseObjects(createdTime: Long): List<ObjectiveDatabaseModel>
+
+    @Delete()
+    fun deleteOldObjectives(objectives : List<ObjectiveDatabaseModel>)
 
     //MEDIA ------------------------------
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -103,6 +103,12 @@ interface WandrDatabaseDao {
 
     @Query("SELECT *  FROM media_table WHERE objectiveId = :objectiveId")
     fun getDatabaseMediaForObjectiveId(objectiveId: String) : LiveData<List<MediaDatabaseModel>>
+
+    @Query("SELECT * FROM media_table WHERE createdTime < :createdTime")
+    fun getOldDatabaseMedia(createdTime: Long): List<MediaDatabaseModel>
+
+    @Delete()
+    fun deleteOldMedia(medias : List<MediaDatabaseModel>)
 
 
     //CATEGORIES ------------------------------
@@ -115,11 +121,23 @@ interface WandrDatabaseDao {
     @Query("SELECT * FROM categories_table WHERE languageTag = :languageTag AND id = :categoryId")
     fun getCategoryForLanguage(languageTag: String, categoryId: String): LiveData<CategoryDatabaseModel>
 
+    @Query("SELECT * FROM categories_table WHERE createdTime < :createdTime")
+    fun getOldDatabaseCategories(createdTime: Long): List<CategoryDatabaseModel>
+
+    @Delete()
+    fun deleteOldCategories(categories: List<CategoryDatabaseModel>)
+
     //SUBCATEGORIES ------------------------------
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertSubcategories(post: List<SubcategoryDatabaseModel>): List<Long>
 
     @Query("SELECT * FROM subcategories_table WHERE languageTag = :languageTag AND categoryId = :categoryId")
     fun getAllSubcategoriesForLanguageAndCategory(languageTag: String, categoryId: String?): LiveData<List<SubcategoryDatabaseModel>>
+
+    @Query("SELECT * FROM subcategories_table WHERE createdTime < :createdTime")
+    fun getOldDatabaseSubcategories(createdTime: Long): List<SubcategoryDatabaseModel>
+
+    @Delete()
+    fun deleteOldSubcategories(medias : List<SubcategoryDatabaseModel>)
 }
 

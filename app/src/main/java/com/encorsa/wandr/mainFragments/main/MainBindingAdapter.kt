@@ -3,18 +3,32 @@ package com.encorsa.wandr.mainFragments.main
 import android.os.Build
 import android.text.Html
 import android.text.Spanned
+import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.encorsa.wandr.R
 
-@BindingAdapter("shortDescriptionFromHtmlString")
-fun setShortDescription(view: TextView, longDescription: String?){
+@BindingAdapter(value = ["shortDescriptionFromHtmlString", "translationShort"], requireAll = false)
+fun setShortDescription(view: TextView, longDescription: String?, translation: String?){
+    translation?.let {
+        view.text = it
+    }
     longDescription?.let {
         view.text = fromHtml(longDescription).toString()
+    }
+}
+
+@BindingAdapter("isVisible")
+fun setVisibility(view: View, isVisible: Boolean){
+    when(isVisible){
+        true -> view.visibility = View.VISIBLE
+        false -> view.visibility = View.INVISIBLE
     }
 }
 
@@ -27,12 +41,16 @@ fun fromHtml(html: String): Spanned {
     }
 }
 
-@BindingAdapter("textString")
-fun setText(view: TextView, txt: String?){
+@BindingAdapter(value = ["textString", "translation"], requireAll = false)
+fun setText(view: TextView, txt: String?, translation: String?){
+    translation?.let {
+        view.text = it
+    }
     txt?.let {
         view.text = txt
     }
 }
+
 
 @BindingAdapter("selectedFavorite")
 fun setSelectedFavorite(view: ImageView, isSelected: Boolean){
@@ -52,6 +70,21 @@ fun setImageFromUrl(view: ImageView, imageUrl: String?) {
                     .error(R.drawable.ic_no_image)
             )
             .into(view)
+    } else {
+        val drawable = ContextCompat.getDrawable(view.context, R.drawable.ic_no_image)
+        view.setImageDrawable(drawable)
+    }
+}
+
+@BindingAdapter("showUrl")
+fun setUrlButton(view: ImageView, url: String?){
+    if (url != null) {
+        view.isSelected = true
+        view.isEnabled = true
+    }
+    else {
+        view.isSelected = false
+        view.isEnabled = false
     }
 }
 

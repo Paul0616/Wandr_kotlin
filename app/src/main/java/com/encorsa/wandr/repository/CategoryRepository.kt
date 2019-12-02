@@ -15,6 +15,7 @@ import com.encorsa.wandr.utils.Prefs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
+import java.util.concurrent.TimeUnit
 
 class CategoryRepository(private val app: Application, private val database: WandrDatabaseDao) {
 
@@ -38,6 +39,9 @@ class CategoryRepository(private val app: Application, private val database: Wan
             try {
                 val categoriesFromNet =  WandrApi.RETROFIT_SERVICE.getCategories(options).await()
                 val rowsInserted = database.insertCategories(categoriesFromNet.asDatabaseModel())
+                val expireTime = TimeUnit.MINUTES.toMillis(15)
+                val oldCategories = database.getOldDatabaseCategories(System.currentTimeMillis() - expireTime)
+                database.deleteOldCategories(oldCategories)
 
                 Log.i("CategoryRepository", "Inserted ${rowsInserted.size} in local database)")
             } catch (e: Exception) {

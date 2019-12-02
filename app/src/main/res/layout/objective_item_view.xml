@@ -10,6 +10,9 @@
         <variable
             name="objective"
             type="com.encorsa.wandr.database.ObjectiveDatabaseModel" />
+        <variable
+            name="translation"
+            type="com.encorsa.wandr.utils.TranslationsMain" />
         <import type="com.encorsa.wandr.adapters.ViewClicked" />
     </data>
 
@@ -76,6 +79,7 @@
                         android:layout_marginBottom="8dp"
                         android:maxLines="3"
                         android:text="@string/no_info"
+                        app:translationShort="@{translation.noInfo}"
                         app:shortDescriptionFromHtmlString="@{objective.longDescription}"
                         app:layout_constraintBottom_toTopOf="@+id/imageView7"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -94,7 +98,9 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/attractionTextView"
-                        app:textString="@{objective.address}"/>
+                        app:translation="@{translation.noInfo}"
+                        app:textString="@{objective.address}"
+                        />
 
                     <TextView
                         android:id="@+id/attractionTextView"
@@ -109,13 +115,16 @@
                         app:layout_constraintEnd_toStartOf="@+id/subcategory"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:textString="@{objective.name}"/>
+                        app:translation="@{translation.noInfo}"
+                        app:textString="@{objective.name}"
+                        />
 
                     <ImageView
                         android:id="@+id/imageView7"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
+                        app:isVisible="@{objective.containUsefulInfo()}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
@@ -126,6 +135,8 @@
                         android:layout_height="wrap_content"
                         android:text="@string/more"
                         android:textSize="8sp"
+                        app:translation="@{translation.more}"
+                        app:isVisible="@{objective.containUsefulInfo()}"
                         app:layout_constraintBottom_toBottomOf="@+id/imageView7"
                         app:layout_constraintEnd_toStartOf="@+id/imageView7"
                         app:layout_constraintTop_toTopOf="@+id/imageView7" />
@@ -192,6 +203,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/guideline2"
                         app:srcCompat="@drawable/globe_selector"
+                        app:showUrl="@{objective.url}"
                         android:onClick="@{() -> clickListener.onClick(objective, ViewClicked.URL)}"/>
 
                     <androidx.constraintlayout.widget.Guideline

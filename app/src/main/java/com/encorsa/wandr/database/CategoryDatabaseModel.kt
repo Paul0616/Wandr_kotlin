@@ -19,6 +19,9 @@ data class CategoryDatabaseModel(
     var languageTag: String,
 
     @ColumnInfo(name = "name")
-    var name: String
+    var name: String,
+
+    @ColumnInfo(name = "createdTime")
+    val createdTime : Long = System.currentTimeMillis()
 )
 

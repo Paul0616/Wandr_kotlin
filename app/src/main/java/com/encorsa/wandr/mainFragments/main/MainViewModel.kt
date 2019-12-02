@@ -26,6 +26,7 @@ import com.encorsa.wandr.models.*
 import com.encorsa.wandr.adapters.ViewClicked
 import retrofit2.HttpException
 import com.encorsa.wandr.R
+import com.encorsa.wandr.utils.TranslationsMain
 
 
 class MainViewModel(app: Application, val database: WandrDatabaseDao) :
@@ -38,7 +39,7 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
     private var viewModelJob = Job()
     private val ioScope = CoroutineScope(Dispatchers.IO + viewModelJob)
 
-//    private val dataSource = WandrDatabase.getInstance(app).wandrDatabaseDao
+    //    private val dataSource = WandrDatabase.getInstance(app).wandrDatabaseDao
     private val prefs = Prefs(app.applicationContext)
     private val objectiveRepository = ObjectivesRepository(app, database)
     private val subcategoryRepository = SubcategoryRepository(app, database)
@@ -49,14 +50,27 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
     private val querySubcategory = MutableLiveData<String>()
     private val categoryId = MutableLiveData<String>()
     private val subcategoryIds = MutableLiveData<Array<String>>()
-    private val currentLanguage = MutableLiveData<String>()
+
+    private val _currentLanguage = MutableLiveData<String>()
+    val currentLanguage: LiveData<String>
+        get() = _currentLanguage
+
+    private val _translations = MutableLiveData<TranslationsMain>(
+        TranslationsMain(
+            app.getString(R.string.no_info),
+            app.getString(R.string.more),
+            app.getString(R.string.no_results),
+            app.getString(R.string.subcategories),
+            app.getString(R.string.location_message_1),
+            app.getString(R.string.location_message_2)
+        )
+    )
+    val translationsMain: LiveData<TranslationsMain>
+        get() = _translations
 
     private val _favoriteId = MutableLiveData<String>()
     val favoriteId: LiveData<String>
         get() = _favoriteId
-
- //   private val deletedFavorite = MutableLiveData<Boolean>(false)
-
 
     private val _subcategoryFilterApplied = MutableLiveData<Boolean>()
     val subcategoryFilterApplied: LiveData<Boolean>
@@ -92,7 +106,7 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
     init {
         Log.i("MainViewModel", "CREATED")
 
-        currentLanguage.value = prefs.currentLanguage ?: DEFAULT_LANGUAGE
+        _currentLanguage.value = prefs.currentLanguage ?: DEFAULT_LANGUAGE
         _chipsGroupIsVisible.value = false
         _subcategoryFilterApplied.value = false
 
@@ -158,7 +172,7 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
      * ------------------------
      */
     fun objectiveWasClicked(objective: ObjectiveDatabaseModel, viewClicked: ViewClicked) {
-        when(viewClicked){
+        when (viewClicked) {
             ViewClicked.OBJECTIVE -> _navigateToDetails.value = objective
             ViewClicked.FAVORITE -> favoriteWasClicked(objective, prefs.userId)
             ViewClicked.URL -> urlWasClicked(objective)
@@ -166,20 +180,24 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
         }
     }
 
-    fun displayDetailsComplete(){
+    fun displayDetailsComplete() {
         _navigateToDetails.value = null
     }
 
-    fun navigateToSettings(){
-       _navigateToSettings.value = true
+    fun navigateToSettings() {
+        _navigateToSettings.value = true
     }
 
-    fun navigateToSettingsComplete(){
+    fun navigateToSettingsComplete() {
         _navigateToSettings.value = false
     }
 
-    fun navigateToMapComplete(){
+    fun navigateToMapComplete() {
         _navigateToMap.value = null
+    }
+
+    fun navigateToUrlComplete() {
+        _navigateToUrl.value = null
     }
 
     fun favoriteWasClicked(objective: ObjectiveDatabaseModel, userId: String?) {
@@ -188,8 +206,8 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
             "MainViewModel",
             "ADD TO FAVORITE: ID:${objective.id}"
         )
-        shouldAddToFavorite?.let{
-            if (it){
+        shouldAddToFavorite.let {
+            if (it) {
                 val favoriteForInsert = FavoriteInsertModel(userId!!, objective.id)
                 addTofavorite(favoriteForInsert)
             } else {
@@ -199,13 +217,13 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
 
     }
 
-    fun urlWasClicked(objective: ObjectiveDatabaseModel){
+    fun urlWasClicked(objective: ObjectiveDatabaseModel) {
         Log.i("MainViewModel", "URL clicked")
         _navigateToUrl.value = objective
 
     }
 
-    fun locationWasClicked(objective: ObjectiveDatabaseModel){
+    fun locationWasClicked(objective: ObjectiveDatabaseModel) {
         Log.i("MainViewModel", "LOCATION clicked")
         _navigateToMap.value = objective
     }
@@ -280,7 +298,7 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
                     prefs.userId = tokenModel.userId
                     prefs.userName = tokenModel.userName
                     prefs.token = tokenModel.token
-                    prefs.firstName = tokenModel?.firstName
+                    prefs.firstName = tokenModel.firstName
                     val tokenExpireAt = Utilities.getLongDate(tokenModel.tokenExpirationDate)
                     if (null != tokenExpireAt)
                         prefs.tokenExpireAtInMillis = tokenExpireAt
@@ -427,6 +445,45 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
         }
     }
 
+    /*  -----------------------------------
+    *   LANGUAGE CHANGE:
+    *   - get labels for current tag language
+    *   - set new language
+    *  ------------------------------------
+    */
+    fun getLabelByTagAndLanguage(languageTag: String) {
+        ioScope.launch {
+            val noInfo = database.findlabelByTag("no_info", languageTag)
+            val more = database.findlabelByTag("more", languageTag)
+            val noRecords = database.findlabelByTag("no_records", languageTag)
+            val subcategories = database.findlabelByTag("subcategory", languageTag)
+            val locGoogle = database.findlabelByTag("location_message_1", languageTag)
+            val locWaze = database.findlabelByTag("location_message_2", languageTag)
+            withContext(Dispatchers.Main) {
+                _translations.value = TranslationsMain(
+                    noInfo = noInfo?.name,
+                    more = more?.name,
+                    noRecords = noRecords?.name,
+                    subcategories = subcategories?.name,
+                    locationWhithGoogle = locGoogle?.name,
+                    locationWhithWaze = locWaze?.name
+                )
+                Log.i(
+                    "TRANSLATIONS1",
+                    "${_translations.value?.noInfo} - " +
+                            "${_translations.value?.more} -" +
+                            " ${_translations.value?.noRecords} -" +
+                            " ${_translations.value?.subcategories} -" +
+                            " ${_translations.value?.locationWhithGoogle} -" +
+                            " ${_translations.value?.locationWhithWaze}"
+                )
+            }
+        }
+    }
+
+    fun setCurrentLanguage(language: String?) {
+        _currentLanguage.value = language
+    }
 
     override fun onCleared() {
         super.onCleared()

@@ -16,6 +16,7 @@ import com.encorsa.wandr.utils.Prefs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
+import java.util.concurrent.TimeUnit
 
 class ObjectivesRepository(private val app: Application, private val database: WandrDatabaseDao) {
 
@@ -102,8 +103,13 @@ class ObjectivesRepository(private val app: Application, private val database: W
                     WandrApi.RETROFIT_SERVICE.getObjectives(options, subs).await()
                 //save in database
                 val rowsObjInserted = database.insertObjectives(objectivesNetwork.asDatabaseModels())
+                val expireTime = TimeUnit.MINUTES.toMillis(15)
+                val oldObjects = database.getOldDatabaseObjects(System.currentTimeMillis() - expireTime)
+                database.deleteOldObjectives(oldObjects)
                 val rowsMediaInserted =
                     database.insertMedia(objectivesNetwork.asDatabaseMediaModel())
+                val oldMedia = database.getOldDatabaseMedia(System.currentTimeMillis() - expireTime)
+                database.deleteOldMedia(oldMedia)
 
                 lastRequestedPage = objectivesNetwork.currentPage()
                 isRequestInProgress = false
@@ -112,12 +118,20 @@ class ObjectivesRepository(private val app: Application, private val database: W
                 else
                     isRequestInProgress = true
                 Log.i(
-                    "ObjectiverRepository",
+                    "ObjectiveRepository",
                     "Inserted ${rowsObjInserted.size.toString()} OBJECTIVES in local database (isRequestInProgress=${isRequestInProgress.toString()}) (page = ${lastRequestedPage.toString()})"
                 )
                 Log.i(
-                    "ObjectiverRepository",
+                    "ObjectiveRepository",
+                    "${oldObjects.size.toString()} OBJECTIVES SHOULD BE DELETED from local database"
+                )
+                Log.i(
+                    "ObjectiveRepository",
                     "Inserted ${rowsMediaInserted.size.toString()} MEDIA in local database (isRequestInProgress=${isRequestInProgress.toString()}) (page = ${lastRequestedPage.toString()})"
+                )
+                Log.i(
+                    "ObjectiveRepository",
+                    "${oldMedia.size.toString()} MEDIA SHOULD BE DELETED from local database"
                 )
             } catch (e: Exception) {
                 networkError.postValue(e.message)

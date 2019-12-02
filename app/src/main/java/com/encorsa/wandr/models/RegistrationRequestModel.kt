@@ -1,8 +1,10 @@
 package com.encorsa.wandr.models
 
+import android.os.Parcelable
 import android.util.Patterns
+import kotlinx.android.parcel.Parcelize
 import java.util.regex.Pattern
-
+@Parcelize
 data class RegistrationRequestModel(
     val email: String,
     val password: String,
@@ -10,7 +12,7 @@ data class RegistrationRequestModel(
     val firstName: String,
     val lastName: String,
     val firebaseToken: String
-) {
+): Parcelable {
 
     val isEmailValid: Boolean
         get() = Patterns.EMAIL_ADDRESS.matcher(email).matches()

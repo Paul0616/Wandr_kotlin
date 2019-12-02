@@ -62,6 +62,13 @@ data class ObjectiveDatabaseModel(
     @ColumnInfo(name = "defaultImageUrl")
     val defaultImageUrl: String? = null,
 
+    @ColumnInfo(name = "createdTime")
+    val createdTime : Long = System.currentTimeMillis(),
+
     var subcategoryName: String = ""
 
-): Parcelable
+): Parcelable {
+    fun containUsefulInfo(): Boolean{
+        return this.longDescription != null
+    }
+}
