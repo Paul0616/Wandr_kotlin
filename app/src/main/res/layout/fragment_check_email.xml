@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    >
 
     <data>
         <variable
             name="checkEmailViewModel"
             type="com.encorsa.wandr.logInFragments.checkEmail.CheckEmailViewModel" />
+        <variable
+            name="translation"
+            type="com.encorsa.wandr.utils.TranslationsCheckEmail" />
     </data>
 
     <LinearLayout
@@ -24,12 +28,14 @@
 
         <TextView
             android:id="@+id/textLabel"
+            tools:text="@string/check_email_screen_label"
+            android:text="@{translation.checkEmailLabel}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/small_dim"
             android:layout_marginTop="@dimen/medium_dim"
-            android:text="@string/check_email_screen_label"
-            android:textAlignment="viewStart" />
+            android:textAlignment="viewStart"
+            />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -40,7 +46,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.85" />
+                app:layout_constraintGuide_begin="350dp" />
 
             <EditText
                 android:id="@+id/current_email_edit"
@@ -136,7 +142,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:hint="@string/security_code_hint"
+                    android:hint="@{translation.securityCodeHint}"
                     android:inputType="number"
                     android:text="@={checkEmailViewModel.securityCode}" />
 
@@ -152,7 +158,8 @@
             android:layout_marginTop="@dimen/logo_height"
             android:layout_marginEnd="@dimen/small_dim"
             android:onClick="@{() -> checkEmailViewModel.onClickResendEmail()}"
-            android:text="@string/resend_email_button" />
+            android:text="@{translation.resendEmailText}"
+            tools:text="@string/resend_email_button" />
 
     </LinearLayout>
 </layout>

@@ -43,7 +43,6 @@ fun fromHtml(html: String): Spanned {
 
 @BindingAdapter(value = ["textString", "translation"], requireAll = false)
 fun setText(view: TextView, txt: String?, translation: String?){
-    Log.i("TRANSLA", "$translation")
     translation?.let {
         view.text = it
     }

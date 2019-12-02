@@ -116,6 +116,12 @@ class MainFragment : Fragment() {
         viewModel.translationsMain.observe(this, Observer{
             ObjectiveAdapter.ItemViewHolder.translationsMain = it
             messageForNoDetails = it.noInfo
+            it.locationWhithGoogle?.let {loc ->
+                location1 = loc
+            }
+            it.locationWhithWaze?.let {loc ->
+                location2 = loc
+            }
             binding.translation = it
         })
 
@@ -139,10 +145,6 @@ class MainFragment : Fragment() {
 
         viewModel.navigateToMap.observe(this, Observer {
             if (null != it) {
-//                Log.i("MainFragment", "OBJECTIVE ${it.id}")
-//                this.findNavController()
-//                    .navigate(MainFragmentDirections.actionMainFragmentToMapsActivity(it))
-//                viewModel.navigateToMapComplete()
                 showLocationTypeDialog(it, arrayOf(
                     location1,
                     location2

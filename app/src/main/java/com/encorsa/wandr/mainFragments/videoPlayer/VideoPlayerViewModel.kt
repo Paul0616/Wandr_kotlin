@@ -19,9 +19,6 @@ class VideoPlayerViewModel(app: Application, val database: WandrDatabaseDao) :
 
     }
 
-    private val _currentLanguage = MutableLiveData<String>()
-    val currentLanguage: LiveData<String>
-        get() = _currentLanguage
 
     private val _translations = MutableLiveData<TranslationsVideoPlayer>(
         TranslationsVideoPlayer(
@@ -82,17 +79,10 @@ class VideoPlayerViewModel(app: Application, val database: WandrDatabaseDao) :
                 _translations.value = TranslationsVideoPlayer(
                     youTubeConnectionerror = youTubFailure?.name
                 )
-                Log.i(
-                    "TRANSLATIONS1",
-                    "${_translations.value?.youTubeConnectionerror}"
-                )
             }
         }
     }
 
-    fun setCurrentLanguage(language: String?) {
-        _currentLanguage.value = language
-    }
 
     override fun onCleared() {
         super.onCleared()

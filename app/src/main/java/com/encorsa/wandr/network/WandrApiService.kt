@@ -15,7 +15,7 @@ import retrofit2.http.*
 
 
 enum class WandrApiStatus { LOADING, ERROR, DONE }
-enum class WandrApiRequestId { GET_SECURITY_CODE, UPDATE_EMAIL, LOGIN, REGISTER}
+enum class WandrApiRequestId { GET_SECURITY_CODE, UPDATE_EMAIL, LOGIN, REGISTER, GET_PRIVACY}
 
 data class CallAndStatus(
     val status: WandrApiStatus,

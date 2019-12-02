@@ -47,5 +47,6 @@
     <string name="you_tube_connection_error">A apărut o eroare la inițializarea YouTube</string>
     <string name="location_message_1">Vezi locația pe harta Google</string>
     <string name="location_message_2">Inițiază navigația cu Waze</string>
+    <string name="title_privacy">Termeni si Conditii</string>
 
 </resources>

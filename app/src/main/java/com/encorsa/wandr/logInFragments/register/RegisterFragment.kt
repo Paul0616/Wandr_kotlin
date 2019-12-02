@@ -44,12 +44,6 @@ class RegisterFragment : Fragment() {
     var validationErrorInvalidPassword: String? = null
     var validationErrorPasswordMatch: String? = null
 
-    var passwordInfo1: String? = null
-    var passwordInfo2: String? = null
-    var passwordInfo3: String? = null
-    var passwordInfo4: String? = null
-    var passwordInfo5: String? = null
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -57,7 +51,7 @@ class RegisterFragment : Fragment() {
         binding = FragmentRegisterBinding.inflate(inflater)
         binding.lifecycleOwner = this
         (activity as AppCompatActivity).supportActionBar?.show()
-        //(activity as? AppCompatActivity)?.supportActionBar?.title =
+
         return binding.root
     }
 
@@ -175,66 +169,15 @@ class RegisterFragment : Fragment() {
                 ).show()
         })
 
-
-        viewModel.emailHint.observe(this, Observer {
-            if (it != null)
-                binding.emailEdit.hint = it
+        viewModel.translations.observe(this, Observer {
+            binding.translation = it
+            validationErrorFieldRequired = it.errorFieldRequired
+            validationErrorInvalidEmail = it.errorInvalidEmail
+            validationErrorInvalidPassword = it.errorInvalidPassword
+            validationErrorPasswordMatch = it.errorPasswordsMatch
+            (activity as AppCompatActivity).supportActionBar?.title = it.screenTitle
         })
 
-        viewModel.passwordHint.observe(this, Observer {
-            if (it != null)
-                binding.passwordEdit.hint = it
-        })
-
-        viewModel.firstNameHint.observe(this, Observer {
-            if (it != null)
-                binding.firstNameEdit.hint = it
-        })
-
-        viewModel.lastNameHint.observe(this, Observer {
-            if (it != null)
-                binding.lastNameEdit.hint = it
-        })
-        viewModel.confirmPasswordHint.observe(this, Observer {
-            if (it != null)
-                binding.repasswordEdit.hint = it
-        })
-
-        viewModel.validationErrorFieldRequired.observe(this, Observer {
-            this.validationErrorFieldRequired = it
-        })
-
-        viewModel.validationErrorInvalidEmail.observe(this, Observer {
-            this.validationErrorInvalidEmail = it
-        })
-
-        viewModel.validationErrorInvalidPassword.observe(this, Observer {
-            this.validationErrorInvalidPassword = it
-        })
-
-        viewModel.validationErrorPasswordMatch.observe(this, Observer {
-            this.validationErrorPasswordMatch = it
-        })
-
-        viewModel.passwordInfoMessage1.observe(this, Observer {
-            binding.passwordInfo1.text = it ?: getString(R.string.password_info_title)
-        })
-
-        viewModel.passwordInfoMessage2.observe(this, Observer {
-            binding.passwordInfo2.text = it ?: getString(R.string.password_info_number)
-        })
-
-        viewModel.passwordInfoMessage3.observe(this, Observer {
-            binding.passwordInfo3.text = it ?: getString(R.string.password_info_case)
-        })
-
-        viewModel.passwordInfoMessage4.observe(this, Observer {
-            binding.passwordInfo4.text = it ?: getString(R.string.password_info_lenght)
-        })
-
-        viewModel.passwordInfoMessage5.observe(this, Observer {
-            binding.passwordInfo5.text = it ?: getString(R.string.password_info_special_char)
-        })
 
         viewModel.userValidation.observe(this, Observer {
             if (TextUtils.isEmpty(Objects.requireNonNull<RegistrationRequestModel>(it).email)) {

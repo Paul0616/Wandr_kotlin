@@ -7,6 +7,9 @@
         <variable
             name="loginViewModel"
             type="com.encorsa.wandr.logInFragments.logIn.LogInViewModel" />
+        <variable
+            name="translation"
+            type="com.encorsa.wandr.utils.TranslationsLogin" />
     </data>
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -70,7 +73,7 @@
                 android:layout_marginEnd="@dimen/big_dim"
                 android:drawableStart="@drawable/ic_email_24px"
                 android:ems="10"
-                android:hint="@string/emailHint"
+                android:hint="@{translation.email}"
                 android:imeOptions="actionNext"
                 android:inputType="textEmailAddress"
                 android:text="@={loginViewModel.email}"
@@ -88,7 +91,7 @@
                 android:layout_marginEnd="@dimen/big_dim"
                 android:drawableStart="@drawable/ic_lock_24px"
                 android:ems="10"
-                android:hint="@string/passwordHint"
+                android:hint="@{translation.password}"
                 android:imeOptions="actionDone"
                 android:inputType="textPassword"
                 style="@style/MyEditText"
@@ -123,12 +126,13 @@
             android:layout_height="@dimen/round_button"
             android:background="@drawable/round_button"
             android:elevation="2dp"
-            android:onClick="@{() -> loginViewModel.onClickLogIn()}"
+            android:onClick="@{() -> loginViewModel.setLogInType(false)}"
             app:layout_constraintBottom_toTopOf="@+id/guideline2"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toTopOf="@+id/guideline2"
             app:srcCompat="@drawable/ic_arrow_forward_white_24dp" />
+<!--        android:onClick="@{() -> loginViewModel.onClickLogIn()}"-->
 
         <ImageView
             android:id="@+id/imageView4"
@@ -158,19 +162,20 @@
             android:background="@drawable/rectangle"
             android:paddingStart="@dimen/medium_dim"
             android:paddingEnd="@dimen/medium_dim"
-            android:text="@string/registerButonText"
-            app:layout_constraintEnd_toEndOf="@+id/sign_in_button"
-            app:layout_constraintStart_toStartOf="@+id/sign_in_button"
+            android:text="@{translation.register}"
+            app:layout_constraintEnd_toEndOf="@+id/sign_in_with_google_button"
+            app:layout_constraintStart_toStartOf="@+id/sign_in_with_google_button"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
         <com.google.android.gms.common.SignInButton
-            android:id="@+id/sign_in_button"
+            android:id="@+id/sign_in_with_google_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/rectangle"
             android:gravity="clip_vertical"
             app:buttonSize="wide"
             app:colorScheme="auto"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

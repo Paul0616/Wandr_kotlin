@@ -86,29 +86,11 @@ class CheckEmailFragment : Fragment() {
             }
         })
 
-        viewModel.checkEmailScreenLabel.observe(this, Observer {
-            binding.textLabel.text = it ?: getString(R.string.check_email_screen_label)
-        })
-
-        viewModel.securityCodeHint.observe(this, Observer {
-            binding.securityCode.hint = it ?: getString(R.string.security_code_hint)
-        })
-
-        viewModel.resendEmailText.observe(this, Observer {
-            binding.resendEmailButton.text = it ?: getString(R.string.resend_email_button)
-        })
-
-        viewModel.errorEmailNoChange.observe(this, Observer {
-            errorEmailNoChange = it ?: getString(R.string.error_email_no_change)
-        })
-
-        viewModel.wrongSecurityCode.observe(this, Observer {
-            errorWrongSecurityCode = it ?: getString(R.string.wrong_security_code)
-        })
-
-        viewModel.checkEmailTitle.observe(this, Observer {
-            if (it != null)
-                (activity as AppCompatActivity).supportActionBar?.title = it
+        viewModel.translations.observe(this, Observer {
+            binding.translation = it
+            errorEmailNoChange = it.errorEmailNoChange
+            errorWrongSecurityCode = it.errorWrongSecurity
+            (activity as AppCompatActivity).supportActionBar?.title = it.checkEmailScreenTitle
         })
 
         viewModel.validateSecurityCode.observe(this, Observer {

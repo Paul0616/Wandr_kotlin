@@ -13,6 +13,7 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.encorsa.wandr.utils.DEFAULT_LANGUAGE
 import com.encorsa.wandr.utils.Prefs
 
 
@@ -54,7 +55,7 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
 //        val id = data["id"]
 //
 //
-        var curLanguage = prefs.currentLanguage ?: "RO"
+        var curLanguage = prefs.currentLanguage ?: DEFAULT_LANGUAGE
 //        if (curLanguage == "")
 //            curLanguage = "RO"
         when (curLanguage) {

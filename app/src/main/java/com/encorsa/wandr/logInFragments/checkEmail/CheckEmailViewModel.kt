@@ -13,6 +13,8 @@ import com.encorsa.wandr.models.LoginResponseModel
 import com.encorsa.wandr.models.SecurityCode
 import com.encorsa.wandr.utils.DEFAULT_LANGUAGE
 import com.encorsa.wandr.utils.Prefs
+import com.encorsa.wandr.utils.TranslationsCheckEmail
+import com.encorsa.wandr.R
 import kotlinx.coroutines.*
 import retrofit2.HttpException
 
@@ -24,49 +26,35 @@ class CheckEmailViewModel(app: Application, val database: WandrDatabaseDao) :
     private val ioScope = CoroutineScope(Dispatchers.IO + viewModelJob)
     private val prefs = Prefs(app.applicationContext)
     val securityCode = MutableLiveData<String?>()
-    val currentLanguage = MutableLiveData<String>()
+
 
 
     init {
         Log.i("CheckEmailViewModel", "CREATED")
-        currentLanguage.value = prefs.currentLanguage.let {
+        val currentLanguage = prefs.currentLanguage.let {
             it ?: DEFAULT_LANGUAGE
         }
-        getLabelByTagAndLanguage("check_email_screen_label", currentLanguage.value!!)
-        getLabelByTagAndLanguage("resend_email_button", currentLanguage.value!!)
-        getLabelByTagAndLanguage("error_wrong_security_code", currentLanguage.value!!)
-        getLabelByTagAndLanguage("security_code_hint", currentLanguage.value!!)
-        getLabelByTagAndLanguage("error_email_no_change", currentLanguage.value!!)
-        getLabelByTagAndLanguage("check_email_title", currentLanguage.value!!)
+        getLabelsByLanguage(currentLanguage)
+
     }
 
 
 
     val newEmail = MutableLiveData<String>()
 
-    private val _checkEmailScreenLabel = MutableLiveData<String>()
-    val checkEmailScreenLabel: LiveData<String>
-        get() = _checkEmailScreenLabel
+    private val _translations = MutableLiveData<TranslationsCheckEmail>(
+        TranslationsCheckEmail(
+            app.getString(R.string.check_email_screen_label),
+            app.getString(R.string.resend_email_button),
+            app.getString(R.string.wrong_security_code),
+            app.getString(R.string.security_code_hint),
+            app.getString(R.string.error_email_no_change),
+            ""
+        )
+    )
+    val translations: LiveData<TranslationsCheckEmail>
+        get() = _translations
 
-    private val _resendEmailText = MutableLiveData<String>()
-    val resendEmailText: LiveData<String>
-        get() = _resendEmailText
-
-    private val _wrongSecurityCode = MutableLiveData<String>()
-    val wrongSecurityCode: LiveData<String>
-        get() = _wrongSecurityCode
-
-    private val _securityCodeHint = MutableLiveData<String>()
-    val securityCodeHint: LiveData<String>
-        get() = _securityCodeHint
-
-    private val _checkEmailTitle = MutableLiveData<String>()
-    val checkEmailTitle: LiveData<String>
-        get() = _checkEmailTitle
-
-    private val _errorEmailNoChange = MutableLiveData<String>()
-    val errorEmailNoChange: LiveData<String>
-        get() = _errorEmailNoChange
 
     private val _emailMustBeEdited = MutableLiveData<Boolean>()
     val emailMustBeEdited: LiveData<Boolean>
@@ -190,18 +178,33 @@ class CheckEmailViewModel(app: Application, val database: WandrDatabaseDao) :
         }
     }
 
-    fun getLabelByTagAndLanguage(labelTag: String, languageTag: String) {
+    fun getLabelsByLanguage(languageTag: String) {
         ioScope.launch {
-            val label = database.findlabelByTag(labelTag, languageTag)
+            val checkEmailLabel = database.findlabelByTag("check_email_screen_label", languageTag)
+            val resendEmail = database.findlabelByTag("resend_email_button", languageTag)
+            val erorWrongSecurity = database.findlabelByTag("error_wrong_security_code", languageTag)
+            val securityCode = database.findlabelByTag("security_code_hint", languageTag)
+            val errorEmailNoChange = database.findlabelByTag("error_email_no_change", languageTag)
+            val checkEmailTitle = database.findlabelByTag("check_email_title", languageTag)
+
             withContext(Dispatchers.Main) {
-                when(labelTag){
-                    "check_email_screen_label" -> _checkEmailScreenLabel.value = label?.name
-                    "resend_email_button" -> _resendEmailText.value = label?.name
-                    "error_wrong_security_code" -> _wrongSecurityCode.value = label?.name
-                    "security_code_hint" -> _securityCodeHint.value = label?.name
-                    "error_email_no_change" -> _errorEmailNoChange.value = label?.name
-                    "check_email_title" -> _checkEmailTitle.value = label?.name
-                }
+                _translations.value = TranslationsCheckEmail(
+                   checkEmailLabel = checkEmailLabel?.name,
+                    resendEmailText = resendEmail?.name,
+                    errorWrongSecurity = erorWrongSecurity?.name,
+                    securityCodeHint = securityCode?.name,
+                    errorEmailNoChange = errorEmailNoChange?.name,
+                    checkEmailScreenTitle = checkEmailTitle?.name
+                )
+                Log.i(
+                    "TRANSLATIONS",
+                    "${_translations.value?.checkEmailLabel} - " +
+                            "${_translations.value?.resendEmailText} -" +
+                            " ${_translations.value?.errorWrongSecurity} -" +
+                            " ${_translations.value?.securityCodeHint} -" +
+                            " ${_translations.value?.errorEmailNoChange} -" +
+                            " ${_translations.value?.checkEmailScreenTitle}"
+                )
             }
         }
     }

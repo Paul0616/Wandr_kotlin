@@ -53,6 +53,13 @@
             app:popExitAnim="@anim/slide_out_right"
             app:popUpTo="@+id/viewUrlFragment"
             app:popUpToInclusive="true" />
+        <argument
+            android:name="withGoogle"
+            app:argType="boolean" />
+        <argument
+            android:name="newGoogleUser"
+            app:argType="com.encorsa.wandr.models.RegistrationRequestModel"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/checkEmailFragment"

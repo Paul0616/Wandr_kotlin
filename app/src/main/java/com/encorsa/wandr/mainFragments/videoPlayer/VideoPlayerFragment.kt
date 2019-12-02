@@ -19,6 +19,7 @@ import com.encorsa.wandr.adapters.VideosAdapter
 import com.encorsa.wandr.database.ListMediaDatabaseModel
 import com.encorsa.wandr.database.WandrDatabase
 import com.encorsa.wandr.databinding.FragmentVideoPlayerBinding
+import com.encorsa.wandr.utils.DEFAULT_LANGUAGE
 import com.encorsa.wandr.utils.Prefs
 import com.encorsa.wandr.utils.makeTransperantStatusBar
 import com.google.android.youtube.player.YouTubeInitializationResult
@@ -84,15 +85,12 @@ class VideoPlayerFragment : Fragment(), YouTubePlayer.OnInitializedListener {
         viewModel.setVideos(0, videos)
         binding.videosList.adapter = adapter
         val currLang = Prefs(application.applicationContext).currentLanguage
-        viewModel.setCurrentLanguage(currLang)
+        viewModel.getLabelByTagAndLanguage(currLang ?: DEFAULT_LANGUAGE)
 
         /*  --------------------------
-         *   observe language change
+         *   observe translation change
          *  ----------------------------
          */
-        viewModel.currentLanguage.observe(this, Observer {
-            viewModel.getLabelByTagAndLanguage(it)
-        })
 
         viewModel.translations.observe(this, Observer{
             messageYouTubeConnectionError = it.youTubeConnectionerror ?: ""

@@ -60,7 +60,9 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
             app.getString(R.string.no_info),
             app.getString(R.string.more),
             app.getString(R.string.no_results),
-            app.getString(R.string.subcategories)
+            app.getString(R.string.subcategories),
+            app.getString(R.string.location_message_1),
+            app.getString(R.string.location_message_2)
         )
     )
     val translationsMain: LiveData<TranslationsMain>
@@ -69,9 +71,6 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
     private val _favoriteId = MutableLiveData<String>()
     val favoriteId: LiveData<String>
         get() = _favoriteId
-
-    //   private val deletedFavorite = MutableLiveData<Boolean>(false)
-
 
     private val _subcategoryFilterApplied = MutableLiveData<Boolean>()
     val subcategoryFilterApplied: LiveData<Boolean>
@@ -458,16 +457,25 @@ class MainViewModel(app: Application, val database: WandrDatabaseDao) :
             val more = database.findlabelByTag("more", languageTag)
             val noRecords = database.findlabelByTag("no_records", languageTag)
             val subcategories = database.findlabelByTag("subcategory", languageTag)
+            val locGoogle = database.findlabelByTag("location_message_1", languageTag)
+            val locWaze = database.findlabelByTag("location_message_2", languageTag)
             withContext(Dispatchers.Main) {
                 _translations.value = TranslationsMain(
                     noInfo = noInfo?.name,
                     more = more?.name,
                     noRecords = noRecords?.name,
-                    subcategories = subcategories?.name
+                    subcategories = subcategories?.name,
+                    locationWhithGoogle = locGoogle?.name,
+                    locationWhithWaze = locWaze?.name
                 )
                 Log.i(
                     "TRANSLATIONS1",
-                    "${_translations.value?.noInfo} - ${_translations.value?.more} - ${_translations.value?.noRecords} - ${_translations.value?.subcategories}"
+                    "${_translations.value?.noInfo} - " +
+                            "${_translations.value?.more} -" +
+                            " ${_translations.value?.noRecords} -" +
+                            " ${_translations.value?.subcategories} -" +
+                            " ${_translations.value?.locationWhithGoogle} -" +
+                            " ${_translations.value?.locationWhithWaze}"
                 )
             }
         }
