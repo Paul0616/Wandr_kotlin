@@ -141,7 +141,7 @@ class DetailFragment : Fragment() {
 
                 // User scrolled past image to height of toolbar and the title text is
                 // underneath the toolbar, so the toolbar should be shown.
-                Log.i("DetailFragment", "${scrollY}")
+                Log.i("DetailFragment", "${scrollY} - toolbar H:  ${binding.toolbar.height}")
                 val shouldShowToolbar = scrollY > binding.toolbar.height
 
                 // The new state of the toolbar differs from the previous state; update
