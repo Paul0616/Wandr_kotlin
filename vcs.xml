@@ -66,6 +66,10 @@
           <option name="url" value="https://ENCORSA@dev.azure.com/ENCORSA/Fidelio/_git/Fidelio" />
           <option name="userName" value="" />
         </UrlAndUserName>
+        <UrlAndUserName>
+          <option name="url" value="https://github.com/android/camera-samples.git" />
+          <option name="userName" value="" />
+        </UrlAndUserName>
       </list>
     </option>
     <option name="cloneParentDir" value="$USER_HOME$" />
