@@ -74,8 +74,12 @@
           <option name="url" value="https://github.com/Paul0616/freya.git" />
           <option name="userName" value="" />
         </UrlAndUserName>
+        <UrlAndUserName>
+          <option name="url" value="https://github.com/Paul0616/GeofenceSpotsHunt.git" />
+          <option name="userName" value="" />
+        </UrlAndUserName>
       </list>
     </option>
-    <option name="cloneParentDir" value="$APPLICATION_HOME_DIR$/bin" />
+    <option name="cloneParentDir" value="$USER_HOME$" />
   </component>
 </application>
