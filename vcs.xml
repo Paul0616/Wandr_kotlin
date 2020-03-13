@@ -40,7 +40,7 @@
         </UrlAndUserName>
         <UrlAndUserName>
           <option name="url" value="http://dev.azure.com" />
-          <option name="userName" value="ENCORSA" />
+          <option name="userName" value="duoline.paul" />
         </UrlAndUserName>
         <UrlAndUserName>
           <option name="url" value="https://paul@dev.azure.com/ENCORSA/CityApp/_git/CityApp_Android" />
@@ -104,6 +104,14 @@
         </UrlAndUserName>
         <UrlAndUserName>
           <option name="url" value="https://github.com/Paul0616/WorkBoard.git" />
+          <option name="userName" value="" />
+        </UrlAndUserName>
+        <UrlAndUserName>
+          <option name="url" value="https://ENCORSA@dev.azure.com/ENCORSA/WEBCON%20DeepServ/_git/Flutter_App" />
+          <option name="userName" value="" />
+        </UrlAndUserName>
+        <UrlAndUserName>
+          <option name="url" value="https://duoline.paul@dev.azure.com/ENCORSA/WEBCON%20DeepServ/_git/Flutter_App" />
           <option name="userName" value="" />
         </UrlAndUserName>
       </list>
